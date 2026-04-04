@@ -20,7 +20,7 @@ dsa5-statblock-importer/
 ├── flake.nix                  # nix dev environment (node, pnpm)
 ├── flake.lock
 ├── .envrc                     # direnv → use flake
-├── module.json                # Foundry manifest
+├── module.json                # Foundry manifest (id: dsa5-statblock-importer)
 ├── package.json               # pnpm + vite
 ├── pnpm-lock.yaml
 ├── vite.config.js
@@ -41,7 +41,7 @@ dsa5-statblock-importer/
 ├── styles/
 │   └── module.css
 ├── languages/
-│   └── de.json
+│   └── de.json                # UI labels only (not compendium item names)
 └── tests/
     ├── fixtures/              # raw PDF paste samples as .txt files
     │   └── jaruslaw.txt
@@ -51,14 +51,34 @@ dsa5-statblock-importer/
     └── gossip-parser.test.js
 ```
 
+### Module Manifest (`module.json`)
+
+Required fields:
+```json
+{
+  "id": "dsa5-statblock-importer",
+  "title": "DSA5 Statblock Importer",
+  "description": "Import DSA5 NPC statblocks from PDF into Foundry VTT actors.",
+  "version": "0.1.0",
+  "compatibility": { "minimum": "11", "verified": "12" },
+  "esmodules": ["dist/main.js"],
+  "styles": ["styles/module.css"],
+  "languages": [{ "lang": "de", "name": "Deutsch", "path": "languages/de.json" }]
+}
+```
+
 ### Tech Stack
 
 - **Foundry VTT** v11/v12, DSA5 system + Ulisses premium compendiums
 - **ES Modules** via `esmodules` in module.json
-- **Vite** for bundling
+- **Vite** for bundling (output: `dist/`)
 - **pnpm** as package manager
 - **Vitest** for unit tests (parser logic runs outside Foundry)
 - **Nix flake + direnv** for reproducible dev environment
+
+### Entry Point (`main.js`)
+
+Registers a toolbar button via the `getSceneControlButtons` hook (or sidebar button via `renderSidebarTab` if preferred). Requires GM permission. On click, opens `ImportDialog`. No async work happens in the hook itself.
 
 ---
 
@@ -72,10 +92,18 @@ dsa5-statblock-importer/
 6. Actor is created with resolved items attached
 7. `SummaryDialog` opens showing:
    - Successfully imported fields
-   - Fuzzy/approximate matches (with original and matched name)
+   - Approximate matches (with original and matched name)
    - Missing/unresolved items
    - Equipment packs to drag from chat
 8. Button in summary dialog opens the newly created actor
+
+### Error Handling
+
+- If a section is blank, it is skipped — import proceeds with the other sections
+- If the stats section is present but yields no name, import is aborted with an error message in the dialog
+- If the stats section is malformed (no attributes parsed), import is aborted with an error message
+- Partial parses (some fields recognized, others not) create a partial actor — unresolved fields appear in the summary as missing
+- Compendium lookup failures are non-fatal: the item is flagged as missing and import continues
 
 ---
 
@@ -108,6 +136,20 @@ Weapons have no colon anchor — detected by presence of `AT`, `PA`, or `FK` pat
 
 Unrecognized lines between anchors are appended to the previous block (safe fallback).
 
+### Fluff Section Anchors
+
+Known fluff section anchors (maintained in one place in `fluff-parser.js`):
+```
+Kurzcharakteristik, Motivation, Agenda, Funktion, Hintergrund,
+Feindbilder, Darstellung, Schicksal, Besonderheiten
+```
+
+The first line of the fluff section contains the NPC category digit, optional title, and name (e.g. `3 Schitze Jaruslaw von Kirschhausen-Krabbwitzkoje`). Quotes (lines starting with `»`) at the end of the section are collected as `zitate`.
+
+### Gossip Section Delimiters
+
+Gossip entries are delimited by lines starting with `»` (opening guillemet). Each entry runs until the next `»` line or end of section. The header line (`Gerüchte über ...`) is parsed to extract the `subject`. Inline truth markers `(+)`, `(-)`, `(möglich)` are preserved as-is within entry text.
+
 ---
 
 ## Data Models
@@ -117,37 +159,68 @@ Unrecognized lines between anchors are appended to the previous block (safe fall
 ```js
 {
   name: String,
-  attributes: { MU, KL, IN, CH, FF, GE, KO, KK },          // all Numbers
-  derived:    { LeP, Asp, KaP, INI, AW, SK, ZK, GS, Schip }, // Numbers; INI stored as "12+1W6"
+  attributes: { MU, KL, IN, CH, FF, GE, KO, KK },  // all Numbers
+  derived: {
+    LeP: Number,
+    Asp: Number|null,   // null if "–"
+    KaP: Number|null,   // null if "–"
+    INI: { base: Number, dice: String },  // e.g. { base: 12, dice: "1W6" }
+    AW: Number,
+    SK: Number,
+    ZK: Number,
+    GS: Number,
+    Schip: Number
+  },
   weapons: [
     { name: String, AT: Number|null, PA: Number|null, FK: Number|null }
+    // AT/PA/FK retained as hints for Kampftechnik inference when not separately listed
   ],
-  armor: [String],                                            // names only for compendium lookup
+  armor: [
+    { name: String, RS: Number, BE: Number }
+    // RS/BE parsed from the RS/BE line and stored for reference;
+    // the compendium item is the authoritative source for actor stats,
+    // but values are retained in case the item cannot be resolved
+  ],
   sozialstatus: String,
   sonderfertigkeiten: [String],
   sprachen: [String],
   schriften: [String],
   vorteile: [String],
   nachteile: [String],
-  kampftechniken: [{ name: String, value: Number, atPa: [Number] }],
+  kampftechniken: [
+    {
+      name: String,
+      value: Number,        // base Kampftechnikwert (e.g. 12 from "Bogen 12 (13)")
+      atBonus: Number|null, // parenthetical AT value (e.g. 13), null if absent
+      paBonus: Number|null  // parenthetical PA value (e.g. 9), null if absent
+    }
+  ],
   talente: {
-    Körper:      [{ name: String, value: Number, spezialisierung: String|null }],
-    Gesellschaft:[{ name: String, value: Number }],
-    Natur:       [{ name: String, value: Number }],
-    Wissen:      [{ name: String, value: Number }],
-    Handwerk:    [{ name: String, value: Number }]
+    Körper:       [{ name: String, value: Number, spezialisierung: String|null }],
+    Gesellschaft: [{ name: String, value: Number, spezialisierung: String|null }],
+    Natur:        [{ name: String, value: Number, spezialisierung: String|null }],
+    Wissen:       [{ name: String, value: Number, spezialisierung: String|null }],
+    Handwerk:     [{ name: String, value: Number, spezialisierung: String|null }],
+    Sonstige:     [{ name: String, value: Number, spezialisierung: String|null }]
+    // Sonstige: fallback bucket for unrecognized talent categories
   },
   kampfverhalten: String,  // prose → GM notes
   flucht: String           // prose → GM notes
 }
 ```
 
+**Notes:**
+- `spezialisierung` can appear on any talent category, not just Körper
+- Unrecognized talent category headers fall into `Sonstige`
+- `Kampftechnik.atBonus`/`paBonus`: the parenthetical values in `Bogen 12 (13)` and `Schwerter 14 (15/9)` represent AT and optional PA bonuses
+
 ### Fluff Parser Output
 
 ```js
 {
-  npcCategory: String,  // "Turm" | "Springer" | "Bauer" | "Läufer"
-  titel: String,        // e.g. "Schitze"
+  npcCategory: "Turm" | "Springer" | "Bauer" | "Läufer" | null,
+  // null if digit is absent or outside 1–4; logged as warning, import continues
+  titel: String | null,
   name: String,
   kurzcharakteristik: String,
   motivation: String,
@@ -183,33 +256,63 @@ NPC category digit mapping (PDF font artifact → icon name):
 
 ## Compendium Resolution (`compendium-resolver.js`)
 
-Searches DSA5 system + Ulisses premium compendiums by name for:
-- Weapons → added as items to actor
-- Armor → added as items to actor
-- Sonderfertigkeiten, Vorteile, Nachteile → added as items
-- Kampftechniken, Talente → matched to existing system entries
+### Language
 
-**Item categories:**
-- **Resolved:** exact name match → added to actor
-- **Equipment packs:** matched as a pack (not individual items) → offered as chat drag
-- **Unresolved:** no match found → flagged in summary dialog
+All compendium item names are in German. Name matching operates entirely on German strings. `languages/de.json` contains only UI labels.
 
-AT/PA values from weapon entries are used as hints to infer Kampftechnik values when not separately listed.
+### Search Scope & Order
+
+Searches the following pack prefixes in order, stopping at first match:
+1. `dsa5` system packs (base rules)
+2. `dsa5-core` / Ulisses premium packs (prefix pattern: `ulisses-*` or as installed)
+3. Any remaining world compendiums
+
+The exact pack IDs depend on the installed Ulisses modules. The resolver iterates `game.packs` filtered by `type` and searches by German item name. If no packs matching tiers 1 or 2 are found, a warning is logged and resolution falls through to world compendiums. If no compendiums of the required item type exist at all, the item is treated as unresolved and flagged as missing in the summary dialog.
+
+### Name Matching
+
+- **Exact match:** direct string equality (case-insensitive, trimmed)
+- **Approximate match:** normalized comparison — strip Roman numerals suffix, compare stem, then re-attach (handles `Belastungsgewöhnung I` vs `Belastungsgewöhnung II` as same base ability). Levenshtein distance ≤ 2 as secondary fallback for typos/ligature residue. Approximate matches are flagged in the summary dialog as `"Matched 'X' to 'Y' (ungefähr)"`.
+- **Pack detection:** an item is treated as an equipment pack if its `type` is `equipment` and its name contains `paket` (case-insensitive), or if it has a `pack: true` flag in its system data. Packs are offered as a chat message with a drag link rather than added directly to the actor.
+
+### Resolved Categories
+
+| Parsed field | Compendium item type | Action |
+|---|---|---|
+| `weapons` | `weapon` | add to actor |
+| `armor` | `armor` | add to actor |
+| `sonderfertigkeiten` | `specialAbility` | add to actor |
+| `vorteile` | `advantage` | add to actor |
+| `nachteile` | `disadvantage` | add to actor |
+| `kampftechniken` | combat technique entry | set value on actor |
+| `talente` | skill entry | set value on actor |
+| `sprachen` | language item | add to actor |
+| `schriften` | script/writing item | add to actor |
+| `sozialstatus` | — | written to GM notes (labeled) |
 
 ---
 
 ## Actor Construction (`actor-builder.js`)
 
-1. Create NPC actor with name from fluff (or stats if fluff empty)
-2. Set attributes and derived values from stats
-3. Set Kampftechnik and Talent values
-4. Attach resolved compendium items (weapons, armor, abilities, etc.)
-5. Write GM notes (biography field) containing:
-   - NPC category icon name + label
-   - All fluff fields (labeled prose)
-   - Kampfverhalten + Flucht
-   - Gossip entries (labeled, inline markers preserved)
-6. Store `npcCategory` as actor flag for potential filtering
+### Name Resolution
+
+Fluff `name` takes priority when present. Stats `name` is used as fallback. `titel` from fluff is prepended to the name (e.g. `Schitze Jaruslaw von Kirschhausen-Krabbwitzkoje`).
+
+### Steps
+
+1. Determine actor name (fluff name + titel, or stats name)
+2. Create NPC actor (`type: "creature"` or the DSA5 NPC type)
+3. Set `attributes` (MU, KL, IN, CH, FF, GE, KO, KK)
+4. Set `derived` values: LeP, Asp, KaP, AW, SK, ZK, GS, Schip; INI split into `base` and `dice` fields as the DSA5 system expects
+5. Set Kampftechnik values; if a Kampftechnik is absent from the parsed `kampftechniken` list, infer the base value as `weapon.AT - 6` (the DSA5 base AT formula) using the highest AT value across all weapons sharing that Kampftechnik. This is a best-effort hint — inferred values are flagged distinctly in the summary dialog as `"Kampftechnikwert geschätzt aus AT"` so the GM can verify them
+6. Set Talent values
+7. Attach resolved compendium items (weapons, armor, abilities, advantages, disadvantages)
+8. Write GM notes (biography field) as formatted HTML containing:
+   - NPC category icon name + label (e.g. `[Turm] Schitze`)
+   - All fluff fields with German labels
+   - `Kampfverhalten` and `Flucht` prose
+   - Gossip entries under a `Gerüchte` heading, inline markers preserved
+9. Store `npcCategory` as actor flag (`flags.dsa5-statblock-importer.npcCategory`) for potential filtering
 
 ---
 
@@ -217,20 +320,20 @@ AT/PA values from weapon entries are used as hints to infer Kampftechnik values 
 
 Shows after actor creation:
 
-- **Imported:** list of successfully resolved fields and items
-- **Approximate matches:** "Matched 'Finte I' to 'Finte I' (fuzzy)"
-- **Missing:** items not found in any compendium
-- **Packs:** equipment packs available as chat drag
-- **Open Actor** button
+- **Importiert:** list of successfully resolved fields and items
+- **Ungefähre Treffer:** approximate matches with original → matched name
+- **Ausrüstungspakete:** equipment packs available as chat drag link
+- **Nicht gefunden:** items not found in any compendium
+- **Schauspieler öffnen** button to open the created actor
 
 ---
 
 ## Testing
 
 - **Vitest** for all parser and cleaner unit tests
-- Test fixtures are raw `.txt` files extracted from real PDFs
-- Tests cover: ligature normalization, multi-line reassembly, weapon detection, talent block parsing, gossip inline markers, NPC category mapping
-- Additional fixture files will be added from GM-provided PDFs before implementation
+- Test fixtures are raw `.txt` files extracted from real PDFs (to be provided by GM)
+- Tests cover: ligature normalization, multi-line reassembly, weapon detection, RS/BE parsing, INI split, talent block parsing (all categories including Sonstige), gossip entry delimiting, inline markers, NPC category mapping, missing/null category handling
+- Additional fixture files added from GM-provided PDFs before implementation
 
 ---
 
