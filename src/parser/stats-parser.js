@@ -1,5 +1,3 @@
-const ATTR_KEYS = ['MU', 'KL', 'IN', 'CH', 'FF', 'GE', 'KO', 'KK']
-
 const TALENT_CATEGORIES = ['Körper', 'Gesellschaft', 'Natur', 'Wissen', 'Handwerk']
 
 function parseDash(val) {

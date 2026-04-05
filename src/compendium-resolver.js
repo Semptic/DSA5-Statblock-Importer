@@ -77,10 +77,10 @@ export async function resolveAll(parsed) {
     parsed.nachteile.map(n => resolve(n, 'disadvantage'))
   )
   const sprachenItems = await Promise.all(
-    parsed.sprachen.map(s => resolve(s, 'language'))
+    parsed.sprachen.map(s => resolve(s, 'specialability'))
   )
   const schriftenItems = await Promise.all(
-    parsed.schriften.map(s => resolve(s, 'script'))
+    parsed.schriften.map(s => resolve(s, 'specialability'))
   )
 
   return {
