@@ -1,0 +1,69 @@
+{
+  "stats": {
+    "name": "Schwester Aldaine von Perricum, Geweihte der Travia",
+    "attributes": { "MU": 12, "KL": 13, "IN": 14, "CH": 15, "FF": 11, "GE": 12, "KO": 13, "KK": 10 },
+    "derived": {
+      "LeP": 30, "Asp": null, "KaP": 18,
+      "INI": { "base": 13, "dice": "1W6" },
+      "AW": 5, "SK": 2, "ZK": 1, "GS": 8, "Schip": null
+    },
+    "weapons": [
+      { "name": "Holzstab", "AT": 10, "PA": 8, "FK": null }
+    ],
+    "armor": [{ "name": "Normale Kleidung", "RS": 0, "BE": 0 }],
+    "sozialstatus": "Geweihte",
+    "sonderfertigkeiten": ["Liturgiekenntnis (Travia)", "Segnung"],
+    "sprachen": ["Garethi 4 (Muttersprache)", "Alaani 2"],
+    "schriften": ["Kusliker Zeichen 2"],
+    "vorteile": ["Gut Aussehend I", "Weihe (Travia)"],
+    "nachteile": ["Verpflichtungen (Tempel)"],
+    "kampftechniken": [
+      { "name": "Stäbe", "value": 10, "atBonus": 11, "paBonus": 8 }
+    ],
+    "talente": {
+      "Körper": [
+        { "name": "Klettern", "value": 1, "spezialisierung": null },
+        { "name": "Selbstbeherrschung", "value": 6, "spezialisierung": null },
+        { "name": "Sinnesschärfe", "value": 5, "spezialisierung": null }
+      ],
+      "Gesellschaft": [
+        { "name": "Bekehren & Überzeugen", "value": 8, "spezialisierung": null },
+        { "name": "Etikette", "value": 4, "spezialisierung": null },
+        { "name": "Menschenkenntnis", "value": 6, "spezialisierung": null },
+        { "name": "Überreden", "value": 5, "spezialisierung": null }
+      ],
+      "Natur": [
+        { "name": "Heilkunde Krankheiten", "value": 4, "spezialisierung": null },
+        { "name": "Orientierung", "value": 2, "spezialisierung": null }
+      ],
+      "Wissen": [
+        { "name": "Götter & Kulte", "value": 9, "spezialisierung": null },
+        { "name": "Rechtskunde", "value": 3, "spezialisierung": null },
+        { "name": "Sphärenkunde", "value": 2, "spezialisierung": null }
+      ],
+      "Handwerk": [
+        { "name": "Heilkunde Wunden", "value": 5, "spezialisierung": null },
+        { "name": "Kochen", "value": 3, "spezialisierung": null }
+      ],
+      "Sonstige": []
+    },
+    "kampfverhalten": "Aldaine versucht zunächst zu schlichten. Greift sie an, setzt sie den Stab ein und ruft ihre Schutzliturgien.",
+    "flucht": "Unter 12 LeP"
+  },
+  "fluff": {
+    "npcCategory": "Springer",
+    "titel": "Schwester",
+    "name": "Aldaine von Perricum, Geweihte der Travia",
+    "kurzcharakteristik": "Geweihte der Travia, 35, sanfte Züge, kastanienbraunes Haar unter weißem Schleier; trägt das Schürzengewand des Traviaordens.",
+    "motivation": "Sie will den Frieden in der Gemeinde wahren und den Schwachen helfen.",
+    "agenda": "",
+    "funktion": "Heilkundige und Vermittlerin",
+    "hintergrund": "Aldaine wuchs in Perricum auf und trat mit 18 Jahren dem Traviaorden bei. Sie hat seitdem viele Konflikte vermittelt und ist bekannt für ihre Geduld.",
+    "feindbilder": [],
+    "darstellung": "",
+    "schicksal": "",
+    "besonderheiten": "",
+    "zitate": []
+  },
+  "gossip": null
+}

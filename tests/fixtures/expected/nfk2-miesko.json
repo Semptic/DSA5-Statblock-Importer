@@ -41,13 +41,13 @@
         { "name": "Willenskraft", "value": 9, "spezialisierung": null }
       ]
     },
-    "kampfverhalten": "Miesko kämpft beidhändig mit Säbel und Haken, die erste AT führt er mit dem Säbel aus, die zweite mit dem Haken.",
+    "kampfverhalten": "Mjesko kämpft beidhändig mit Säbel und Haken, die erste AT führt er mit dem Säbel aus, die zweite mit dem Haken.",
     "flucht": "Miesko ist erfüllt von seiner Rache, ihn interessiert nur, wie viele seiner Gegner er noch mit sich in die siebte Sphäre reißen kann."
   },
   "fluff": {
     "npcCategory": "Springer",
     "titel": null,
-    "name": "Miesko Einhand",
+    "name": "Mjesko Einhand",
     "kurzcharakteristik": "berüchtigter Piratenkapitän und Paktierer; 64, kurze graue Haare, die Augen farblos wie ausgeglühte Kohlenstücke, stählerner Haken anstatt der rechten Hand; Das Dämonenmal, das von seinem Pakt kündet, ist eine nie verheilende Wunde an seiner gesunden Hand.",
     "motivation": null,
     "agenda": null,

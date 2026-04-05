@@ -1,0 +1,29 @@
+stats:
+# SYNTHETIC FIXTURE — not from a real PDF; created to cover KaP != null parsing
+2 Schwester Aldaine von Perricum, Geweihte der Travia
+MU 12 KL 13 IN 14 CH 15 FF 11 GE 12 KO 13 KK 10
+LeP 30 AsP – KaP 18 INI 13+1W6 AW 5 SK 2 ZK 1 GS 8
+Holzstab: AT 10 PA 8 TP 1W6+2 RW mittel
+RS/BE: 0/0 (Normale Kleidung)
+Sozialstatus: Geweihte
+Sonderfertigkeiten: Liturgiekenntnis (Travia), Segnung
+Sprachen: Garethi 4 (Muttersprache), Alaani 2
+Schriften: Kusliker Zeichen 2
+Vorteile: Gut Aussehend I, Weihe (Travia)
+Nachteile: Verpflichtungen (Tempel)
+Kampftechniken: Stäbe 10 (11/8)
+Talente:
+Körper: Klettern 1, Selbstbeherrschung 6, Sinnesschärfe 5
+Gesellschaft: Bekehren & Überzeugen 8, Etikette 4, Menschenkenntnis 6, Überreden 5
+Natur: Heilkunde Krankheiten 4, Orientierung 2
+Wissen: Götter & Kulte 9, Rechtskunde 3, Sphärenkunde 2
+Handwerk: Heilkunde Wunden 5, Kochen 3
+Kampfverhalten: Aldaine versucht zunächst zu schlichten. Greift sie an, setzt sie den Stab ein und ruft ihre Schutzliturgien.
+Flucht: Unter 12 LeP
+
+fluff:
+2 Schwester Aldaine von Perricum, Geweihte der Travia
+Kurzcharakteristik: Geweihte der Travia, 35, sanfte Züge, kastanienbraunes Haar unter weißem Schleier; trägt das Schürzengewand des Traviaordens.
+Motivation: Sie will den Frieden in der Gemeinde wahren und den Schwachen helfen.
+Funktion: Heilkundige und Vermittlerin
+Hintergrund: Aldaine wuchs in Perricum auf und trat mit 18 Jahren dem Traviaorden bei. Sie hat seitdem viele Konflikte vermittelt und ist bekannt für ihre Geduld.
