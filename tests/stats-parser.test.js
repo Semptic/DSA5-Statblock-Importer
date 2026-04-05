@@ -46,3 +46,30 @@ describe('parseStats - edge cases', () => {
     expect(result.name).toBe(null)
   })
 })
+
+describe('parseStats - derived', () => {
+  it('extracts LeP', () => expect(stats.derived.LeP).toBe(32))
+  it('extracts INI as base + dice', () => {
+    expect(stats.derived.INI).toEqual({ base: 14, dice: '1W6' })
+  })
+  it('sets Asp to null when "–"', () => expect(stats.derived.Asp).toBeNull())
+  it('sets KaP to null when "–"', () => expect(stats.derived.KaP).toBeNull())
+  it('extracts AW', () => expect(stats.derived.AW).toBe(6))
+  it('extracts SK', () => expect(stats.derived.SK).toBe(1))
+  it('extracts ZK', () => expect(stats.derived.ZK).toBe(0))
+  it('extracts GS', () => expect(stats.derived.GS).toBe(8))
+  it('extracts Schip', () => expect(stats.derived.Schip).toBe(3))
+})
+
+// Load a fixture with non-null Asp (nfk1-jaani has AsP 29)
+const rawStatsJaani = loadSection('nfk1-jaani.txt', 'stats')
+const statsJaani = parseStats(clean(rawStatsJaani))
+
+describe('parseStats - derived (with Asp)', () => {
+  it('extracts numeric Asp when present', () => {
+    expect(statsJaani.derived.Asp).toBe(29)
+  })
+  it('sets KaP to null when "–" even with numeric Asp', () => {
+    expect(statsJaani.derived.KaP).toBeNull()
+  })
+})
