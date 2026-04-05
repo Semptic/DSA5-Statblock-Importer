@@ -1,0 +1,24 @@
+{
+  "planPath": "docs/superpowers/plans/2026-04-05-dsa5-statblock-importer.md",
+  "tasks": [
+    {"id": 7, "subject": "Task 1: Dev Environment (nix flake, pnpm, vite)", "status": "pending"},
+    {"id": 8, "subject": "Task 2: Module Scaffold", "status": "pending", "blockedBy": [7]},
+    {"id": 9, "subject": "Task 3: Docker + Foundry Dev Instance", "status": "pending", "blockedBy": [8]},
+    {"id": 10, "subject": "Task 4: API Verification via chrome-devtools-mcp", "status": "pending", "blockedBy": [9]},
+    {"id": 11, "subject": "Task 5: Test Fixture + Vitest Setup", "status": "pending"},
+    {"id": 12, "subject": "Task 6: cleaner.js (TDD)", "status": "pending", "blockedBy": [11]},
+    {"id": 13, "subject": "Task 7: stats-parser — name and attributes (TDD)", "status": "pending", "blockedBy": [12]},
+    {"id": 14, "subject": "Task 8: stats-parser — derived values (TDD)", "status": "pending", "blockedBy": [13]},
+    {"id": 15, "subject": "Task 9: stats-parser — weapons and armor (TDD)", "status": "pending", "blockedBy": [14]},
+    {"id": 16, "subject": "Task 10: stats-parser — skills, combat techniques, prose (TDD)", "status": "pending", "blockedBy": [15]},
+    {"id": 17, "subject": "Task 11: fluff-parser.js (TDD)", "status": "pending", "blockedBy": [12]},
+    {"id": 18, "subject": "Task 12: gossip-parser.js (TDD)", "status": "pending", "blockedBy": [12]},
+    {"id": 19, "subject": "Task 13: compendium-resolver.js", "status": "pending", "blockedBy": [10, 16, 17, 18]},
+    {"id": 20, "subject": "Task 14: actor-builder.js", "status": "pending", "blockedBy": [19]},
+    {"id": 21, "subject": "Task 15: ImportDialog + template", "status": "pending", "blockedBy": [20]},
+    {"id": 22, "subject": "Task 16: ReviewDialog + template", "status": "pending", "blockedBy": [21]},
+    {"id": 23, "subject": "Task 17: Styles", "status": "pending", "blockedBy": [22]},
+    {"id": 24, "subject": "Task 18: Final Integration Test", "status": "pending", "blockedBy": [23]}
+  ],
+  "lastUpdated": "2026-04-05T00:00:00Z"
+}
