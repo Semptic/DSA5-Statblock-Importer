@@ -34,8 +34,8 @@ describe('parseGossip - entries', () => {
   it('preserves (-) marker in entry text', () => {
     expect(gossip.entries[2].text).toContain('(-)')
   })
-  it('entry text does not include leading »', () => {
-    for (const e of gossip.entries) expect(e.text.startsWith('»')).toBe(false)
+  it('entry text includes leading »', () => {
+    for (const e of gossip.entries) expect(e.text.startsWith('»')).toBe(true)
   })
   it('handles multi-line entries (continuation lines merged)', () => {
     const input = 'Gerüchte über Test\n» Erste Zeile\nFortsetzung hier.\n» Zweites Gerücht.'

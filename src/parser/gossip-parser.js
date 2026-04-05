@@ -12,8 +12,8 @@ export function parseGossip(text) {
   for (const line of lines.slice(headerMatch ? 1 : 0)) {
     if (line.startsWith('»')) {
       if (current !== null) entries.push({ text: current.trim() })
-      // Remove the leading » and trim
-      current = line.slice(1).trim()
+      // Keep the full line including »
+      current = line
     } else if (current !== null) {
       current += ' ' + line
     }

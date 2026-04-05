@@ -83,9 +83,9 @@
   "gossip": {
     "subject": "Jaruslaw von Kirschhausen-Krabbwitzkoje",
     "entries": [
-      { "text": "Er soll für die Klaue arbeiten. (+)" },
-      { "text": "Er ist ein Meisterschütze mit dem Bogen. (möglich)" },
-      { "text": "Man sagt, er hat eine Geliebte in der Stadt. (-)" }
+      { "text": "» Er soll für die Klaue arbeiten. (+)" },
+      { "text": "» Er ist ein Meisterschütze mit dem Bogen. (möglich)" },
+      { "text": "» Man sagt, er hat eine Geliebte in der Stadt. (-)" }
     ]
   }
 }
