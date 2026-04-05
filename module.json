@@ -1,0 +1,15 @@
+{
+  "id": "dsa5-statblock-importer",
+  "title": "DSA5 Statblock Importer",
+  "description": "Import DSA5 NPC statblocks from PDF into Foundry VTT actors.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "esmodules": ["dist/main.js"],
+  "styles": ["styles/module.css"],
+  "languages": [
+    { "lang": "de", "name": "Deutsch", "path": "languages/de.json" }
+  ]
+}
