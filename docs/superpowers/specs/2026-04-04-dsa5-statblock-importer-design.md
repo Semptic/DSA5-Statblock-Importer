@@ -60,7 +60,7 @@ Required fields:
   "title": "DSA5 Statblock Importer",
   "description": "Import DSA5 NPC statblocks from PDF into Foundry VTT actors.",
   "version": "0.1.0",
-  "compatibility": { "minimum": "11", "verified": "12" },
+  "compatibility": { "minimum": "13", "verified": "13" },
   "esmodules": ["dist/main.js"],
   "styles": ["styles/module.css"],
   "languages": [{ "lang": "de", "name": "Deutsch", "path": "languages/de.json" }]
@@ -69,7 +69,7 @@ Required fields:
 
 ### Tech Stack
 
-- **Foundry VTT** v11/v12, DSA5 system + Ulisses premium compendiums
+- **Foundry VTT** v13, DSA5 system + Ulisses premium compendiums
 - **ES Modules** via `esmodules` in module.json
 - **Vite** for bundling (output: `dist/`)
 - **pnpm** as package manager
@@ -343,10 +343,21 @@ Several parts of the spec make assumptions about the DSA5 system's internal API 
 
 ### Setup
 
-1. Install Foundry VTT locally
-2. Install the `dsa5` system and all Ulisses premium modules
+Run Foundry v13 via Docker (no local install required):
+
+```sh
+docker run -d \
+  --name foundry-dsa5-dev \
+  -p 30000:30000 \
+  -v "$(pwd)/foundry-data:/data" \
+  felddy/foundryvtt:13
+```
+
+Then:
+1. Open `http://localhost:30000` in Chrome and complete initial setup
+2. Install the `dsa5` system and all Ulisses premium modules via the Foundry UI
 3. Create a world using the DSA5 system
-4. Symlink (or copy) this module's folder into `{userData}/Data/modules/dsa5-statblock-importer` and enable it
+4. Bind-mount (or copy) this module's `dist/` output into `foundry-data/Data/modules/dsa5-statblock-importer` and enable it in the world
 5. Open the world in Chrome and use DevTools console to inspect live objects
 
 ### Assumptions to Verify
