@@ -1,0 +1,90 @@
+{
+  "stats": {
+    "name": "Zelda von Ilmenstein",
+    "attributes": { "MU": 14, "KL": 16, "IN": 18, "CH": 15, "FF": 10, "GE": 12, "KO": 12, "KK": 10 },
+    "derived": {
+      "LeP": 29, "Asp": 56, "KaP": null,
+      "INI": { "base": 13, "dice": "1W6" },
+      "AW": 6, "SK": 3, "ZK": 1, "GS": 8, "Schip": 2
+    },
+    "weapons": [
+      { "name": "Raufen", "AT": 14, "PA": 7, "FK": null },
+      { "name": "Dolch", "AT": 14, "PA": 7, "FK": null },
+      { "name": "Stab", "AT": 12, "PA": 6, "FK": null }
+    ],
+    "armor": [{ "name": "Keine", "RS": 0, "BE": 0 }],
+    "sozialstatus": "adlig",
+    "sonderfertigkeiten": ["Aura verbergen", "Flugsalbe", "Sumpfkundig", "Tradition (Hexen)", "Verbessertes Ausweichen I", "Verteidigungshaltung", "Vertrautenbindung", "Waldkundig", "Wettervorhersage"],
+    "sprachen": ["Muttersprache Garethi III", "Goblinisch II", "Trollisch I"],
+    "schriften": ["Kusliker Zeichen"],
+    "vorteile": ["Adel II", "Zauberer"],
+    "nachteile": ["Schlechte Eigenschaft (Rachsucht)"],
+    "kampftechniken": [
+      { "name": "Raufen", "value": 12, "atBonus": 14, "paBonus": 7 },
+      { "name": "Dolche", "value": 12, "atBonus": 14, "paBonus": 7 },
+      { "name": "Stangenwaffen", "value": 10, "atBonus": 12, "paBonus": 6 }
+    ],
+    "talente": {
+      "Körper": [
+        { "name": "Fliegen", "value": 12, "spezialisierung": null },
+        { "name": "Gaukeleien", "value": 5, "spezialisierung": null },
+        { "name": "Klettern", "value": 3, "spezialisierung": null },
+        { "name": "Körperbeherrschung", "value": 6, "spezialisierung": null },
+        { "name": "Kraftakt", "value": 6, "spezialisierung": null },
+        { "name": "Schwimmen", "value": 6, "spezialisierung": null },
+        { "name": "Selbstbeherrschung", "value": 9, "spezialisierung": null },
+        { "name": "Sinnesschärfe", "value": 6, "spezialisierung": null },
+        { "name": "Verbergen", "value": 15, "spezialisierung": null }
+      ],
+      "Gesellschaft": [
+        { "name": "Bekehren & Überzeugen", "value": 9, "spezialisierung": null },
+        { "name": "Einschüchtern", "value": 12, "spezialisierung": null },
+        { "name": "Etikette", "value": 7, "spezialisierung": null },
+        { "name": "Menschenkenntnis", "value": 13, "spezialisierung": null },
+        { "name": "Überreden", "value": 4, "spezialisierung": null },
+        { "name": "Verkleiden", "value": 14, "spezialisierung": null },
+        { "name": "Willenskraft", "value": 8, "spezialisierung": null }
+      ],
+      "Natur": [
+        { "name": "Fährtensuchen", "value": 9, "spezialisierung": null },
+        { "name": "Orientierung", "value": 4, "spezialisierung": null },
+        { "name": "Pflanzenkunde", "value": 5, "spezialisierung": null },
+        { "name": "Tierkunde", "value": 5, "spezialisierung": null },
+        { "name": "Wildnisleben", "value": 12, "spezialisierung": null }
+      ],
+      "Wissen": [
+        { "name": "Geschichtswissen", "value": 6, "spezialisierung": null },
+        { "name": "Götter & Kulte", "value": 8, "spezialisierung": null },
+        { "name": "Magiekunde", "value": 13, "spezialisierung": null },
+        { "name": "Sternkunde", "value": 11, "spezialisierung": null },
+        { "name": "Rechnen", "value": 7, "spezialisierung": null },
+        { "name": "Rechtskunde", "value": 3, "spezialisierung": null },
+        { "name": "Sagen & Legenden", "value": 10, "spezialisierung": null }
+      ],
+      "Handwerk": [
+        { "name": "Alchimie", "value": 9, "spezialisierung": null },
+        { "name": "Heilkunde Krankheit", "value": 5, "spezialisierung": null },
+        { "name": "Heilkunde Seele", "value": 14, "spezialisierung": null }
+      ],
+      "Sonstige": []
+    },
+    "kampfverhalten": "Zelda geht direkten Kämpfen aus dem Weg. Sie schickt ihre Verbündeten in den Kampf und agiert aus der zweiten Reihe mit RADAU, HEXENGALLE und ihren Flüchen.",
+    "flucht": "Zelda flieht bei Schmerz Stufe I."
+  },
+  "fluff": {
+    "npcCategory": "Springer",
+    "titel": null,
+    "name": "Zelda von Ilmenstein",
+    "kurzcharakteristik": "brillante Rabenhexe; obwohl mittlerweile 74 Jahre alt und etwas gebeugt, das einst silberblonde Haar gänzlich weiß und verfilzt, verfügt die zierliche Oberhexe des Bornlandes dennoch über eine erstaunliche Präsenz; Ihre harten Züge und der lodernde Blick schüchtern ihre Gegenüber spielend ein.",
+    "motivation": "Zelda betrachtet das Erwachen des Landes als Zeichen, dass es die Menschen nicht länger dulden will, die Wälder roden, Sümpfe trockenlegen, Ebenen umgraben und Straßen und Siedlungen aus Stein errichten. Sie glaubt, dass seine Wildheit und Ursprünglichkeit wiederhergestellt werden müssen.",
+    "agenda": "Zelda will Milzenis von Urnislaws Fluch befreien und das Bornland ganz seinen urtümlichen Kräften übergeben.",
+    "funktion": "Zelda ist die Antagonistin des Abenteuers.",
+    "hintergrund": "Zelda ist die jüngere Schwester der Gräfin Thesia von Ilmenstein, die seit einigen Jahren im ewigen Eis verschollen ist.",
+    "feindbilder": ["vom Händler und Adligen bis zum Köhler und Bauern, alle, die sich das Land und seine Kreaturen untertan machen wollen"],
+    "darstellung": "Zelda ist misstrauisch und zu allem entschlossen. Kneif die Augen zusammen, sprich gepresst und laut, werde noch lauter, wenn du unterbrochen wirst.",
+    "schicksal": "Zelda überlebt und taucht spätestens in Der Rote Chor wieder auf.",
+    "besonderheiten": "",
+    "zitate": []
+  },
+  "gossip": null
+}

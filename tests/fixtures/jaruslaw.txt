@@ -1,0 +1,35 @@
+stats:
+3 Schitze Jaruslaw von Kirschhausen-Krabbwitzkoje
+MU 13 KL 10 IN 12 CH 11 FF 14 GE 15 KO 13 KK 12
+LeP 32 AsP – KaP – INI 14+1W6 AW 6 SK 1 ZK 0 GS 8 Schip 3
+Kurzbogen AT 13 PA 0 FK 14 RW kurz TP 1W6+1 KM 1/3
+Langmesser AT 12 PA 8 FK – RW kurz TP 1W6+3 KM –
+RS/BE 0/0
+Sozialstatus: Freier
+Sonderfertigkeiten: Präziser Schuss I, Schnellladen (Bögen)
+Sprachen: Garethi 4 (Muttersprache), Alaani 2
+Schriften: Kusliker Zeichen 1
+Vorteile: Gut Aussehend I
+Nachteile: Vorurteil (Elfen)
+Kampftechniken: Bögen 14 (15), Dolche 10, Hiebwaffen 11, Schwerter 12 (13/9)
+Talente:
+Körper: Klettern 3, Reiten 6, Schwimmen 2, Selbstbeherrschung 5, Sinnesschärfe 7, Verbergen 4, Zechen 3
+Gesellschaft: Bekehren & Überzeugen 2, Etikette 0, Gassenwissen 1, Handel 0, Menschenkenntnis 4, Überreden 3
+Natur: Fährtensuchen 3, Orientierung 4, Pflanzenkunde 1, Tierkunde 2, Wildnisleben 5
+Wissen: Geschichtswissen 1, Götter & Kulte 2, Rechtskunde 0, Sphärenkunde 0, Staatskunst 0
+Handwerk: Heilkunde Wunden 3, Kochen 1
+Kampfverhalten: Jaruslaw feuert zunächst solange Bogensalven auf die Charaktere, bis sie zu nah herangekommen sind. Dann greift er mit dem Langmesser an. Wenn er auf weniger als 10 LeP sinkt, versucht er zu flüchten.
+Flucht: Unter 10 LeP
+
+fluff:
+3 Schitze Jaruslaw von Kirschhausen-Krabbwitzkoje
+Kurzcharakteristik: Jaruslaw ist ein mittelgroßer, gut aussehender Mann Anfang 30, mit rotblondem Haar und einem struppigen Bart. Er ist als Söldner in die Dienste der neunfingrigen Klaue getreten.
+Motivation: Er will sich eine bessere Zukunft erkaufen.
+Funktion: Kämpfer der Klaue
+Hintergrund: Jaruslaw ist in einem kleinen Dorf im Bornland aufgewachsen. Als seine Familie in Armut verfiel, zog er mit 20 Jahren in die Stadt und verdingte sich als Söldner.
+
+gossip:
+Gerüchte über Jaruslaw von Kirschhausen-Krabbwitzkoje
+» Er soll für die Klaue arbeiten. (+)
+» Er ist ein Meisterschütze mit dem Bogen. (möglich)
+» Man sagt, er hat eine Geliebte in der Stadt. (-)

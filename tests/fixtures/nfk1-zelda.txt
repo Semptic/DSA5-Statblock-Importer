@@ -1,0 +1,37 @@
+stats:
+2 Zelda von Ilmenstein
+MU 14 KL 16 IN 18 CH 15 FF 10 GE 12 KO 12 KK 10
+LeP 29 AsP 56 KaP – INI 13+1W6 AW 6 SK 3 ZK 1 GS 8
+Schips 2
+Raufen: AT 14 PA 7 TP 1W6 RW kurz
+Dolch: AT 14 PA 7 TP 1W6+1 RW kurz
+Stab: AT 12 PA 6 TP 1W6+2 RW lang
+mit rotem Schleifstein: AT 16 PA 9 TP 1W6+8
+RS/BE: 0/0
+Sozialstatus: adlig (nutzt ihren Stand aber nicht aus und gibt sich als Freie)
+Sonderfertigkeiten: Aura verbergen, Flugsalbe, Sumpfkundig, Tradition (Hexen), Verbessertes Ausweichen I, Verteidigungshaltung, Vertrautenbindung, Waldkundig, Wettervorhersage
+Sprachen: Muttersprache Garethi III, Goblinisch II, Trollisch I
+Schriften: Kusliker Zeichen
+Vorteile: Adel II, Zauberer
+Nachteile: Schlechte Eigenschaft (Rachsucht)
+Kampftechniken: Raufen 12 (14/7), Dolche 12 (14/7), Stangenwaffen 10 (12/6)
+Talente:
+Körper: Fliegen 12, Gaukeleien 5, Klettern 3, Körperbeherrschung 6, Kraftakt 6, Schwimmen 6, Selbstbeherrschung 9, Sinnesschärfe 6, Verbergen 15
+Gesellschaft: Bekehren & Überzeugen 9, Einschüchtern 12, Etikette 7, Menschenkenntnis 13, Überreden 4, Verkleiden 14, Willenskraft 8
+Natur: Fährtensuchen 9, Orientierung 4, Pflanzenkunde 5, Tierkunde 5, Wildnisleben 12
+Wissen: Geschichtswissen 6, Götter & Kulte 8, Magiekunde 13, Sternkunde 11, Rechnen 7, Rechtskunde 3, Sagen & Legenden 10
+Handwerk: Alchimie 9, Heilkunde Krankheit 5, Heilkunde Seele 14
+Zauber: Blick in die Gedanken 14, Große Gier 9, Harmlose Gestalt 5, Hexengalle 14, Odem Arcanum 12, Radau 8, Sanftmut 9, Traumgestalt 16
+Kampfverhalten: Zelda geht direkten Kämpfen aus dem Weg. Sie schickt ihre Verbündeten in den Kampf und agiert aus der zweiten Reihe mit RADAU, HEXENGALLE und ihren Flüchen.
+Flucht: Zelda flieht bei Schmerz Stufe I.
+
+fluff:
+2 Zelda von Ilmenstein
+Kurzcharakteristik: brillante Rabenhexe; obwohl mittlerweile 74 Jahre alt und etwas gebeugt, das einst silberblonde Haar gänzlich weiß und verfilzt, verfügt die zierliche Oberhexe des Bornlandes dennoch über eine erstaunliche Präsenz; Ihre harten Züge und der lodernde Blick schüchtern ihre Gegenüber spielend ein.
+Motivation: Zelda betrachtet das Erwachen des Landes als Zeichen, dass es die Menschen nicht länger dulden will, die Wälder roden, Sümpfe trockenlegen, Ebenen umgraben und Straßen und Siedlungen aus Stein errichten. Sie glaubt, dass seine Wildheit und Ursprünglichkeit wiederhergestellt werden müssen.
+Agenda: Zelda will Milzenis von Urnislaws Fluch befreien und das Bornland ganz seinen urtümlichen Kräften übergeben.
+Funktion: Zelda ist die Antagonistin des Abenteuers.
+Hintergrund: Zelda ist die jüngere Schwester der Gräfin Thesia von Ilmenstein, die seit einigen Jahren im ewigen Eis verschollen ist.
+Feindbilder: vom Händler und Adligen bis zum Köhler und Bauern, alle, die sich das Land und seine Kreaturen untertan machen wollen
+Darstellung: Zelda ist misstrauisch und zu allem entschlossen. Kneif die Augen zusammen, sprich gepresst und laut, werde noch lauter, wenn du unterbrochen wirst.
+Schicksal: Zelda überlebt und taucht spätestens in Der Rote Chor wieder auf.

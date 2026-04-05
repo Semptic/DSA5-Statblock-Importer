@@ -1,0 +1,79 @@
+{
+  "stats": {
+    "name": "Jääni Grauroth, Goblinzauberin",
+    "attributes": { "MU": 13, "KL": 11, "IN": 14, "CH": 9, "FF": 15, "GE": 14, "KO": 12, "KK": 12 },
+    "derived": {
+      "LeP": 27, "Asp": 29, "KaP": null,
+      "INI": { "base": 14, "dice": "1W6" },
+      "AW": 7, "SK": -1, "ZK": -1, "GS": 9, "Schip": 1
+    },
+    "weapons": [
+      { "name": "Waffenlos", "AT": 11, "PA": 7, "FK": null },
+      { "name": "Schwerer Dolch", "AT": 10, "PA": 6, "FK": null }
+    ],
+    "armor": [{ "name": "Normale Kleidung", "RS": 0, "BE": 0 }],
+    "sozialstatus": "frei",
+    "sonderfertigkeiten": ["Ortskenntnis (Festum: Gerberviertel, Hesindendorf)", "Schriftstellerei (Betören (Liebesromane))", "Tradition (Goblinzauberin)"],
+    "sprachen": ["Muttersprache Goblinisch III", "Garethi III"],
+    "schriften": ["Kusliker Zeichen"],
+    "vorteile": ["Dunkelsicht I", "Flink", "Gutaussehend I", "Kälteresistenz", "Zauberer"],
+    "nachteile": [],
+    "kampftechniken": [
+      { "name": "Dolch", "value": 9, "atBonus": 10, "paBonus": 7 },
+      { "name": "Raufen", "value": 10, "atBonus": 11, "paBonus": 7 }
+    ],
+    "talente": {
+      "Körper": [
+        { "name": "Klettern", "value": 4, "spezialisierung": null },
+        { "name": "Körperbeherrschung", "value": 8, "spezialisierung": null },
+        { "name": "Schwimmen", "value": 2, "spezialisierung": null },
+        { "name": "Selbstbeherrschung", "value": 4, "spezialisierung": null },
+        { "name": "Sinnesschärfe", "value": 8, "spezialisierung": null },
+        { "name": "Verbergen", "value": 8, "spezialisierung": null }
+      ],
+      "Gesellschaft": [
+        { "name": "Betören", "value": 7, "spezialisierung": null },
+        { "name": "Einschüchtern", "value": 2, "spezialisierung": null },
+        { "name": "Überreden", "value": 7, "spezialisierung": null },
+        { "name": "Willenskraft", "value": 4, "spezialisierung": null }
+      ],
+      "Natur": [
+        { "name": "Fährtensuchen", "value": 7, "spezialisierung": null },
+        { "name": "Fischen & Angeln", "value": 2, "spezialisierung": null },
+        { "name": "Orientierung", "value": 5, "spezialisierung": null },
+        { "name": "Pflanzenkunde", "value": 8, "spezialisierung": null },
+        { "name": "Tierkunde", "value": 7, "spezialisierung": null },
+        { "name": "Wildnisleben", "value": 7, "spezialisierung": null }
+      ],
+      "Wissen": [
+        { "name": "Götter & Kulte", "value": 2, "spezialisierung": null },
+        { "name": "Magiekunde", "value": 4, "spezialisierung": null }
+      ],
+      "Handwerk": [
+        { "name": "Heilkunde Gift", "value": 2, "spezialisierung": null },
+        { "name": "Holzbearbeitung", "value": 4, "spezialisierung": null },
+        { "name": "Lebensmittelbearbeitung", "value": 2, "spezialisierung": null },
+        { "name": "Lederbearbeitung", "value": 4, "spezialisierung": null }
+      ],
+      "Sonstige": []
+    },
+    "kampfverhalten": "Jääni versucht direkten Kämpfen aus dem Weg zu gehen.",
+    "flucht": "Verlust von 25 % der LeP"
+  },
+  "fluff": {
+    "npcCategory": "Springer",
+    "titel": null,
+    "name": "Jääni Grauroth",
+    "kurzcharakteristik": "erfahrene Goblinzauberin, 17, rostroter Pelz, mit alchimistischer Farbe grün und ockerfarben bemalte Klauen; trägt robuste Städterkleidung aus grobem Leinen und Wolle, auf dem Kopf eine gestreifte Strickmütze sowie feste Lederschuhe.",
+    "motivation": "Jääni will mit Bruutsch zusammen sein und in Freiheit leben. Sie nimmt ihre Verbannung aus Festum sehr ernst und will sich für ihre Gefangennahme rächen.",
+    "agenda": "Die Goblinzauberin nimmt Hilfe gerne an, besonders von Bruutsch, und wartet auf günstige Gelegenheiten. Ihre Zauberei nutzt sie so effizient wie möglich.",
+    "funktion": "Jääni ist die Romantikerin, die durch Grausamkeit zum Äußersten getrieben wird. Sie ist der weibliche Part einer tragischen Liebesgeschichte und entpuppt sich als Hauptgegnerin der Helden.",
+    "hintergrund": "Jääni lernte im Hesindendorf Olko und die empfindsame Literatur kennen. Gemeinsam mit Bruutsch eifert sie seitdem einem sehr ungoblinischen Liebes- und Heldenideal nach. Wegen Geheimnisverrats verbannte ihre Lehrmeisterin Mantka Riiba sie für mehrere Jahre in die Rote Sichel, doch auf dem Weg nahm Jaruslaw sie gefangen.",
+    "feindbilder": ["Ungerechtigkeit", "Intoleranz", "Gefühlskälte"],
+    "darstellung": "Ziehe beim Lächeln die Oberlippe weit hoch. Nutze freundliches Nicken und Kopfschütteln anstatt langer Diskussionen. Summe gelegentlich eine kleine Melodie.",
+    "schicksal": "Jääni wird auch in späteren Abenteuern wieder aufgegriffen, darum sollte sie überleben.",
+    "besonderheiten": "",
+    "zitate": []
+  },
+  "gossip": null
+}

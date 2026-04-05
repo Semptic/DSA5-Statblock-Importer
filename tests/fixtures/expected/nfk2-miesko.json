@@ -1,0 +1,63 @@
+{
+  "stats": {
+    "name": "Mjesko Einhand, Blakharaz-Paktierer",
+    "attributes": { "MU": 17, "KL": 13, "IN": 12, "CH": 12, "FF": 11, "GE": 12, "KO": 13, "KK": 15 },
+    "derived": {
+      "LeP": 37, "Asp": null, "KaP": null,
+      "INI": { "base": 15, "dice": "1W6" },
+      "AW": 6, "SK": 3, "ZK": 2, "GS": 8, "Schip": null
+    },
+    "weapons": [
+      { "name": "Waffenlos / Haken", "AT": 17, "PA": 9, "FK": null },
+      { "name": "Säbel (mit falscher Hand)", "AT": 13, "PA": 5, "FK": null }
+    ],
+    "armor": [{ "name": "Gambeson", "RS": 2, "BE": 0 }],
+    "sozialstatus": null,
+    "sonderfertigkeiten": ["Anführer", "Eiserner Wille I+II", "Belastungsgewöhnung I", "Beidhändiger Kampf I+II", "Haltegriff (Haken)", "Schmerzen unterdrücken", "Wuchtschlag I+II (Haken, Säbel)"],
+    "sprachen": [],
+    "schriften": [],
+    "vorteile": ["Hohe Seelenkraft"],
+    "nachteile": ["Schlechte Eigenschaft (Rachsucht)"],
+    "kampftechniken": [],
+    "talente": {
+      "Körper": [],
+      "Gesellschaft": [],
+      "Natur": [],
+      "Wissen": [],
+      "Handwerk": [],
+      "Sonstige": [
+        { "name": "Boote & Schiffe", "value": 13, "spezialisierung": null },
+        { "name": "Einschüchtern", "value": 14, "spezialisierung": null },
+        { "name": "Handel", "value": 9, "spezialisierung": null },
+        { "name": "Klettern", "value": 10, "spezialisierung": null },
+        { "name": "Kriegskunst", "value": 8, "spezialisierung": null },
+        { "name": "Körperbeherrschung", "value": 9, "spezialisierung": null },
+        { "name": "Kraftakt", "value": 8, "spezialisierung": null },
+        { "name": "Menschenkenntnis", "value": 13, "spezialisierung": null },
+        { "name": "Selbstbeherrschung", "value": 14, "spezialisierung": null },
+        { "name": "Sinnesschärfe", "value": 10, "spezialisierung": null },
+        { "name": "Überreden", "value": 12, "spezialisierung": null },
+        { "name": "Verbergen", "value": 11, "spezialisierung": null },
+        { "name": "Willenskraft", "value": 9, "spezialisierung": null }
+      ]
+    },
+    "kampfverhalten": "Miesko kämpft beidhändig mit Säbel und Haken, die erste AT führt er mit dem Säbel aus, die zweite mit dem Haken.",
+    "flucht": "Miesko ist erfüllt von seiner Rache, ihn interessiert nur, wie viele seiner Gegner er noch mit sich in die siebte Sphäre reißen kann."
+  },
+  "fluff": {
+    "npcCategory": "Springer",
+    "titel": null,
+    "name": "Miesko Einhand",
+    "kurzcharakteristik": "berüchtigter Piratenkapitän und Paktierer; 64, kurze graue Haare, die Augen farblos wie ausgeglühte Kohlenstücke, stählerner Haken anstatt der rechten Hand; Das Dämonenmal, das von seinem Pakt kündet, ist eine nie verheilende Wunde an seiner gesunden Hand.",
+    "motivation": null,
+    "agenda": null,
+    "funktion": "Miesko ist ein skrupelloser Zwischengegner.",
+    "hintergrund": "Einst ließ Uriel von Notmark den Leibeigenen Miesko wegen Felddiebstahls an einen Baum nageln. Er verlor seine rechte Hand und schwor Uriel bittere Vergeltung. 1019 BF ging er einen Pakt mit dem Erzdämon Blakharaz ein, dem Herrn der Rache.",
+    "feindbilder": ["Kontrollverlust", "Überstürztheit", "Vergebung"],
+    "darstellung": "Miesko glaubt, der Tag seiner Rache sei gekommen. Stelle ihn geradezu euphorisch dar. Selbst Treffer, die er erhält, betrachtet er als Teil der Erfüllung seines Planes.",
+    "schicksal": "Miesko wird getötet, sein Körper verdorrt auf der Stelle und seine Seele fährt in die Niederhöllen.",
+    "besonderheiten": "",
+    "zitate": []
+  },
+  "gossip": null
+}

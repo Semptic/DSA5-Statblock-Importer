@@ -1,0 +1,21 @@
+stats:
+2 Mjesko Einhand, Blakharaz-Paktierer
+MU 17 KL 13 IN 12 CH 12 FF 11 GE 12 KO 13 KK 15
+LeP 37 AsP – KaP – INI 15+1W6 AW 6 SK 3 ZK 2 GS 8
+Waffenlos / Haken: AT 17 PA 9 TP 1W6+2 RW kurz
+Säbel (mit falscher Hand): AT 13 PA 5 TP 1W6+3 RW mittel
+RS/BE: 2/0 (Gambeson) (Modifikatoren durch Rüstungen bereits eingerechnet)
+Vorteile/Nachteile: Hohe Seelenkraft / Schlechte Eigenschaft (Rachsucht)
+Sonderfertigkeiten: Anführer, Eiserner Wille I+II, Belastungsgewöhnung I, Beidhändiger Kampf I+II, Haltegriff (Haken), Schmerzen unterdrücken, Wuchtschlag I+II (Haken, Säbel)
+Talente: Boote & Schiffe 13, Einschüchtern 14, Handel 9, Klettern 10, Kriegskunst 8, Körperbeherrschung 9, Kraftakt 8, Menschenkenntnis 13, Selbstbeherrschung 14, Sinnesschärfe 10, Überreden 12, Verbergen 11, Willenskraft 9
+Kampfverhalten: Mjesko kämpft beidhändig mit Säbel und Haken, die erste AT führt er mit dem Säbel aus, die zweite mit dem Haken.
+Flucht: Mjesko ist erfüllt von seiner Rache, ihn interessiert nur, wie viele seiner Gegner er noch mit sich in die siebte Sphäre reißen kann.
+
+fluff:
+2 Mjesko Einhand, Blakharaz-Paktierer
+Kurzcharakteristik: berüchtigter Piratenkapitän und Paktierer; 64, kurze graue Haare, die Augen farblos wie ausgeglühte Kohlenstücke, stählerner Haken anstatt der rechten Hand; Das Dämonenmal, das von seinem Pakt kündet, ist eine nie verheilende Wunde an seiner gesunden Hand.
+Funktion: Mjesko ist ein skrupelloser Zwischengegner.
+Hintergrund: Einst ließ Uriel von Notmark den Leibeigenen Mjesko wegen Felddiebstahls an einen Baum nageln. Er verlor seine rechte Hand und schwor Uriel bittere Vergeltung. 1019 BF ging er einen Pakt mit dem Erzdämon Blakharaz ein, dem Herrn der Rache.
+Feindbilder: Kontrollverlust, Überstürztheit, Vergebung
+Darstellung: Miesko glaubt, der Tag seiner Rache sei gekommen. Stelle ihn geradezu euphorisch dar. Selbst Treffer, die er erhält, betrachtet er als Teil der Erfüllung seines Planes.
+Schicksal: Miesko wird getötet, sein Körper verdorrt auf der Stelle und seine Seele fährt in die Niederhöllen.

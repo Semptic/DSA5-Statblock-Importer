@@ -1,0 +1,34 @@
+stats:
+2 Bruutsch Smuddelvlies
+MU 13 KL 10 IN 14 CH 13 FF 12 GE 14 KO 12 KK 12
+LeP 29 AsP – KaP – INI 15+1W6 AW 7 SK –1 ZK –1 GS 9
+Schips 2
+Zwei Schwere Dolche: AT 13 PA 7 TP 1W6+2 RW kurz
+Wurfspeer: FK 13 LZ 2 TP 2W6+2 RW 5/25/40
+RS/BE: 0/0 (Normale Kleidung)
+Sozialstatus: frei
+Sonderfertigkeiten: Anführer, Aufmerksamkeit, Beidhändiger Kampf I, Kampfreflexe I, Klingenfänger, Kreuzblock, Ortskenntnis (Festum: Gerberviertel, Hafen), Präziser Stich I, Schriftstellerei (Sagen & Legenden (Märchen))
+Sprachen: Muttersprache Goblinisch III, Garethi III
+Schriften: Kusliker Zeichen
+Vorteile: Beidhändig, Dunkelsicht I, Gutaussehend I, Herausragender Sinn (Gehör, Geruch), Hohe Zähigkeit, Kälteresistenz
+Nachteile: Persönlichkeitsschwächen (Arroganz), Schlechte Angewohnheit (Erster), Schlechte Eigenschaften (Rachsucht)
+Kampftechniken: Dolch 12 (13/8), Raufen 12 (13/8), Wurfwaffen 12 (13)
+Talente:
+Körper: Klettern 7, Körperbeherrschung 7, Selbstbeherrschung 4, Sinnesschärfe 6, Verbergen 5, Zechen 6
+Gesellschaft: Betören 5, Gassenwissen 8, Menschenkenntnis 6, Überreden 7, Willenskraft 5
+Natur: Fährtensuchen 1, Orientierung 5, Pflanzenkunde 8, Tierkunde 7, Wildnisleben 7
+Wissen: Götter & Kulte 2, Kriegskunst 4, Rechtskunde 3, Sagen & Legenden 8
+Handwerk: Schlösserknacken 5
+Kampfverhalten: Die Vernunft gebietet Bruutsch, sich an goblinische Taktiken zu halten, also Hinterhalt, Speerwurf und Flucht. Mitunter ist die Versuchung des Heldenmuts aber so groß, dass er frontal angreift und sehr hohe Risiken eingeht – besonders wenn die Gegner schon angeschlagen sind und es gilt, einen Verbündeten zu retten.
+Flucht: Normalerweise nach dem ersten Angriff, im Nahkampf kämpft Bruutsch aber bis zum Tod.
+
+fluff:
+2 Bruutsch Smuddelvlies
+Kurzcharakteristik: erfahrener Streuner, 19, rotbrauner Pelz, zwei Ringe im linken Ohr; trägt robuste Kleidung aus grün gefärbtem Segeltuch, die gegen die Kälte mit Stroh ausgestopft ist.
+Motivation: Bruutsch will mit Jääni zusammen sein und mit ihr in Freiheit leben – am liebsten in einer richtigen Stadt. Außerdem will er sich für die Gefangennahme rächen.
+Agenda: Er reißt das Maul weit auf und geht hohe Risiken ein, einerseits, um als tapferer Held ernst genommen zu werden, andererseits um Jääni zu beeindrucken.
+Funktion: Der Goblin ist der charismatische Draufgänger, den die Liebe zuerst in Gefangenschaft und dann zum Kampf gegen die Helden zwingt.
+Hintergrund: Bruutsch wuchs im Festumer Gerberviertel auf, wo ihm nichts geschenkt wurde. Mit Jääni hat er seine große Liebe gefunden, was seine Familie sehr skeptisch betrachtet, da Goblins normalerweise nicht monogam leben.
+Feindbilder: Langeweile, Duckmäusertum, Verrat
+Darstellung: Kneife die Augen zusammen. Gib jedem Widerworte, der dich bevormunden will. Grinse breit und zeige Zähne, wenn du beleidigt wirst.
+Schicksal: Bruutsch mag in diesem Abenteuer noch gerettet werden, spätestens in Der Schwarze Forst wird er vom Korsmal-Bund geraubt und zu Tode gefoltert.

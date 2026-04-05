@@ -1,0 +1,79 @@
+{
+  "stats": {
+    "name": "Bruutsch Smuddelvlies",
+    "attributes": { "MU": 13, "KL": 10, "IN": 14, "CH": 13, "FF": 12, "GE": 14, "KO": 12, "KK": 12 },
+    "derived": {
+      "LeP": 29, "Asp": null, "KaP": null,
+      "INI": { "base": 15, "dice": "1W6" },
+      "AW": 7, "SK": -1, "ZK": -1, "GS": 9, "Schip": 2
+    },
+    "weapons": [
+      { "name": "Zwei Schwere Dolche", "AT": 13, "PA": 7, "FK": null },
+      { "name": "Wurfspeer", "AT": null, "PA": null, "FK": 13 }
+    ],
+    "armor": [{ "name": "Normale Kleidung", "RS": 0, "BE": 0 }],
+    "sozialstatus": "frei",
+    "sonderfertigkeiten": ["Anführer", "Aufmerksamkeit", "Beidhändiger Kampf I", "Kampfreflexe I", "Klingenfänger", "Kreuzblock", "Ortskenntnis (Festum: Gerberviertel, Hafen)", "Präziser Stich I", "Schriftstellerei (Sagen & Legenden (Märchen))"],
+    "sprachen": ["Muttersprache Goblinisch III", "Garethi III"],
+    "schriften": ["Kusliker Zeichen"],
+    "vorteile": ["Beidhändig", "Dunkelsicht I", "Gutaussehend I", "Herausragender Sinn (Gehör, Geruch)", "Hohe Zähigkeit", "Kälteresistenz"],
+    "nachteile": ["Persönlichkeitsschwächen (Arroganz)", "Schlechte Angewohnheit (Erster)", "Schlechte Eigenschaften (Rachsucht)"],
+    "kampftechniken": [
+      { "name": "Dolch", "value": 12, "atBonus": 13, "paBonus": 8 },
+      { "name": "Raufen", "value": 12, "atBonus": 13, "paBonus": 8 },
+      { "name": "Wurfwaffen", "value": 12, "atBonus": 13, "paBonus": null }
+    ],
+    "talente": {
+      "Körper": [
+        { "name": "Klettern", "value": 7, "spezialisierung": null },
+        { "name": "Körperbeherrschung", "value": 7, "spezialisierung": null },
+        { "name": "Selbstbeherrschung", "value": 4, "spezialisierung": null },
+        { "name": "Sinnesschärfe", "value": 6, "spezialisierung": null },
+        { "name": "Verbergen", "value": 5, "spezialisierung": null },
+        { "name": "Zechen", "value": 6, "spezialisierung": null }
+      ],
+      "Gesellschaft": [
+        { "name": "Betören", "value": 5, "spezialisierung": null },
+        { "name": "Gassenwissen", "value": 8, "spezialisierung": null },
+        { "name": "Menschenkenntnis", "value": 6, "spezialisierung": null },
+        { "name": "Überreden", "value": 7, "spezialisierung": null },
+        { "name": "Willenskraft", "value": 5, "spezialisierung": null }
+      ],
+      "Natur": [
+        { "name": "Fährtensuchen", "value": 1, "spezialisierung": null },
+        { "name": "Orientierung", "value": 5, "spezialisierung": null },
+        { "name": "Pflanzenkunde", "value": 8, "spezialisierung": null },
+        { "name": "Tierkunde", "value": 7, "spezialisierung": null },
+        { "name": "Wildnisleben", "value": 7, "spezialisierung": null }
+      ],
+      "Wissen": [
+        { "name": "Götter & Kulte", "value": 2, "spezialisierung": null },
+        { "name": "Kriegskunst", "value": 4, "spezialisierung": null },
+        { "name": "Rechtskunde", "value": 3, "spezialisierung": null },
+        { "name": "Sagen & Legenden", "value": 8, "spezialisierung": null }
+      ],
+      "Handwerk": [
+        { "name": "Schlösserknacken", "value": 5, "spezialisierung": null }
+      ],
+      "Sonstige": []
+    },
+    "kampfverhalten": "Die Vernunft gebietet Bruutsch, sich an goblinische Taktiken zu halten, also Hinterhalt, Speerwurf und Flucht. Mitunter ist die Versuchung des Heldenmuts aber so groß, dass er frontal angreift und sehr hohe Risiken eingeht – besonders wenn die Gegner schon angeschlagen sind und es gilt, einen Verbündeten zu retten.",
+    "flucht": "Normalerweise nach dem ersten Angriff, im Nahkampf kämpft Bruutsch aber bis zum Tod."
+  },
+  "fluff": {
+    "npcCategory": "Springer",
+    "titel": null,
+    "name": "Bruutsch Smuddelvlies",
+    "kurzcharakteristik": "erfahrener Streuner, 19, rotbrauner Pelz, zwei Ringe im linken Ohr; trägt robuste Kleidung aus grün gefärbtem Segeltuch, die gegen die Kälte mit Stroh ausgestopft ist.",
+    "motivation": "Bruutsch will mit Jääni zusammen sein und mit ihr in Freiheit leben – am liebsten in einer richtigen Stadt. Außerdem will er sich für die Gefangennahme rächen.",
+    "agenda": "Er reißt das Maul weit auf und geht hohe Risiken ein, einerseits, um als tapferer Held ernst genommen zu werden, andererseits um Jääni zu beeindrucken.",
+    "funktion": "Der Goblin ist der charismatische Draufgänger, den die Liebe zuerst in Gefangenschaft und dann zum Kampf gegen die Helden zwingt.",
+    "hintergrund": "Bruutsch wuchs im Festumer Gerberviertel auf, wo ihm nichts geschenkt wurde. Mit Jääni hat er seine große Liebe gefunden, was seine Familie sehr skeptisch betrachtet, da Goblins normalerweise nicht monogam leben.",
+    "feindbilder": ["Langeweile", "Duckmäusertum", "Verrat"],
+    "darstellung": "Kneife die Augen zusammen. Gib jedem Widerworte, der dich bevormunden will. Grinse breit und zeige Zähne, wenn du beleidigt wirst.",
+    "schicksal": "Bruutsch mag in diesem Abenteuer noch gerettet werden, spätestens in Der Schwarze Forst wird er vom Korsmal-Bund geraubt und zu Tode gefoltert.",
+    "besonderheiten": "",
+    "zitate": []
+  },
+  "gossip": null
+}

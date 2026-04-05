@@ -1,0 +1,91 @@
+{
+  "stats": {
+    "name": "Schitze Jaruslaw von Kirschhausen-Krabbwitzkoje",
+    "attributes": { "MU": 13, "KL": 10, "IN": 12, "CH": 11, "FF": 14, "GE": 15, "KO": 13, "KK": 12 },
+    "derived": {
+      "LeP": 32, "Asp": null, "KaP": null,
+      "INI": { "base": 14, "dice": "1W6" },
+      "AW": 6, "SK": 1, "ZK": 0, "GS": 8, "Schip": 3
+    },
+    "weapons": [
+      { "name": "Kurzbogen", "AT": 13, "PA": 0, "FK": 14 },
+      { "name": "Langmesser", "AT": 12, "PA": 8, "FK": null }
+    ],
+    "armor": [{ "name": "Keine", "RS": 0, "BE": 0 }],
+    "sozialstatus": "Freier",
+    "sonderfertigkeiten": ["Präziser Schuss I", "Schnellladen (Bögen)"],
+    "sprachen": ["Garethi 4 (Muttersprache)", "Alaani 2"],
+    "schriften": ["Kusliker Zeichen 1"],
+    "vorteile": ["Gut Aussehend I"],
+    "nachteile": ["Vorurteil (Elfen)"],
+    "kampftechniken": [
+      { "name": "Bögen", "value": 14, "atBonus": 15, "paBonus": null },
+      { "name": "Dolche", "value": 10, "atBonus": null, "paBonus": null },
+      { "name": "Hiebwaffen", "value": 11, "atBonus": null, "paBonus": null },
+      { "name": "Schwerter", "value": 12, "atBonus": 13, "paBonus": 9 }
+    ],
+    "talente": {
+      "Körper": [
+        { "name": "Klettern", "value": 3, "spezialisierung": null },
+        { "name": "Reiten", "value": 6, "spezialisierung": null },
+        { "name": "Schwimmen", "value": 2, "spezialisierung": null },
+        { "name": "Selbstbeherrschung", "value": 5, "spezialisierung": null },
+        { "name": "Sinnesschärfe", "value": 7, "spezialisierung": null },
+        { "name": "Verbergen", "value": 4, "spezialisierung": null },
+        { "name": "Zechen", "value": 3, "spezialisierung": null }
+      ],
+      "Gesellschaft": [
+        { "name": "Bekehren & Überzeugen", "value": 2, "spezialisierung": null },
+        { "name": "Etikette", "value": 0, "spezialisierung": null },
+        { "name": "Gassenwissen", "value": 1, "spezialisierung": null },
+        { "name": "Handel", "value": 0, "spezialisierung": null },
+        { "name": "Menschenkenntnis", "value": 4, "spezialisierung": null },
+        { "name": "Überreden", "value": 3, "spezialisierung": null }
+      ],
+      "Natur": [
+        { "name": "Fährtensuchen", "value": 3, "spezialisierung": null },
+        { "name": "Orientierung", "value": 4, "spezialisierung": null },
+        { "name": "Pflanzenkunde", "value": 1, "spezialisierung": null },
+        { "name": "Tierkunde", "value": 2, "spezialisierung": null },
+        { "name": "Wildnisleben", "value": 5, "spezialisierung": null }
+      ],
+      "Wissen": [
+        { "name": "Geschichtswissen", "value": 1, "spezialisierung": null },
+        { "name": "Götter & Kulte", "value": 2, "spezialisierung": null },
+        { "name": "Rechtskunde", "value": 0, "spezialisierung": null },
+        { "name": "Sphärenkunde", "value": 0, "spezialisierung": null },
+        { "name": "Staatskunst", "value": 0, "spezialisierung": null }
+      ],
+      "Handwerk": [
+        { "name": "Heilkunde Wunden", "value": 3, "spezialisierung": null },
+        { "name": "Kochen", "value": 1, "spezialisierung": null }
+      ],
+      "Sonstige": []
+    },
+    "kampfverhalten": "Jaruslaw feuert zunächst solange Bogensalven auf die Charaktere, bis sie zu nah herangekommen sind. Dann greift er mit dem Langmesser an. Wenn er auf weniger als 10 LeP sinkt, versucht er zu flüchten.",
+    "flucht": "Unter 10 LeP"
+  },
+  "fluff": {
+    "npcCategory": "Turm",
+    "titel": "Schitze",
+    "name": "Jaruslaw von Kirschhausen-Krabbwitzkoje",
+    "kurzcharakteristik": "Jaruslaw ist ein mittelgroßer, gut aussehender Mann Anfang 30, mit rotblondem Haar und einem struppigen Bart. Er ist als Söldner in die Dienste der neunfingrigen Klaue getreten.",
+    "motivation": "Er will sich eine bessere Zukunft erkaufen.",
+    "agenda": "",
+    "funktion": "Kämpfer der Klaue",
+    "hintergrund": "Jaruslaw ist in einem kleinen Dorf im Bornland aufgewachsen. Als seine Familie in Armut verfiel, zog er mit 20 Jahren in die Stadt und verdingte sich als Söldner.",
+    "feindbilder": [],
+    "darstellung": "",
+    "schicksal": "",
+    "besonderheiten": "",
+    "zitate": []
+  },
+  "gossip": {
+    "subject": "Jaruslaw von Kirschhausen-Krabbwitzkoje",
+    "entries": [
+      { "text": "Er soll für die Klaue arbeiten. (+)" },
+      { "text": "Er ist ein Meisterschütze mit dem Bogen. (möglich)" },
+      { "text": "Man sagt, er hat eine Geliebte in der Stadt. (-)" }
+    ]
+  }
+}

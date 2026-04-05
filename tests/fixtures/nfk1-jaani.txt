@@ -1,0 +1,38 @@
+stats:
+2 Jääni Grauroth, Goblinzauberin
+MU 13 KL 11 IN 14 CH 9 FF 15 GE 14 KO 12 KK 12
+LeP 27 AsP 29 KaP – INI 14+1W6 AW 7 SK –1 ZK –1 GS 9
+Schip 1
+Waffenlos: AT 11 PA 7 TP 1W6 RW kurz
+Schwerer Dolch: AT 10 PA 6 TP 1W6+2 RW kurz
+RS/BE: 0/0 (Normale Kleidung)
+Sozialstatus: frei
+Sonderfertigkeiten: Ortskenntnis (Festum: Gerberviertel, Hesindendorf), Schriftstellerei (Betören (Liebesromane)), Tradition (Goblinzauberin)
+Sprachen: Muttersprache Goblinisch III, Garethi III
+Schriften: Kusliker Zeichen
+Vorteile: Dunkelsicht I, Flink, Gutaussehend I, Kälteresistenz, Zauberer
+Nachteile: keine
+Kampftechniken: Dolch 9 (10/7), Raufen 10 (11/7)
+Talente:
+Körper: Klettern 4, Körperbeherrschung 8, Schwimmen 2, Selbstbeherrschung 4, Sinnesschärfe 8, Verbergen 8
+Gesellschaft: Betören 7, Einschüchtern 2, Überreden 7, Willenskraft 4
+Natur: Fährtensuchen 7, Fischen & Angeln 2, Orientierung 5, Pflanzenkunde 8, Tierkunde 7, Wildnisleben 7
+Wissen: Götter & Kulte 2, Magiekunde 4
+Handwerk: Heilkunde Gift 2, Holzbearbeitung 4, Lebensmittelbearbeitung 2, Lederbearbeitung 4
+Zaubertricks: Lockruf, Trocken
+Zauber: Manifesto 10, Sanftmut 5, Elementarer Diener 4
+Rituale: Orvai Kurims Kriegstrommel 10
+Ausrüstung: Schwerer Dolch
+Kampfverhalten: Jääni versucht direkten Kämpfen aus dem Weg zu gehen.
+Flucht: Verlust von 25 % der LeP
+
+fluff:
+2 Jääni Grauroth, Goblinzauberin
+Kurzcharakteristik: erfahrene Goblinzauberin, 17, rostroter Pelz, mit alchimistischer Farbe grün und ockerfarben bemalte Klauen; trägt robuste Städterkleidung aus grobem Leinen und Wolle, auf dem Kopf eine gestreifte Strickmütze sowie feste Lederschuhe.
+Motivation: Jääni will mit Bruutsch zusammen sein und in Freiheit leben. Sie nimmt ihre Verbannung aus Festum sehr ernst und will sich für ihre Gefangennahme rächen.
+Agenda: Die Goblinzauberin nimmt Hilfe gerne an, besonders von Bruutsch, und wartet auf günstige Gelegenheiten. Ihre Zauberei nutzt sie so effizient wie möglich.
+Funktion: Jääni ist die Romantikerin, die durch Grausamkeit zum Äußersten getrieben wird. Sie ist der weibliche Part einer tragischen Liebesgeschichte und entpuppt sich als Hauptgegnerin der Helden.
+Hintergrund: Jääni lernte im Hesindendorf Olko und die empfindsame Literatur kennen. Gemeinsam mit Bruutsch eifert sie seitdem einem sehr ungoblinischen Liebes- und Heldenideal nach. Wegen Geheimnisverrats verbannte ihre Lehrmeisterin Mantka Riiba sie für mehrere Jahre in die Rote Sichel, doch auf dem Weg nahm Jaruslaw sie gefangen.
+Feindbilder: Ungerechtigkeit, Intoleranz, Gefühlskälte
+Darstellung: Ziehe beim Lächeln die Oberlippe weit hoch. Nutze freundliches Nicken und Kopfschütteln anstatt langer Diskussionen. Summe gelegentlich eine kleine Melodie.
+Schicksal: Jääni wird auch in späteren Abenteuern wieder aufgegriffen, darum sollte sie überleben.
