@@ -8,6 +8,8 @@
 
 **Tech Stack:** Foundry VTT v13, DSA5 system, Vite, pnpm, Vitest, Nix flake, direnv, Docker (felddy/foundryvtt:13), chrome-devtools-mcp for live API verification.
 
+**Test Policy:** 100% line/branch coverage on all pure-JS parser modules (`cleaner.js`, `stats-parser.js`, `fluff-parser.js`, `gossip-parser.js`). Tests are written before implementation in every task. Vitest `--coverage` is run before every commit on parser tasks. The Foundry integration layer (compendium-resolver, actor-builder, dialogs) is tested manually via the Docker instance.
+
 ---
 
 ## File Map
@@ -107,11 +109,13 @@ pnpm --version   # expect 9.x or similar
     "dev": "vite build --watch",
     "build": "vite build",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "vite": "^5.0.0",
-    "vitest": "^1.0.0"
+    "vitest": "^1.0.0",
+    "@vitest/coverage-v8": "^1.0.0"
   }
 }
 ```
@@ -443,37 +447,55 @@ git commit -m "docs: update research docs with live API verification results"
 - Create: `tests/fixtures/jaruslaw.txt`
 - Create: `vitest.config.js`
 
-- [ ] **Step 1: Write `tests/fixtures/jaruslaw.txt`**
+- [ ] **Step 1: Extract statblock fixtures from PDFs**
 
-⚠️ **GATE: Do not proceed to Task 7–12 until this file contains the real PDF paste content.** Tests in those tasks assert specific values (`LeP: 42`, `AT: 14`, etc.) derived from the actual statblock.
+Source PDFs are at:
+```
+~/my.kuhn.cloud/Familie - Bücher/Rollenspiel/DSA/DSA Abenteuer/Kampagnen/VA82 - Die neunfingrige Klaue I.pdf
+~/my.kuhn.cloud/Familie - Bücher/Rollenspiel/DSA/DSA Abenteuer/Kampagnen/VA82 - Die neunfingrige Klaue II.pdf
+```
 
-Paste the full Jaruslaw statblock from the design session exactly as copied from PDF. Each section is prefixed with a label line:
+Use the `Read` tool to extract text from these PDFs. Find at least **5 different NPC statblocks** covering a variety of cases:
+- Simple NPC (few weapons, few talents)
+- Complex NPC (many weapons, multiple talent categories, long Sonderfertigkeiten list)
+- NPC with magic (Asp not null)
+- NPC with karma (KaP not null)
+- NPC with no gossip section
+- NPC with no fluff section (stats only)
 
+For each NPC, save a fixture file in `tests/fixtures/`:
+```
+tests/fixtures/
+├── jaruslaw.txt              # from design session (stats + fluff + gossip)
+├── nfk1-<name>.txt           # from Neun Fingrige Klaue I
+├── nfk1-<name2>.txt
+├── nfk2-<name>.txt           # from Neun Fingrige Klaue II
+└── ...
+```
+
+Each fixture file format:
 ```
 stats:
-Jaruslaw von
-Kirschhausen-Krabbwitzkoje
-MU 13 KL 10 IN 11 CH 12
-FF 11 GE 13 KO 15 KK 15
-LeP 42 Asp – KaP – INI 12+1W6
-AW 7 SK 0 ZK 3 GS 7
-Schip 1
-Waffenlos: AT 11 PA 7 TP 1W6 RW kurz
-Langschwert: AT 14 PA 8 TP 1W6+4 RW mittel
-[... continue with full stats section from design session ...]
+[raw PDF paste of stats section]
 
 fluff:
-3 Schitze Jaruslaw von Kirschhausen-Krabbwitzkoje
-Kurzcharakteristik: kompetenter Ritter, Mitte 20, groß
-[... continue with full fluff section ...]
+[raw PDF paste of fluff section, or omit if not present]
 
 gossip:
-Gerüchte über Jaruslaw
-»Der darf im Sommer nicht gegen Haffax mitkämpfen [...]«
-[... continue with full gossip section ...]
+[raw PDF paste of gossip section, or omit if not present]
 ```
 
-After writing, verify test expected values match the real fixture before writing tests in Tasks 7–12.
+Also write `tests/fixtures/expected/` JSON files with the expected parser output for each fixture — these are the ground truth for tests:
+```
+tests/fixtures/expected/
+├── jaruslaw.json
+├── nfk1-<name>.json
+└── ...
+```
+
+Expected JSON format matches the data models from the spec.
+
+⚠️ **GATE: Do not proceed to Task 7–12 until at least 3 fixture files with expected JSON exist.** Test assertions must reference real expected values, not placeholders.
 
 - [ ] **Step 2: Write `vitest.config.js`**
 
@@ -484,6 +506,17 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['tests/**/*.test.js'],
+    coverage: {
+      provider: 'v8',
+      include: ['src/parser/**'],
+      thresholds: {
+        lines: 100,
+        branches: 100,
+        functions: 100,
+        statements: 100,
+      },
+      reporter: ['text', 'html'],
+    },
   },
 })
 ```
@@ -625,11 +658,19 @@ pnpm test tests/cleaner.test.js
 
 Expected: all pass.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Verify 100% coverage**
+
+```bash
+pnpm test:coverage
+```
+
+Expected: `src/parser/cleaner.js` shows 100% lines, branches, functions. Fix any uncovered branches before committing.
+
+- [ ] **Step 6: Commit**
 
 ```bash
 git add src/parser/cleaner.js tests/cleaner.test.js
-git commit -m "feat: implement cleaner with PDF artifact normalization"
+git commit -m "feat: implement cleaner with PDF artifact normalization (100% coverage)"
 ```
 
 ---
@@ -725,11 +766,19 @@ pnpm test tests/stats-parser.test.js
 
 Expected: all pass.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 6: Verify coverage**
+
+```bash
+pnpm test:coverage
+```
+
+Expected: all covered lines/branches in `stats-parser.js` so far at 100%.
+
+- [ ] **Step 7: Commit**
 
 ```bash
 git add src/parser/stats-parser.js tests/stats-parser.test.js
-git commit -m "feat: parse NPC name and attributes from stats section"
+git commit -m "feat: parse NPC name and attributes from stats section (100% coverage)"
 ```
 
 ---
@@ -800,11 +849,19 @@ pnpm test tests/stats-parser.test.js
 
 Expected: all pass.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Verify coverage**
+
+```bash
+pnpm test:coverage
+```
+
+Expected: 100% on all implemented parser code so far.
+
+- [ ] **Step 6: Commit**
 
 ```bash
 git add src/parser/stats-parser.js tests/stats-parser.test.js
-git commit -m "feat: parse derived values including INI split and nullable Asp/KaP"
+git commit -m "feat: parse derived values including INI split and nullable Asp/KaP (100% coverage)"
 ```
 
 ---
@@ -894,11 +951,17 @@ pnpm test tests/stats-parser.test.js
 
 Expected: all pass.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Verify coverage**
+
+```bash
+pnpm test:coverage
+```
+
+- [ ] **Step 6: Commit**
 
 ```bash
 git add src/parser/stats-parser.js tests/stats-parser.test.js
-git commit -m "feat: parse weapons (melee/ranged/multi-line) and armor"
+git commit -m "feat: parse weapons (melee/ranged/multi-line) and armor (100% coverage)"
 ```
 
 ---
@@ -989,11 +1052,19 @@ pnpm test tests/stats-parser.test.js
 
 Expected: all pass.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Verify 100% coverage on complete stats-parser.js**
+
+```bash
+pnpm test:coverage
+```
+
+Expected: `src/parser/stats-parser.js` at 100% lines and branches. Add missing tests for any uncovered branches (e.g. empty talent categories, missing anchor blocks, malformed lines) before committing.
+
+- [ ] **Step 6: Commit**
 
 ```bash
 git add src/parser/stats-parser.js tests/stats-parser.test.js
-git commit -m "feat: parse combat techniques, talents, comma lists, prose blocks"
+git commit -m "feat: complete stats-parser with 100% coverage"
 ```
 
 ---
@@ -1141,11 +1212,19 @@ pnpm test tests/fluff-parser.test.js
 
 Expected: all pass.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Verify 100% coverage on fluff-parser.js**
+
+```bash
+pnpm test:coverage
+```
+
+Add tests for any uncovered branches (e.g. header with no digit, all-empty anchor blocks, no zitate).
+
+- [ ] **Step 6: Commit**
 
 ```bash
 git add src/parser/fluff-parser.js tests/fluff-parser.test.js
-git commit -m "feat: implement fluff parser with NPC category, anchors, zitate"
+git commit -m "feat: implement fluff parser with 100% coverage"
 ```
 
 ---
@@ -1245,11 +1324,19 @@ pnpm test
 
 Expected: all tests pass.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 6: Verify 100% coverage on all parser modules**
+
+```bash
+pnpm test:coverage
+```
+
+All four parser files must show 100% at this point. Add missing tests for any gaps.
+
+- [ ] **Step 7: Commit**
 
 ```bash
 git add src/parser/gossip-parser.js tests/gossip-parser.test.js
-git commit -m "feat: implement gossip parser with entry delimiting and inline markers"
+git commit -m "feat: implement gossip parser with 100% coverage"
 ```
 
 ---
