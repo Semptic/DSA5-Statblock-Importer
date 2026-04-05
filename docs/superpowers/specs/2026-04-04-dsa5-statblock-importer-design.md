@@ -380,10 +380,17 @@ Each assumption below should be verified in the DevTools console before writing 
 
 ### Verification Workflow During Implementation
 
-- Before implementing any actor-builder step, verify the field path in DevTools first
-- Use `CONFIG.DSA5` in the console to inspect system-registered metadata (item types, attribute keys, etc.)
-- If a field path differs from the spec, update the spec before writing code — don't silently adapt in code
-- Verified paths should be noted in code comments so future contributors don't need to re-discover them
+The `chrome-devtools-mcp` plugin is available, meaning Claude can drive Chrome DevTools programmatically rather than requiring manual console inspection.
+
+Workflow:
+1. Start the Foundry Docker container and open the world in Chrome
+2. Use `chrome-devtools-mcp` to execute console snippets against the live Foundry page
+3. Capture the results and update this spec with the verified field paths
+4. Use `CONFIG.DSA5` to inspect system-registered metadata (item types, attribute keys, etc.)
+5. If a field path differs from the spec, update the spec before writing code — don't silently adapt in code
+6. Verified paths should be noted in code comments so future contributors don't need to re-discover them
+
+This means API verification can be scripted as an explicit implementation step rather than a manual prerequisite.
 
 ---
 
