@@ -337,6 +337,45 @@ Shows after actor creation:
 
 ---
 
+## API Assumption Verification
+
+Several parts of the spec make assumptions about the DSA5 system's internal API that must be validated against a real running Foundry instance before implementation. The only reliable way to do this is to run Foundry locally with the DSA5 system and Chrome DevTools.
+
+### Setup
+
+1. Install Foundry VTT locally
+2. Install the `dsa5` system and all Ulisses premium modules
+3. Create a world using the DSA5 system
+4. Symlink (or copy) this module's folder into `{userData}/Data/modules/dsa5-statblock-importer` and enable it
+5. Open the world in Chrome and use DevTools console to inspect live objects
+
+### Assumptions to Verify
+
+Each assumption below should be verified in the DevTools console before writing the code that depends on it.
+
+| Assumption | How to verify |
+|---|---|
+| NPC actor type name (`"creature"` or similar) | `game.system.documentTypes.Actor` |
+| Attribute field paths (e.g. `system.base.attributes.mu.value`) | Inspect a hand-created NPC actor: `game.actors.getName("test").system` |
+| INI field structure (base + dice) | Same actor inspection |
+| Derived value field paths (LeP, AW, SK, etc.) | Same actor inspection |
+| Schip field path | Same actor inspection |
+| Kampftechnik item type and value field | Create a Kampftechnik item, inspect `item.system` |
+| Talent item type and value field | Same for a talent item |
+| Compendium pack IDs for DSA5 + Ulisses modules | `game.packs.map(p => p.collection)` |
+| Item types used for weapons, armor, abilities, advantages, disadvantages, languages | `game.packs.get("dsa5.baseweapons").documentClass.schema` or spot-check an item |
+| Equipment pack detection (`pack: true` flag or `paket` in name) | Inspect a known pack item from the Ulisses compendiums |
+| How to set Kampftechnik values on an actor programmatically | Check existing DSA5 module source or test with `actor.update(...)` |
+
+### Verification Workflow During Implementation
+
+- Before implementing any actor-builder step, verify the field path in DevTools first
+- Use `CONFIG.DSA5` in the console to inspect system-registered metadata (item types, attribute keys, etc.)
+- If a field path differs from the spec, update the spec before writing code — don't silently adapt in code
+- Verified paths should be noted in code comments so future contributors don't need to re-discover them
+
+---
+
 ## Out of Scope
 
 - Parsing player character sheets
