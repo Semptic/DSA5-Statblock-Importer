@@ -1,5 +1,7 @@
 const ATTR_KEYS = ['MU', 'KL', 'IN', 'CH', 'FF', 'GE', 'KO', 'KK']
 
+const TALENT_CATEGORIES = ['Körper', 'Gesellschaft', 'Natur', 'Wissen', 'Handwerk']
+
 function parseDash(val) {
   return val === '-' ? null : parseInt(val)
 }
@@ -67,6 +69,69 @@ function parseDerived(lines) {
   return simple
 }
 
+function extractBlocks(text) {
+  const blocks = {}
+  const lines = text.split('\n')
+  let current = null
+  for (const line of lines) {
+    const m = line.match(/^(RS\/BE|Sozialstatus|Sonderfertigkeiten|Sprachen|Schriften|Vorteile|Nachteile|Kampftechniken|Talente|Kampfverhalten|Flucht):\s*(.*)$/)
+    if (m) {
+      current = m[1]
+      blocks[current] = m[2]
+    } else if (current) {
+      blocks[current] += '\n' + line
+    }
+  }
+  for (const k of Object.keys(blocks)) blocks[k] = blocks[k].trim()
+  return blocks
+}
+
+function parseKampftechniken(block) {
+  if (!block) return []
+  return block.split(',').map(s => s.trim()).filter(Boolean).map(entry => {
+    const m = entry.match(/^(.+?)\s+(\d+)(?:\s*\((\d+)(?:\/(\d+))?\))?$/)
+    if (!m) return null
+    return { name: m[1].trim(), value: parseInt(m[2]), atBonus: m[3] ? parseInt(m[3]) : null, paBonus: m[4] ? parseInt(m[4]) : null }
+  }).filter(Boolean)
+}
+
+function parseTalentEntry(entry) {
+  entry = entry.trim()
+  const withSpec = entry.match(/^(.+?)\s+\(([^)]+)\)\s+(-?\d+)$/)
+  if (withSpec) return { name: withSpec[1].trim(), value: parseInt(withSpec[3]), spezialisierung: withSpec[2] }
+  const simple = entry.match(/^(.+?)\s+(-?\d+)$/)
+  if (simple) return { name: simple[1].trim(), value: parseInt(simple[2]), spezialisierung: null }
+  return null
+}
+
+function parseTalentEntries(text) {
+  return text.split(',').map(e => parseTalentEntry(e.trim())).filter(Boolean)
+}
+
+function parseTalente(block) {
+  const result = { Körper: [], Gesellschaft: [], Natur: [], Wissen: [], Handwerk: [], Sonstige: [] }
+  if (!block) return result
+  const lines = block.split('\n').map(l => l.trim()).filter(Boolean)
+  let currentCat = 'Sonstige'
+  for (const line of lines) {
+    const catMatch = line.match(/^([\w\u00C0-\u024F][\w\s\u00C0-\u024F]+?):\s*(.*)$/)
+    if (catMatch) {
+      const cat = catMatch[1].trim()
+      currentCat = TALENT_CATEGORIES.includes(cat) ? cat : 'Sonstige'
+      const entries = catMatch[2].trim()
+      if (entries) parseTalentEntries(entries).forEach(e => result[currentCat].push(e))
+    } else {
+      parseTalentEntries(line).forEach(e => result[currentCat].push(e))
+    }
+  }
+  return result
+}
+
+function parseCommaList(block) {
+  if (!block) return []
+  return block.split(',').map(s => s.trim()).filter(Boolean)
+}
+
 export function parseStats(text) {
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean)
 
@@ -86,5 +151,23 @@ export function parseStats(text) {
   const nameRaw = lines.slice(0, firstAttrIdx).join(' ').trim()
   const name = nameRaw.replace(/^\d+\s*/, '').trim() || null
 
-  return { name, attributes, derived: parseDerived(lines), weapons: parseWeapons(lines), armor: parseArmor(lines) }
+  const blocks = extractBlocks(text)
+
+  return {
+    name,
+    attributes,
+    derived: parseDerived(lines),
+    weapons: parseWeapons(lines),
+    armor: parseArmor(lines),
+    kampftechniken: parseKampftechniken(blocks['Kampftechniken']),
+    talente: parseTalente(blocks['Talente']),
+    sonderfertigkeiten: parseCommaList(blocks['Sonderfertigkeiten']),
+    sozialstatus: blocks['Sozialstatus'] || null,
+    sprachen: parseCommaList(blocks['Sprachen']),
+    schriften: parseCommaList(blocks['Schriften']),
+    vorteile: parseCommaList(blocks['Vorteile']),
+    nachteile: parseCommaList(blocks['Nachteile']),
+    kampfverhalten: blocks['Kampfverhalten'] || null,
+    flucht: blocks['Flucht'] || null,
+  }
 }
