@@ -27,7 +27,7 @@ dsa5-statblock-importer/
 ├── src/
 │   ├── main.js                # entry point, hook registration
 │   ├── import-dialog.js       # three-tab import dialog
-│   ├── summary-dialog.js      # post-import result dialog
+│   ├── review-dialog.js       # pre-creation review & edit dialog
 │   ├── compendium-resolver.js # name → compendium item lookup
 │   ├── actor-builder.js       # constructs and creates DSA5 actor
 │   └── parser/
@@ -37,7 +37,7 @@ dsa5-statblock-importer/
 │       └── gossip-parser.js   # parses gossip section
 ├── templates/
 │   ├── import-dialog.hbs
-│   └── summary-dialog.hbs
+│   └── review-dialog.hbs
 ├── styles/
 │   └── module.css
 ├── languages/
@@ -78,32 +78,35 @@ Required fields:
 
 ### Entry Point (`main.js`)
 
-Registers a toolbar button via the `getSceneControlButtons` hook (or sidebar button via `renderSidebarTab` if preferred). Requires GM permission. On click, opens `ImportDialog`. No async work happens in the hook itself.
+Registers a button in the **Actors sidebar tab** via the `renderActorDirectory` hook. Requires GM permission. On click, opens `ImportDialog`. No async work happens in the hook itself.
 
 ---
 
 ## User Flow
 
-1. GM clicks toolbar button → `ImportDialog` opens
-2. Dialog has three text areas: **Stats**, **Fluff**, **Gossip**
-3. GM pastes each section from the PDF and clicks Import
-4. Each section is cleaned then parsed
+1. GM clicks **"Statblock importieren"** button in the Actors sidebar tab → `ImportDialog` opens
+2. Dialog has three text areas: **Stats**, **Fluff**, **Gossip** — any section may be left empty
+3. GM pastes available sections from the PDF and clicks **"Analysieren"**
+4. Each non-empty section is cleaned then parsed
 5. Parsed data is resolved against DSA5 compendiums
-6. Actor is created with resolved items attached
-7. `SummaryDialog` opens showing:
-   - Successfully imported fields
-   - Approximate matches (with original and matched name)
-   - Missing/unresolved items
-   - Equipment packs to drag from chat
-8. Button in summary dialog opens the newly created actor
+6. `ReviewDialog` opens **before** the actor is created, showing:
+   - All parsed fields with their resolved values (editable)
+   - Approximate matches with original → matched name (editable)
+   - Fields that could not be parsed, shown as empty inputs for manual entry
+   - Unparseable raw text shown alongside so the GM can copy values manually
+   - Race, culture, and profession selectors (dropdown or drag from DSA compendium) — these are rarely in the statblock but required for a complete actor
+   - Missing/unresolved items flagged inline
+   - Equipment packs listed for later drag
+7. GM reviews, edits, and clicks **"Charakter erstellen"** → actor is created
+8. Actor opens automatically after creation
 
 ### Error Handling
 
-- If a section is blank, it is skipped — import proceeds with the other sections
-- If the stats section is present but yields no name, import is aborted with an error message in the dialog
-- If the stats section is malformed (no attributes parsed), import is aborted with an error message
-- Partial parses (some fields recognized, others not) create a partial actor — unresolved fields appear in the summary as missing
-- Compendium lookup failures are non-fatal: the item is flagged as missing and import continues
+- If all three sections are blank, show an error and do not proceed
+- If the stats section is present but yields no name, show an error — name is required
+- If the stats section is malformed (no attributes parsed), show a warning and display the raw text for manual entry in the ReviewDialog
+- Partial parses are allowed: unresolved fields appear as empty inputs in the ReviewDialog
+- Compendium lookup failures are non-fatal: the item is flagged inline in the ReviewDialog
 
 ---
 
@@ -316,15 +319,31 @@ Fluff `name` takes priority when present. Stats `name` is used as fallback. `tit
 
 ---
 
-## Summary Dialog
+## Review Dialog (`review-dialog.js`)
 
-Shows after actor creation:
+Opens **before** actor creation, after parsing and compendium resolution. Gives the GM a chance to review, correct, and complete the import before committing.
 
-- **Importiert:** list of successfully resolved fields and items
-- **Ungefähre Treffer:** approximate matches with original → matched name
-- **Ausrüstungspakete:** equipment packs available as chat drag link
-- **Nicht gefunden:** items not found in any compendium
-- **Schauspieler öffnen** button to open the created actor
+### Sections
+
+**Parsed fields (editable):**
+- All resolved attributes, derived values, items, and text fields shown with their parsed values
+- Approximate compendium matches shown as `"X → Y (ungefähr)"` with an option to override
+- Each field is editable inline before creation
+
+**Unparseable content:**
+- Any section of the statblock that could not be parsed is shown verbatim as raw text alongside the empty form fields, so the GM can read and enter values manually
+
+**Missing fields (manual entry):**
+- Race (`Spezies`), culture (`Kultur`), and profession (`Profession`) selectors — typically absent from statblocks but needed for a complete DSA5 actor. Populated via dropdown from the DSA5 compendium or drag-and-drop from the compendium browser.
+- Any other unresolved fields shown as empty inputs
+
+**Equipment packs:**
+- Listed with instructions to drag from chat after actor creation (not creatable during review)
+
+### Actions
+
+- **"Charakter erstellen"** — creates the actor from the current state of the review form
+- **"Abbrechen"** — closes without creating anything
 
 ---
 
@@ -391,6 +410,35 @@ Workflow:
 6. Verified paths should be noted in code comments so future contributors don't need to re-discover them
 
 This means API verification can be scripted as an explicit implementation step rather than a manual prerequisite.
+
+---
+
+## DSA5 System Research Docs
+
+As part of the API verification step, findings are written to machine-readable reference documents in `docs/dsa5-research/`. These are updated whenever a verified field path differs from the spec, and serve as the authoritative source of truth for implementation.
+
+### Structure
+
+```
+docs/dsa5-research/
+├── actor-schema.md        # verified field paths for NPC actor system data
+├── item-types.md          # item type names and system field paths per category
+├── compendium-packs.md    # list of all available pack IDs and their content types
+├── api-patterns.md        # how to programmatically create/update actors and items
+└── unknown.md             # things tried but not yet resolved
+```
+
+Each file follows this format so it can be read by Claude in future sessions without re-running DevTools:
+
+```markdown
+## <field group>
+Verified: <date>
+Source: <DevTools snippet used>
+
+<field name>: <path> — <type> — <notes>
+```
+
+The research docs are committed to git alongside code so that any future implementation session can load them as context rather than re-discovering field paths from scratch.
 
 ---
 
