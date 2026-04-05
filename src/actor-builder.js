@@ -78,7 +78,7 @@ export async function buildActor(reviewState) {
 
   // Create resolved items (weapons, armor, abilities, etc.)
   if (resolution?.items?.length) {
-    await actor.createEmbeddedDocuments('Item', resolution.items.map(i => i.toObject()))
+    await actor.createEmbeddedDocuments('Item', resolution.items.map(i => i.toObject?.() ?? i))
   }
 
   // Create skills from compendium and set values
