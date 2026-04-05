@@ -44,10 +44,14 @@ function parseDerived(lines) {
 
   // Simple numeric fields
   const simple = {}
-  for (const key of ['LeP', 'AW', 'SK', 'ZK', 'GS', 'Schip']) {
+  for (const key of ['LeP', 'AW', 'SK', 'ZK', 'GS']) {
     const m = joined.match(new RegExp(`\\b${key}\\s+(-?\\d+)`))
     simple[key] = m ? parseInt(m[1]) : null
   }
+
+  // Schip with optional 's' (Schip or Schips)
+  const schipM = joined.match(/\bSchips?\s+(-?\d+)/)
+  simple.Schip = schipM ? parseInt(schipM[1]) : null
 
   // Nullable fields (Asp/AsP, KaP) — "–" or "-" means null
   for (const [outKey, pattern] of [['Asp', /\bAs[Pp]\s+([\d–-]+)/], ['KaP', /\bKaP\s+([\d–-]+)/]]) {

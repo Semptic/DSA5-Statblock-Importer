@@ -5,7 +5,8 @@ import { clean } from '../src/parser/cleaner.js'
 
 function loadSection(fixture, section) {
   const text = readFileSync(`tests/fixtures/${fixture}`, 'utf8')
-  const match = text.match(new RegExp(`${section}:\\n([\\s\\S]+?)(?=\\n\\w+:|$)`))
+  // Only stop at known top-level section boundaries, not at colon-suffixed weapon names
+  const match = text.match(new RegExp(`${section}:\\n([\\s\\S]+?)(?=\\n(?:stats|fluff|gossip):|$)`))
   return match ? match[1].trim() : ''
 }
 
@@ -59,6 +60,7 @@ describe('parseStats - derived', () => {
   it('extracts ZK', () => expect(stats.derived.ZK).toBe(0))
   it('extracts GS', () => expect(stats.derived.GS).toBe(8))
   it('extracts Schip', () => expect(stats.derived.Schip).toBe(3))
+  it('extracts Schips (with trailing s)', () => expect(syntheticBruutsch.derived.Schip).toBe(2))
 })
 
 describe('parseStats - weapons', () => {
