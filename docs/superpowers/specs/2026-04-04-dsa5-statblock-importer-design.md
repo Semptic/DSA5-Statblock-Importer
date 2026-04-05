@@ -103,7 +103,7 @@ Registers a button in the **Actors sidebar tab** via the `renderActorDirectory` 
 ### Error Handling
 
 - If all three sections are blank, show an error and do not proceed
-- If the stats section is present but yields no name, show an error — name is required
+- If the stats section yields no name, parsing continues normally — the name field in the ReviewDialog is left empty and marked as required, blocking actor creation until the GM fills it in
 - If the stats section is malformed (no attributes parsed), show a warning and display the raw text for manual entry in the ReviewDialog
 - Partial parses are allowed: unresolved fields appear as empty inputs in the ReviewDialog
 - Compendium lookup failures are non-fatal: the item is flagged inline in the ReviewDialog
