@@ -6,18 +6,27 @@
 // Levenshtein distance for fuzzy matching
 function levenshtein(a, b) {
   const m = a.length, n = b.length
-  const dp = Array.from({ length: m + 1 }, (_, i) => Array.from({ length: n + 1 }, (_, j) => i === 0 ? j : j === 0 ? i : 0))
+  const dp = []
+  for (let i = 0; i <= m; i++) {
+    dp[i] = []
+    for (let j = 0; j <= n; j++) {
+      dp[i][j] = i === 0 ? j : j === 0 ? i : 0
+    }
+  }
   for (let i = 1; i <= m; i++)
     for (let j = 1; j <= n; j++)
       dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])
   return dp[m][n]
 }
 
+// Strips trailing Roman numeral suffixes (e.g. "Langschwert II" → "langschwert")
+// to improve fuzzy matching across tiered item names.
 function normalize(name) {
   return name.trim().toLowerCase().replace(/\s+[IVX]+$/, '')
 }
 
-// Index is built once lazily
+// Index is built once lazily. If buildEquipmentIndex() throws, _indexBuilt stays
+// false so the next call retries. Does not auto-refresh if packs change at runtime.
 let _indexBuilt = false
 async function ensureIndex() {
   if (_indexBuilt) return
@@ -26,18 +35,19 @@ async function ensureIndex() {
 }
 
 export async function resolveItem(name, preferredType, fallbackTypes = []) {
+  if (!name) return null
   await ensureIndex()
 
   for (const type of [preferredType, ...fallbackTypes]) {
+    // Fetch once per type, then check for exact match and approximate match
     const results = await game.dsa5.itemLibrary.findCompendiumItem(name, type)
-    const exact = results?.find(i => i.type === type && i.name.toLowerCase() === name.toLowerCase())
-    if (exact) return { item: exact, matchType: 'exact' }
-  }
+    if (!results?.length) continue
 
-  // Approximate: Levenshtein distance <= 2 on normalized names
-  for (const type of [preferredType, ...fallbackTypes]) {
-    const results = await game.dsa5.itemLibrary.findCompendiumItem(name, type)
-    const approx = results?.find(i => i.type === type && levenshtein(normalize(i.name), normalize(name)) <= 2)
+    const exact = results.find(i => i.type === type && i.name.toLowerCase() === name.toLowerCase())
+    if (exact) return { item: exact, matchType: 'exact' }
+
+    // Approximate: Levenshtein distance <= 2 on normalized names
+    const approx = results.find(i => i.type === type && levenshtein(normalize(i.name), normalize(name)) <= 2)
     if (approx) return { item: approx, matchType: 'approximate', originalName: name, matchedName: approx.name }
   }
 
@@ -64,8 +74,9 @@ export async function resolveAll(parsed) {
   const weaponItems = await Promise.all(
     parsed.weapons.map(w => resolve(w.name, 'meleeweapon', ['rangeweapon']))
   )
+  // "Keine" means no armor — skip rather than reporting as missing
   const armorItems = await Promise.all(
-    parsed.armor.map(a => resolve(a.name, 'armor'))
+    parsed.armor.filter(a => a.name !== 'Keine').map(a => resolve(a.name, 'armor'))
   )
   const sfItems = await Promise.all(
     parsed.sonderfertigkeiten.map(s => resolve(s, 'specialability'))
@@ -76,6 +87,7 @@ export async function resolveAll(parsed) {
   const nachteilItems = await Promise.all(
     parsed.nachteile.map(n => resolve(n, 'disadvantage'))
   )
+  // Languages and scripts are specialability items in the DSA5 Foundry system
   const sprachenItems = await Promise.all(
     parsed.sprachen.map(s => resolve(s, 'specialability'))
   )
