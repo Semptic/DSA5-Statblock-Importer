@@ -2,10 +2,9 @@ import { describe, it, expect } from 'vitest'
 import { clean } from '../src/parser/cleaner.js'
 
 describe('clean', () => {
-  it('replaces fi ligature', () => {
-    expect(clean('Sonderfertigkeiten')).toBe('Sonderfertigkeiten')
-    // ﬁ → fi
-    expect(clean('Spezi\uFB01sierung')).toBe('Speziﬁsierung'.replace('\uFB01', 'fi'))
+  it('replaces ligatures', () => {
+    expect(clean('\uFB00\uFB01\uFB02\uFB03\uFB04')).toBe('fffiflffiffl')
+    expect(clean('Spezi\uFB01sierung')).toBe('Spezifisierung')
   })
 
   it('normalizes en-dash and em-dash to hyphen', () => {
