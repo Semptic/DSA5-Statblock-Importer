@@ -49,7 +49,7 @@ export function assertActor(actual, expected, expect) {
 
   // Embedded items
   for (const expectedItem of expected.items ?? []) {
-    const match = actual.items.find(
+    const match = (actual.items ?? []).find(
       i => i.name === expectedItem.name && i.type === expectedItem.type
     )
     expect(match, `item "${expectedItem.name}" (${expectedItem.type}) missing`).toBeTruthy()
