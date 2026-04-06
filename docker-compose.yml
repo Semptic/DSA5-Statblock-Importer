@@ -2,10 +2,11 @@ services:
   foundry:
     image: felddy/foundryvtt:13
     container_name: foundry-dsa5-dev
+    user: root
     ports:
       - "30000:30000"
     volumes:
-      - ./foundry-data:/data
+      - foundry-data:/data
       - ./dist:/data/Data/modules/dsa5-statblock-importer/dist
       - ./module.json:/data/Data/modules/dsa5-statblock-importer/module.json
       - ./templates:/data/Data/modules/dsa5-statblock-importer/templates
@@ -16,3 +17,6 @@ services:
       - FOUNDRY_PASSWORD=${FOUNDRY_PASSWORD}
       - FOUNDRY_ADMIN_KEY=${FOUNDRY_ADMIN_KEY}
     restart: unless-stopped
+
+volumes:
+  foundry-data:
