@@ -8,11 +8,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
     "lint": "eslint --no-error-on-unmatched-pattern src/ tests/",
     "prepare": "husky"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.44.0",
     "@vitest/coverage-v8": "^1.0.0",
     "eslint": "^10.2.0",
     "husky": "^9.1.7",

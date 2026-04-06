@@ -11,4 +11,8 @@ export default defineConfig({
     emptyOutDir: true,
     sourcemap: true,
   },
+  test: {
+    include: ['tests/**/*.test.js'],
+    exclude: ['tests/e2e/**'],
+  },
 })
