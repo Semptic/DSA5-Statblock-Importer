@@ -35,6 +35,7 @@ Add to `package.json` scripts:
 - `baseURL: 'http://localhost:30000'`
 - Action timeout: 30 000 ms (Foundry + compendium resolution is slow)
 - Test timeout: 120 000 ms per test
+- `workers: 1` — tests must run sequentially; concurrent Foundry mutations cause failures
 - No video/screenshot by default; enable on failure
 
 ### Prerequisites
@@ -101,6 +102,22 @@ Each `tests/fixtures/expected-e2e/<name>.json` describes the expected Foundry ac
 }
 ```
 
+### Bootstrapping expected-e2e fixtures
+
+The `expected-e2e/*.json` files must be created once before tests can run. They cannot be derived mechanically from the existing `expected/*.json` files (which are in the parser's intermediate format, not the Foundry actor format).
+
+**One-time procedure per fixture:**
+
+1. Ensure Docker Foundry is running and the world is in German.
+2. Import the fixture manually using the module's Import dialog.
+3. In the Foundry browser console, run:
+   ```js
+   copy(JSON.stringify(game.actors.getName('Actor Name').toObject(), null, 2))
+   ```
+4. Paste the output, extract only the fields covered by the assertion strategy (name, system.characteristics, system.status, items), and save as `tests/fixtures/expected-e2e/<name>.json`.
+
+The `items` array should include all resolved items (weapons, armor, specialabilities, advantages, disadvantages, skills, combat skills). For skills and combat skills, include `system.talentValue.value`. For other items, name + type is sufficient.
+
 ### Assertion strategy
 
 - **`system.*` fields**: partial deep-equal — only assert the keys present in the expected JSON
@@ -130,8 +147,9 @@ for (const fixtureName of FIXTURES) {
 
     // 3. Open import dialog (click "Import Statblock" button in actor directory)
     await page.locator('.directory-header .action-buttons button:has-text("Import")').click()
+    await page.locator('#dsa5-statblock-importer').waitFor()
 
-    // 4. Fill textareas from fixture file (split on section separator)
+    // 4. Fill textareas from fixture file
     const fixture = fs.readFileSync(`tests/fixtures/${fixtureName}.txt`, 'utf8')
     const [stats, fluff, gossip] = splitFixtureSections(fixture)
     await page.locator('textarea[name="stats"]').fill(stats ?? '')
@@ -139,12 +157,12 @@ for (const fixtureName of FIXTURES) {
     await page.locator('textarea[name="gossip"]').fill(gossip ?? '')
 
     // 5. Click Analyse, wait for review dialog
-    await page.locator('button:has-text("Analyse")').click()
-    await page.locator('.dsa5si-review-dialog').waitFor()
+    await page.locator('button[name="analyse"]').click()
+    await page.locator('#dsa5-statblock-review').waitFor()
 
     // 6. Click Create, wait for review dialog to close
-    await page.locator('button:has-text("Create")').click()
-    await page.locator('.dsa5si-review-dialog').waitFor({ state: 'hidden' })
+    await page.locator('button[name="create"]').click()
+    await page.locator('#dsa5-statblock-review').waitFor({ state: 'hidden' })
 
     // 7. Fetch actor from Foundry
     const actor = await page.evaluate(name => game.actors.getName(name)?.toObject(), expected.name)
@@ -156,7 +174,7 @@ for (const fixtureName of FIXTURES) {
 }
 ```
 
-`splitFixtureSections(text)` splits on the separator line (`---` or equivalent) used in fixture files to separate stats/fluff/gossip.
+`splitFixtureSections(text)` splits on the labelled section headers `stats:`, `fluff:`, and `gossip:` (each at the start of a line). The content for each section runs from the line after its header until the next header. Sections absent from the file return `undefined`. Example: `synthetic-stats-only.txt` has only `stats:` — `fluff` and `gossip` will be `undefined`.
 
 `assertActor(actual, expected)` is a shared helper that implements the partial deep-equal + item matching strategy.
 
@@ -174,7 +192,7 @@ Fill only the stats textarea using `synthetic-stats-only.txt`, leave fluff and g
 
 ### Case 3: Approximate match shown in review dialog
 
-Use a fixture known to produce approximate matches (e.g. `nfk1-jaani.txt` which has SF with specializations). After clicking Analyse, before clicking Create, assert the review dialog contains at least one element with the approximate-match CSS class/indicator. Then click Create and assert actor is created.
+Use `nfk1-jaani.txt` — confirmed during manual testing to produce approximate matches (SF entries with specializations such as "Ortskenntnis (Festum)" resolve approximately to base "Ortskenntnis"). After clicking Analyse, before clicking Create, assert the review dialog contains `fieldset.approximate` (rendered by `review-dialog.hbs` when `approximate.length > 0`). Then click Create and assert the actor is created.
 
 ---
 
@@ -183,7 +201,7 @@ Use a fixture known to produce approximate matches (e.g. `nfk1-jaani.txt` which 
 - **Delete before**: each test deletes the target actor by name before running (if it exists)
 - **No cleanup after**: actor remains in Foundry after the test — useful for manual inspection
 - **Navigation**: `beforeAll` navigates to the Actors tab once. Tests don't navigate between themselves.
-- **Test isolation**: tests run sequentially (not in parallel) to avoid concurrent Foundry mutations
+- **Test isolation**: `workers: 1` in Playwright config enforces sequential execution — concurrent Foundry mutations cause spurious failures
 
 ---
 
