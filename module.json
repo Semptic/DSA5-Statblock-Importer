@@ -10,6 +10,7 @@
   "esmodules": ["dist/main.js"],
   "styles": ["styles/module.css"],
   "languages": [
-    { "lang": "de", "name": "Deutsch", "path": "languages/de.json" }
+    { "lang": "de", "name": "Deutsch", "path": "languages/de.json" },
+    { "lang": "en", "name": "English", "path": "languages/en.json" }
   ]
 }

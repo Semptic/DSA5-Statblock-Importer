@@ -1,0 +1,10 @@
+{
+  "DSA5SI.button.import": "Import Statblock",
+  "DSA5SI.import.stats": "Stats",
+  "DSA5SI.import.fluff": "Description",
+  "DSA5SI.import.gossip": "Rumours",
+  "DSA5SI.import.analyse": "Analyse",
+  "DSA5SI.review.placeholder": "Loading preview...",
+  "DSA5SI.review.create": "Create Character",
+  "DSA5SI.review.cancel": "Cancel"
+}

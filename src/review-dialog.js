@@ -20,7 +20,7 @@ export class ReviewDialog extends Application {
   getData() {
     const { stats, fluff, gossip, resolution } = this._data
     return {
-      name: fluff?.name ?? stats?.name ?? '',
+      name: [fluff?.titel, fluff?.name ?? stats?.name].filter(Boolean).join(' ') || '',
       nameRequired: !(fluff?.name ?? stats?.name),
       npcCategory: fluff?.npcCategory,
       titel: fluff?.titel,

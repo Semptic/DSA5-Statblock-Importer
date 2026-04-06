@@ -31,11 +31,20 @@ function buildGmNotes(fluff, gossip, stats) {
 export async function buildActor(reviewState) {
   const { stats, fluff, gossip, resolution } = reviewState
 
-  const name = [fluff?.titel, fluff?.name ?? stats?.name].filter(Boolean).join(' ')
+  // The review dialog stores the user-confirmed full name in fluff.name
+  const name = fluff?.name ?? stats?.name ?? ''
 
   // attributes: statblock value - 8 = advances (base initial is 8)
   const attr = stats?.attributes ?? {}
   const adv = (v) => (v ?? 8) - 8
+
+  // The DSA5 system computes LeP_base = KO_value + KK_value (empirically verified).
+  // wounds.initial is additive on top of that base, so we store only the difference.
+  const koVal = attr.KO ?? 8
+  const kkVal = attr.KK ?? 8
+  const systemLePBase = koVal + kkVal
+  const parsedLeP = stats?.derived?.LeP ?? null
+  const woundsInitial = parsedLeP !== null ? Math.max(0, parsedLeP - systemLePBase) : 0
 
   const actorData = {
     name,
@@ -52,9 +61,9 @@ export async function buildActor(reviewState) {
         kk: { advances: adv(attr.KK) },
       },
       status: {
-        wounds: { initial: stats?.derived?.LeP?.base ?? 0 },
-        astralenergy: { initial: stats?.derived?.Asp?.base ?? 0 },
-        karmaenergy: { initial: stats?.derived?.KaP?.base ?? 0 },
+        wounds: { initial: woundsInitial },
+        astralenergy: { initial: stats?.derived?.Asp ?? 0 },
+        karmaenergy: { initial: stats?.derived?.KaP ?? 0 },
         initiative: { current: stats?.derived?.INI?.base ?? 0 },
         dodge: { modifier: 0 },
         fatePoints: { current: stats?.derived?.Schip ?? 0 },
