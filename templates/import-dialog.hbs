@@ -1,14 +1,20 @@
-<form class="dsa5-importer-form">
-  <div class="form-group">
+<form class="dsa5-importer-form" autocomplete="off">
+  <div class="form-group stacked">
     <label>{{localize "DSA5SI.import.stats"}}</label>
-    <textarea name="stats" rows="10"></textarea>
+    <textarea name="stats" rows="12" placeholder="Werte aus PDF einfügen..."></textarea>
   </div>
-  <div class="form-group">
+  <div class="form-group stacked">
     <label>{{localize "DSA5SI.import.fluff"}}</label>
-    <textarea name="fluff" rows="10"></textarea>
+    <textarea name="fluff" rows="10" placeholder="Beschreibung aus PDF einfügen..."></textarea>
   </div>
-  <div class="form-group">
+  <div class="form-group stacked">
     <label>{{localize "DSA5SI.import.gossip"}}</label>
-    <textarea name="gossip" rows="6"></textarea>
+    <textarea name="gossip" rows="6" placeholder="Gerüchte aus PDF einfügen..."></textarea>
+  </div>
+  <div class="form-footer">
+    <button type="button" name="analyse">
+      <i class="fas fa-search"></i>
+      {{localize "DSA5SI.import.analyse"}}
+    </button>
   </div>
 </form>
