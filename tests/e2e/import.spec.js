@@ -22,6 +22,7 @@ for (const fixtureName of FIXTURES) {
     const expected = JSON.parse(
       fs.readFileSync(path.join(fixturesDir, 'expected-e2e', `${fixtureName}.json`), 'utf8')
     )
+    if (!expected.name) throw new Error(`Missing 'name' in expected-e2e/${fixtureName}.json`)
 
     // Delete pre-existing actor with this name (idempotent reruns)
     await page.evaluate(name => {
@@ -29,13 +30,13 @@ for (const fixtureName of FIXTURES) {
       return existing?.delete()
     }, expected.name)
 
-    // Open import dialog — find the button containing 'importieren' text.
-    // The button has no name/class/data-action, only text content.
-    // Use JS click to avoid viewport-clipping issues with sidebar buttons.
+    // Import button has no CSS selector or name attribute — find by German button text.
+    // Note: must use JS click (not Playwright locator) because the sidebar
+    // may be partially outside the Playwright viewport.
     await page.evaluate(() => {
       const btn = Array.from(document.querySelectorAll('#actors .action-buttons button'))
-        .find(b => b.textContent.includes('importieren') || b.textContent.includes('Statblock'))
-      if (!btn) throw new Error('Import button not found')
+        .find(b => b.textContent.includes('importieren'))
+      if (!btn) throw new Error('Import button ("Statblock importieren") not found in actors directory')
       btn.click()
     })
     await page.locator('#dsa5-statblock-importer').waitFor()
