@@ -1,0 +1,177 @@
+{
+  "name": "Schwester Aldaine von Perricum, Geweihte der Travia",
+  "system": {
+    "characteristics": {
+      "mu": {
+        "advances": 4
+      },
+      "kl": {
+        "advances": 5
+      },
+      "in": {
+        "advances": 6
+      },
+      "ch": {
+        "advances": 7
+      },
+      "ff": {
+        "advances": 3
+      },
+      "ge": {
+        "advances": 4
+      },
+      "ko": {
+        "advances": 5
+      },
+      "kk": {
+        "advances": 2
+      }
+    },
+    "status": {
+      "wounds": {
+        "initial": 7
+      },
+      "astralenergy": {
+        "initial": 0
+      },
+      "karmaenergy": {
+        "initial": 18
+      },
+      "speed": {
+        "initial": 8
+      },
+      "soulpower": {
+        "initial": 2
+      },
+      "toughness": {
+        "initial": 1
+      },
+      "fatePoints": {
+        "current": 0
+      }
+    }
+  },
+  "items": [
+    {
+      "name": "Normale Kleidung",
+      "type": "armor"
+    },
+    {
+      "name": "Selbstbeherrschung",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 6
+        }
+      }
+    },
+    {
+      "name": "Klettern",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 1
+        }
+      }
+    },
+    {
+      "name": "Sinnesschärfe",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 5
+        }
+      }
+    },
+    {
+      "name": "Bekehren & Überzeugen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 8
+        }
+      }
+    },
+    {
+      "name": "Etikette",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 4
+        }
+      }
+    },
+    {
+      "name": "Menschenkenntnis",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 6
+        }
+      }
+    },
+    {
+      "name": "Überreden",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 5
+        }
+      }
+    },
+    {
+      "name": "Heilkunde Krankheiten",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 4
+        }
+      }
+    },
+    {
+      "name": "Orientierung",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 2
+        }
+      }
+    },
+    {
+      "name": "Götter & Kulte",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 9
+        }
+      }
+    },
+    {
+      "name": "Sphärenkunde",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 2
+        }
+      }
+    },
+    {
+      "name": "Heilkunde Wunden",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 5
+        }
+      }
+    },
+    {
+      "name": "Rechtskunde",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 3
+        }
+      }
+    }
+  ]
+}

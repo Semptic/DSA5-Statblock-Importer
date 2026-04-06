@@ -1,0 +1,418 @@
+{
+  "name": "Zelda von Ilmenstein",
+  "system": {
+    "characteristics": {
+      "mu": {
+        "advances": 6
+      },
+      "kl": {
+        "advances": 8
+      },
+      "in": {
+        "advances": 10
+      },
+      "ch": {
+        "advances": 7
+      },
+      "ff": {
+        "advances": 2
+      },
+      "ge": {
+        "advances": 4
+      },
+      "ko": {
+        "advances": 4
+      },
+      "kk": {
+        "advances": 2
+      }
+    },
+    "status": {
+      "wounds": {
+        "initial": 7
+      },
+      "astralenergy": {
+        "initial": 56
+      },
+      "karmaenergy": {
+        "initial": 0
+      },
+      "speed": {
+        "initial": 8
+      },
+      "soulpower": {
+        "initial": 3
+      },
+      "toughness": {
+        "initial": 1
+      },
+      "fatePoints": {
+        "current": 2
+      }
+    }
+  },
+  "items": [
+    {
+      "name": "Aura verbergen",
+      "type": "specialability"
+    },
+    {
+      "name": "Flugsalbe",
+      "type": "specialability"
+    },
+    {
+      "name": "Dolch",
+      "type": "meleeweapon"
+    },
+    {
+      "name": "Tradition (Geoden)",
+      "type": "specialability"
+    },
+    {
+      "name": "Verteidigungshaltung",
+      "type": "specialability"
+    },
+    {
+      "name": "Verbessertes Ausweichen",
+      "type": "specialability"
+    },
+    {
+      "name": "Vertrautenbindung",
+      "type": "specialability"
+    },
+    {
+      "name": "Wettervorhersage",
+      "type": "specialability"
+    },
+    {
+      "name": "Zauberer",
+      "type": "advantage"
+    },
+    {
+      "name": "Sprache (Garethi)",
+      "type": "specialability"
+    },
+    {
+      "name": "Sprache (Trollisch)",
+      "type": "specialability"
+    },
+    {
+      "name": "Schlechte Eigenschaft (Rachsucht)",
+      "type": "disadvantage"
+    },
+    {
+      "name": "Sprache (Goblinisch)",
+      "type": "specialability"
+    },
+    {
+      "name": "Schrift (Kusliker Zeichen)",
+      "type": "specialability"
+    },
+    {
+      "name": "Gaukeleien",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 5
+        }
+      }
+    },
+    {
+      "name": "Klettern",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 3
+        }
+      }
+    },
+    {
+      "name": "Kraftakt",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 6
+        }
+      }
+    },
+    {
+      "name": "Schwimmen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 6
+        }
+      }
+    },
+    {
+      "name": "Fliegen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 12
+        }
+      }
+    },
+    {
+      "name": "Körperbeherrschung",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 6
+        }
+      }
+    },
+    {
+      "name": "Selbstbeherrschung",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 9
+        }
+      }
+    },
+    {
+      "name": "Sinnesschärfe",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 6
+        }
+      }
+    },
+    {
+      "name": "Verbergen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 15
+        }
+      }
+    },
+    {
+      "name": "Bekehren & Überzeugen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 9
+        }
+      }
+    },
+    {
+      "name": "Einschüchtern",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 12
+        }
+      }
+    },
+    {
+      "name": "Etikette",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 7
+        }
+      }
+    },
+    {
+      "name": "Menschenkenntnis",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 13
+        }
+      }
+    },
+    {
+      "name": "Überreden",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 4
+        }
+      }
+    },
+    {
+      "name": "Verkleiden",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 14
+        }
+      }
+    },
+    {
+      "name": "Willenskraft",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 8
+        }
+      }
+    },
+    {
+      "name": "Fährtensuchen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 9
+        }
+      }
+    },
+    {
+      "name": "Orientierung",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 4
+        }
+      }
+    },
+    {
+      "name": "Pflanzenkunde",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 5
+        }
+      }
+    },
+    {
+      "name": "Tierkunde",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 5
+        }
+      }
+    },
+    {
+      "name": "Wildnisleben",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 12
+        }
+      }
+    },
+    {
+      "name": "Geschichtswissen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 6
+        }
+      }
+    },
+    {
+      "name": "Götter & Kulte",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 8
+        }
+      }
+    },
+    {
+      "name": "Magiekunde",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 13
+        }
+      }
+    },
+    {
+      "name": "Sternkunde",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 11
+        }
+      }
+    },
+    {
+      "name": "Rechtskunde",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 3
+        }
+      }
+    },
+    {
+      "name": "Rechnen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 7
+        }
+      }
+    },
+    {
+      "name": "Sagen & Legenden",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 10
+        }
+      }
+    },
+    {
+      "name": "Alchimie",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 9
+        }
+      }
+    },
+    {
+      "name": "Heilkunde Krankheiten",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 5
+        }
+      }
+    },
+    {
+      "name": "Heilkunde Seele",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 14
+        }
+      }
+    },
+    {
+      "name": "Raufen",
+      "type": "combatskill",
+      "system": {
+        "talentValue": {
+          "value": 12
+        }
+      }
+    },
+    {
+      "name": "Dolche",
+      "type": "combatskill",
+      "system": {
+        "talentValue": {
+          "value": 12
+        }
+      }
+    },
+    {
+      "name": "Stangenwaffen",
+      "type": "combatskill",
+      "system": {
+        "talentValue": {
+          "value": 10
+        }
+      }
+    }
+  ]
+}

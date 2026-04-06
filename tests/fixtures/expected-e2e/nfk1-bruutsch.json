@@ -1,0 +1,348 @@
+{
+  "name": "Bruutsch Smuddelvlies",
+  "system": {
+    "characteristics": {
+      "mu": {
+        "advances": 5
+      },
+      "kl": {
+        "advances": 2
+      },
+      "in": {
+        "advances": 6
+      },
+      "ch": {
+        "advances": 5
+      },
+      "ff": {
+        "advances": 4
+      },
+      "ge": {
+        "advances": 6
+      },
+      "ko": {
+        "advances": 4
+      },
+      "kk": {
+        "advances": 4
+      }
+    },
+    "status": {
+      "wounds": {
+        "initial": 5
+      },
+      "astralenergy": {
+        "initial": 0
+      },
+      "karmaenergy": {
+        "initial": 0
+      },
+      "speed": {
+        "initial": 9
+      },
+      "soulpower": {
+        "initial": -1
+      },
+      "toughness": {
+        "initial": -1
+      },
+      "fatePoints": {
+        "current": 2
+      }
+    }
+  },
+  "items": [
+    {
+      "name": "Wurfspeer",
+      "type": "rangeweapon"
+    },
+    {
+      "name": "Normale Kleidung",
+      "type": "armor"
+    },
+    {
+      "name": "Anführer",
+      "type": "specialability"
+    },
+    {
+      "name": "Aufmerksamkeit",
+      "type": "specialability"
+    },
+    {
+      "name": "Beidhändiger Kampf",
+      "type": "specialability"
+    },
+    {
+      "name": "Kampfreflexe",
+      "type": "specialability"
+    },
+    {
+      "name": "Klingenfänger",
+      "type": "specialability"
+    },
+    {
+      "name": "Kreuzblock",
+      "type": "specialability"
+    },
+    {
+      "name": "Ortskenntnis ()",
+      "type": "specialability"
+    },
+    {
+      "name": "Präziser Stich",
+      "type": "specialability"
+    },
+    {
+      "name": "Schriftstellerei ()",
+      "type": "specialability"
+    },
+    {
+      "name": "Beidhändig",
+      "type": "advantage"
+    },
+    {
+      "name": "Dunkelsicht",
+      "type": "advantage"
+    },
+    {
+      "name": "Gutaussehend",
+      "type": "advantage"
+    },
+    {
+      "name": "Kälteresistenz",
+      "type": "advantage"
+    },
+    {
+      "name": "Sprache (Goblinisch)",
+      "type": "specialability"
+    },
+    {
+      "name": "Sprache (Garethi)",
+      "type": "specialability"
+    },
+    {
+      "name": "Schrift (Kusliker Zeichen)",
+      "type": "specialability"
+    },
+    {
+      "name": "Hohe Zähigkeit",
+      "type": "advantage"
+    },
+    {
+      "name": "Sinnesschärfe",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 6
+        }
+      }
+    },
+    {
+      "name": "Selbstbeherrschung",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 4
+        }
+      }
+    },
+    {
+      "name": "Körperbeherrschung",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 7
+        }
+      }
+    },
+    {
+      "name": "Klettern",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 7
+        }
+      }
+    },
+    {
+      "name": "Verbergen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 5
+        }
+      }
+    },
+    {
+      "name": "Betören",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 5
+        }
+      }
+    },
+    {
+      "name": "Zechen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 6
+        }
+      }
+    },
+    {
+      "name": "Gassenwissen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 8
+        }
+      }
+    },
+    {
+      "name": "Menschenkenntnis",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 6
+        }
+      }
+    },
+    {
+      "name": "Überreden",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 7
+        }
+      }
+    },
+    {
+      "name": "Willenskraft",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 5
+        }
+      }
+    },
+    {
+      "name": "Orientierung",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 5
+        }
+      }
+    },
+    {
+      "name": "Fährtensuchen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 1
+        }
+      }
+    },
+    {
+      "name": "Pflanzenkunde",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 8
+        }
+      }
+    },
+    {
+      "name": "Tierkunde",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 7
+        }
+      }
+    },
+    {
+      "name": "Wildnisleben",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 7
+        }
+      }
+    },
+    {
+      "name": "Götter & Kulte",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 2
+        }
+      }
+    },
+    {
+      "name": "Kriegskunst",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 4
+        }
+      }
+    },
+    {
+      "name": "Sagen & Legenden",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 8
+        }
+      }
+    },
+    {
+      "name": "Schlösserknacken",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 5
+        }
+      }
+    },
+    {
+      "name": "Rechtskunde",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 3
+        }
+      }
+    },
+    {
+      "name": "Dolche",
+      "type": "combatskill",
+      "system": {
+        "talentValue": {
+          "value": 12
+        }
+      }
+    },
+    {
+      "name": "Wurfwaffen",
+      "type": "combatskill",
+      "system": {
+        "talentValue": {
+          "value": 12
+        }
+      }
+    },
+    {
+      "name": "Raufen",
+      "type": "combatskill",
+      "system": {
+        "talentValue": {
+          "value": 12
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,307 @@
+{
+  "name": "Schitze Jaruslaw von Kirschhausen-Krabbwitzkoje",
+  "system": {
+    "characteristics": {
+      "mu": {
+        "advances": 5
+      },
+      "kl": {
+        "advances": 2
+      },
+      "in": {
+        "advances": 4
+      },
+      "ch": {
+        "advances": 3
+      },
+      "ff": {
+        "advances": 6
+      },
+      "ge": {
+        "advances": 7
+      },
+      "ko": {
+        "advances": 5
+      },
+      "kk": {
+        "advances": 4
+      }
+    },
+    "status": {
+      "wounds": {
+        "initial": 7
+      },
+      "astralenergy": {
+        "initial": 0
+      },
+      "karmaenergy": {
+        "initial": 0
+      },
+      "speed": {
+        "initial": 8
+      },
+      "soulpower": {
+        "initial": 1
+      },
+      "toughness": {
+        "initial": 0
+      },
+      "fatePoints": {
+        "current": 3
+      }
+    }
+  },
+  "items": [
+    {
+      "name": "Schnellladen (Schleudern)",
+      "type": "specialability"
+    },
+    {
+      "name": "Kurzbogen",
+      "type": "rangeweapon"
+    },
+    {
+      "name": "Klettern",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 3
+        }
+      }
+    },
+    {
+      "name": "Reiten",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 6
+        }
+      }
+    },
+    {
+      "name": "Schwimmen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 2
+        }
+      }
+    },
+    {
+      "name": "Selbstbeherrschung",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 5
+        }
+      }
+    },
+    {
+      "name": "Sinnesschärfe",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 7
+        }
+      }
+    },
+    {
+      "name": "Verbergen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 4
+        }
+      }
+    },
+    {
+      "name": "Zechen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 3
+        }
+      }
+    },
+    {
+      "name": "Bekehren & Überzeugen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 2
+        }
+      }
+    },
+    {
+      "name": "Etikette",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 0
+        }
+      }
+    },
+    {
+      "name": "Gassenwissen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 1
+        }
+      }
+    },
+    {
+      "name": "Menschenkenntnis",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 4
+        }
+      }
+    },
+    {
+      "name": "Handel",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 0
+        }
+      }
+    },
+    {
+      "name": "Überreden",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 3
+        }
+      }
+    },
+    {
+      "name": "Fährtensuchen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 3
+        }
+      }
+    },
+    {
+      "name": "Pflanzenkunde",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 1
+        }
+      }
+    },
+    {
+      "name": "Orientierung",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 4
+        }
+      }
+    },
+    {
+      "name": "Wildnisleben",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 5
+        }
+      }
+    },
+    {
+      "name": "Geschichtswissen",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 1
+        }
+      }
+    },
+    {
+      "name": "Rechtskunde",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 0
+        }
+      }
+    },
+    {
+      "name": "Götter & Kulte",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 2
+        }
+      }
+    },
+    {
+      "name": "Sphärenkunde",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 0
+        }
+      }
+    },
+    {
+      "name": "Tierkunde",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 2
+        }
+      }
+    },
+    {
+      "name": "Heilkunde Wunden",
+      "type": "skill",
+      "system": {
+        "talentValue": {
+          "value": 3
+        }
+      }
+    },
+    {
+      "name": "Bögen",
+      "type": "combatskill",
+      "system": {
+        "talentValue": {
+          "value": 14
+        }
+      }
+    },
+    {
+      "name": "Dolche",
+      "type": "combatskill",
+      "system": {
+        "talentValue": {
+          "value": 10
+        }
+      }
+    },
+    {
+      "name": "Hiebwaffen",
+      "type": "combatskill",
+      "system": {
+        "talentValue": {
+          "value": 11
+        }
+      }
+    },
+    {
+      "name": "Schwerter",
+      "type": "combatskill",
+      "system": {
+        "talentValue": {
+          "value": 12
+        }
+      }
+    }
+  ]
+}

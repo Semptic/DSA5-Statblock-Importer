@@ -9,6 +9,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
+    "bootstrap:e2e": "node --experimental-vm-modules scripts/bootstrap-e2e-fixtures.js",
     "lint": "eslint --no-error-on-unmatched-pattern src/ tests/",
     "prepare": "husky"
   },
