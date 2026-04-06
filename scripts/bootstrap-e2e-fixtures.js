@@ -30,13 +30,13 @@ function extractExpected(actor) {
         Object.entries(actor.system.characteristics).map(([k, v]) => [k, { advances: v.advances }])
       ),
       status: {
-        wounds:       { initial: actor.system.status.wounds.initial },
-        astralenergy: { initial: actor.system.status.astralenergy.initial },
-        karmaenergy:  { initial: actor.system.status.karmaenergy.initial },
-        speed:        { initial: actor.system.status.speed.initial },
-        soulpower:    { initial: actor.system.status.soulpower.initial },
-        toughness:    { initial: actor.system.status.toughness.initial },
-        fatePoints:   { current: actor.system.status.fatePoints.current },
+        wounds:       { initial: actor.system.status.wounds?.initial ?? null },
+        astralenergy: { initial: actor.system.status.astralenergy?.initial ?? null },
+        karmaenergy:  { initial: actor.system.status.karmaenergy?.initial ?? null },
+        speed:        { initial: actor.system.status.speed?.initial ?? null },
+        soulpower:    { initial: actor.system.status.soulpower?.initial ?? null },
+        toughness:    { initial: actor.system.status.toughness?.initial ?? null },
+        fatePoints:   { current: actor.system.status.fatePoints?.current ?? null },
       },
     },
     items: actor.items.map(item => {
@@ -142,8 +142,8 @@ async function main() {
     fs.writeFileSync(outPath, JSON.stringify(expected, null, 2) + '\n')
     console.log(`  Saved ${outPath} (${expected.items.length} items)`)
 
-    // Brief pause before next fixture, then re-activate actors panel
-    await page.waitForTimeout(500)
+    // Wait for the actors tab to be ready for the next import
+    await page.waitForFunction(() => !!document.querySelector('.directory-header .action-buttons'), { timeout: 5_000 })
     await activateActorsTab(page)
   }
 
