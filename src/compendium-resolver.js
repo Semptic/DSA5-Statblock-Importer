@@ -38,16 +38,30 @@ export async function resolveItem(name, preferredType, fallbackTypes = []) {
   if (!name) return null
   await ensureIndex()
 
+  // Strip trailing Roman numeral tier suffix before searching (e.g. "Gutaussehend I" → "Gutaussehend").
+  // Some items are stored without the tier in the compendium.
+  const stripped = name.replace(/\s+[IVX]+$/, '').trim()
+
   for (const type of [preferredType, ...fallbackTypes]) {
     // Fetch once per type, then check for exact match and approximate match
-    const results = await game.dsa5.itemLibrary.findCompendiumItem(name, type)
+    let results = await game.dsa5.itemLibrary.findCompendiumItem(name, type)
+    if (!results?.length && stripped !== name) {
+      results = await game.dsa5.itemLibrary.findCompendiumItem(stripped, type)
+    }
     if (!results?.length) continue
 
     const exact = results.find(i => i.type === type && i.name.toLowerCase() === name.toLowerCase())
     if (exact) return { item: exact, matchType: 'exact' }
 
-    // Approximate: Levenshtein distance <= 2 on normalized names
-    const approx = results.find(i => i.type === type && levenshtein(normalize(i.name), normalize(name)) <= 2)
+    // Approximate: Levenshtein distance <= 2 on normalized names,
+    // OR base-name match after stripping parenthesized specializations from both sides
+    // (e.g. "Ortskenntnis ()" vs "Ortskenntnis", "Tradition (Geoden)" vs "Tradition")
+    const stripSpec = (s) => normalize(s).replace(/\s*\(.*\)$/, '').trim()
+    const approx = results.find(i => {
+      if (i.type !== type) return false
+      if (levenshtein(normalize(i.name), normalize(name)) <= 2) return true
+      return levenshtein(stripSpec(i.name), stripSpec(name)) <= 2
+    })
     if (approx) return { item: approx, matchType: 'approximate', originalName: name, matchedName: approx.name }
   }
 
@@ -71,28 +85,43 @@ export async function resolveAll(parsed) {
     return r.item
   }
 
+  // "Waffenlos" is unarmed combat — not a weapon item, handled by Raufen combat skill
   const weaponItems = await Promise.all(
-    parsed.weapons.map(w => resolve(w.name, 'meleeweapon', ['rangeweapon']))
+    parsed.weapons.filter(w => w.name.toLowerCase() !== 'waffenlos')
+      .map(w => resolve(w.name, 'meleeweapon', ['rangeweapon']))
   )
   // "Keine" means no armor — skip rather than reporting as missing
   const armorItems = await Promise.all(
     parsed.armor.filter(a => a.name !== 'Keine').map(a => resolve(a.name, 'armor'))
   )
+  // SF names often include a specialization in parentheses: "Ortskenntnis (Festum)"
+  // The compendium stores the base item; strip the specialization before looking up.
   const sfItems = await Promise.all(
-    parsed.sonderfertigkeiten.map(s => resolve(s, 'specialability'))
+    parsed.sonderfertigkeiten.map(s => {
+      const base = s.replace(/\s*\(.*\)$/, '').trim()
+      return resolve(base || s, 'specialability')
+    })
   )
   const vorteilItems = await Promise.all(
     parsed.vorteile.map(v => resolve(v, 'advantage'))
   )
+  // "keine" means no disadvantages — skip
   const nachteilItems = await Promise.all(
-    parsed.nachteile.map(n => resolve(n, 'disadvantage'))
+    parsed.nachteile.filter(n => n.toLowerCase() !== 'keine')
+      .map(n => resolve(n, 'disadvantage'))
   )
-  // Languages and scripts are specialability items in the DSA5 Foundry system
+  // Languages are stored as "Sprache (X)" in the DSA5 compendium.
+  // Statblock format: "Muttersprache Goblinisch III" → search "Sprache (Goblinisch)"
   const sprachenItems = await Promise.all(
-    parsed.sprachen.map(s => resolve(s, 'specialability'))
+    parsed.sprachen.map(s => {
+      const base = s.replace(/^(Muttersprache|Zweitsprache|Taubstummensprache)\s+/i, '')
+                    .replace(/\s+[IVX]+$/, '').trim()
+      return resolve(`Sprache (${base})`, 'specialability')
+    })
   )
+  // Scripts are stored as "Schrift (X)" in the DSA5 compendium.
   const schriftenItems = await Promise.all(
-    parsed.schriften.map(s => resolve(s, 'specialability'))
+    parsed.schriften.map(s => resolve(`Schrift (${s})`, 'specialability'))
   )
 
   return {

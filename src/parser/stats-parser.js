@@ -127,7 +127,22 @@ function parseTalente(block) {
 
 function parseCommaList(block) {
   if (!block) return []
-  return block.split(',').map(s => s.trim()).filter(Boolean)
+  // Split on commas that are NOT inside parentheses
+  const result = []
+  let depth = 0, current = ''
+  for (const ch of block) {
+    if (ch === '(') depth++
+    else if (ch === ')') depth--
+    if (ch === ',' && depth === 0) {
+      const trimmed = current.trim()
+      if (trimmed) result.push(trimmed)
+      current = ''
+    } else {
+      current += ch
+    }
+  }
+  if (current.trim()) result.push(current.trim())
+  return result
 }
 
 export function parseStats(text) {
