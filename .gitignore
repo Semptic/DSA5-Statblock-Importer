@@ -2,3 +2,5 @@ node_modules/
 dist/
 foundry-data/
 .env
+coverage/
+test-results/

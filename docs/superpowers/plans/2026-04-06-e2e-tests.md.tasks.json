@@ -1,11 +1,11 @@
 {
   "planPath": "docs/superpowers/plans/2026-04-06-e2e-tests.md",
   "tasks": [
-    {"id": 39, "subject": "Task 1: Install Playwright and configure test runner", "status": "pending"},
-    {"id": 40, "subject": "Task 2: Shared helpers + unit test", "status": "pending", "blockedBy": [39]},
-    {"id": 41, "subject": "Task 3: Bootstrap expected-e2e fixture JSON files", "status": "pending", "blockedBy": [40]},
-    {"id": 42, "subject": "Task 4: CDP fixture + import.spec.js", "status": "pending", "blockedBy": [41]},
-    {"id": 43, "subject": "Task 5: edge-cases.spec.js", "status": "pending", "blockedBy": [42]}
+    {"id": 39, "subject": "Task 1: Install Playwright and configure test runner", "status": "completed"},
+    {"id": 40, "subject": "Task 2: Shared helpers + unit test", "status": "completed", "blockedBy": [39]},
+    {"id": 41, "subject": "Task 3: Bootstrap expected-e2e fixture JSON files", "status": "completed", "blockedBy": [40]},
+    {"id": 42, "subject": "Task 4: CDP fixture + import.spec.js", "status": "completed", "blockedBy": [41]},
+    {"id": 43, "subject": "Task 5: edge-cases.spec.js", "status": "completed", "blockedBy": [42]}
   ],
-  "lastUpdated": "2026-04-06T00:00:00Z"
+  "lastUpdated": "2026-04-07T00:00:00Z"
 }
