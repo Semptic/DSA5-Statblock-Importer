@@ -101,8 +101,8 @@ async function main() {
 
     // Open import dialog by dispatching a click via JS (button may be off-viewport in sidebar)
     await page.evaluate(() => {
-      const btn = Array.from(document.querySelectorAll('button'))
-        .find(b => b.textContent.includes('Statblock importieren'))
+      const btn = Array.from(document.querySelectorAll('#actors .action-buttons button'))
+        .find(b => b.textContent.includes('importieren'))
       if (!btn) throw new Error('Statblock importieren button not found')
       btn.click()
     })

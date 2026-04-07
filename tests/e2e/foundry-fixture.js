@@ -21,6 +21,7 @@ export const test = base.extend({
     const context = connectedBrowser.contexts()[0]
     const pages = context.pages()
     const page = pages.find(p => p.url().includes('localhost:30000')) ?? pages[0]
+    if (!page) throw new Error('No Foundry tab found. Is Docker Foundry running on localhost:30000?')
     // Close any open Foundry Application windows left by a previous test.
     // Note: Foundry v13 uses foundry.applications.instances (a Map), not ui.windows.
     // Skip the sidebar itself — closing it would break changeTab below.

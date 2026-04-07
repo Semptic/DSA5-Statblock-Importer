@@ -184,7 +184,7 @@ for (const fixtureName of FIXTURES) {
 
 ### Case 1: Empty input
 
-Open import dialog, click Analyse without filling any textarea. Assert that an error/validation message is shown inside the dialog. Assert no actor named anything was created (actor count unchanged).
+Open import dialog, click Analyse without filling any textarea. Assert that a Foundry error notification appears in `#notifications`. Assert no actor named anything was created (actor count unchanged).
 
 ### Case 2: Stats-only input
 

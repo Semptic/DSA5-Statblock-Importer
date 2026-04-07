@@ -87,5 +87,7 @@ test('nfk1-jaani shows approximate matches in review dialog before creation', as
   await page.waitForFunction(name => !!game.actors.getName(name), expected.name, { timeout: 30_000 })
   const actor = await page.evaluate(name => game.actors.getName(name)?.toObject(), expected.name)
   expect(actor, `Actor "${expected.name}" not found`).toBeTruthy()
+  // actor creation assertion duplicates import.spec.js for nfk1-jaani;
+  // kept for test independence (this test's unique value is the fieldset.approximate check above)
   assertActor(actor, expected, expect)
 })
