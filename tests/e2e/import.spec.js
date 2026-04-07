@@ -47,9 +47,23 @@ for (const fixtureName of FIXTURES) {
     await page.locator('button[name="create"]').click()
     await page.locator('#dsa5-statblock-review').waitFor({ state: 'hidden' })
 
-    // Wait for actor to appear in game.actors, then fetch
-    await page.waitForFunction(name => !!game.actors.getName(name), expected.name, { timeout: 30_000 })
-    const actor = await page.evaluate(name => game.actors.getName(name)?.toObject(), expected.name)
+    // Wait until the actor exists AND its embedded items have been written back to
+    // the in-memory collection. Actor.create() resolves before createEmbeddedDocuments
+    // propagates, so polling on items.size avoids a race condition.
+    await page.waitForFunction(name => {
+      const a = game.actors.getName(name)
+      return a && a.items.size > 0
+    }, expected.name, { timeout: 30_000 })
+
+    // Serialize items explicitly from actor.items; toObject().items may still be
+    // empty if the embedded-document sync hasn't round-tripped yet.
+    const actor = await page.evaluate(name => {
+      const a = game.actors.getName(name)
+      if (!a) return null
+      const obj = a.toObject()
+      obj.items = [...a.items.values()].map(i => i.toObject())
+      return obj
+    }, expected.name)
     expect(actor, `Actor "${expected.name}" not found in Foundry`).toBeTruthy()
     assertActor(actor, expected, expect)
   })

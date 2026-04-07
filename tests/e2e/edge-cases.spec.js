@@ -49,8 +49,17 @@ test('stats-only import creates actor with correct attributes', async ({ page })
   await page.locator('button[name="create"]').click()
   await page.locator('#dsa5-statblock-review').waitFor({ state: 'hidden' })
 
-  await page.waitForFunction(name => !!game.actors.getName(name), expected.name, { timeout: 30_000 })
-  const actor = await page.evaluate(name => game.actors.getName(name)?.toObject(), expected.name)
+  await page.waitForFunction(name => {
+    const a = game.actors.getName(name)
+    return a && a.items.size > 0
+  }, expected.name, { timeout: 30_000 })
+  const actor = await page.evaluate(name => {
+    const a = game.actors.getName(name)
+    if (!a) return null
+    const obj = a.toObject()
+    obj.items = [...a.items.values()].map(i => i.toObject())
+    return obj
+  }, expected.name)
   expect(actor, `Actor "${expected.name}" not found`).toBeTruthy()
   assertActor(actor, expected, expect)
 })
@@ -84,8 +93,17 @@ test('nfk1-jaani shows approximate matches in review dialog before creation', as
   await page.locator('button[name="create"]').click()
   await page.locator('#dsa5-statblock-review').waitFor({ state: 'hidden' })
 
-  await page.waitForFunction(name => !!game.actors.getName(name), expected.name, { timeout: 30_000 })
-  const actor = await page.evaluate(name => game.actors.getName(name)?.toObject(), expected.name)
+  await page.waitForFunction(name => {
+    const a = game.actors.getName(name)
+    return a && a.items.size > 0
+  }, expected.name, { timeout: 30_000 })
+  const actor = await page.evaluate(name => {
+    const a = game.actors.getName(name)
+    if (!a) return null
+    const obj = a.toObject()
+    obj.items = [...a.items.values()].map(i => i.toObject())
+    return obj
+  }, expected.name)
   expect(actor, `Actor "${expected.name}" not found`).toBeTruthy()
   // actor creation assertion duplicates import.spec.js for nfk1-jaani;
   // kept for test independence (this test's unique value is the fieldset.approximate check above)
