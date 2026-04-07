@@ -60,17 +60,15 @@ export class ReviewDialog extends Application {
 
   activateListeners(html) {
     super.activateListeners(html)
+    html.find('button[name="reanalyse"]').on('click', () => this._onReanalyse(html))
     html.find('button[name="create"]').on('click', () => this._onCreate(html))
     html.find('button[name="cancel"]').on('click', () => this.close())
   }
 
-  async _onCreate(html) {
-    const name = html.find('[name="actor-name"]').val().trim()
-    if (!name) {
-      ui.notifications.warn('Name ist ein Pflichtfeld.')
-      html.find('[name="actor-name"]').addClass('error')
-      return
-    }
+  // Read current form values into { name, editedStats }.
+  _readFormState(html) {
+    const readList = fieldName => html.find(`[name="${fieldName}"]`).val().trim()
+      .split(',').map(s => s.trim()).filter(Boolean)
 
     const attrs = ['MU', 'KL', 'IN', 'CH', 'FF', 'GE', 'KO', 'KK']
     const editedAttributes = {}
@@ -79,44 +77,52 @@ export class ReviewDialog extends Application {
       editedAttributes[attr] = isNaN(val) ? (this._data.stats?.attributes?.[attr] ?? 0) : val
     }
 
-    const readList = fieldName => html.find(`[name="${fieldName}"]`).val().trim()
-      .split(',').map(s => s.trim()).filter(Boolean)
-
-    const editedWeapons = readList('edit-weapons').map(name => ({ name }))
-    const editedArmor  = readList('edit-armor').map(name => ({ name }))
-    const editedStats  = {
-      ...this._data.stats,
-      attributes: editedAttributes,
-      weapons: editedWeapons,
-      armor: editedArmor.length ? editedArmor : [{ name: 'Keine', RS: 0, BE: 0 }],
-      sonderfertigkeiten: readList('edit-sf'),
-      vorteile: readList('edit-vorteile'),
-      nachteile: readList('edit-nachteile'),
-      sprachen: readList('edit-sprachen'),
-      schriften: readList('edit-schriften'),
+    const armorList = readList('edit-armor')
+    return {
+      name: html.find('[name="actor-name"]').val().trim(),
+      editedStats: {
+        ...this._data.stats,
+        attributes: editedAttributes,
+        weapons: readList('edit-weapons').map(n => ({ name: n })),
+        armor: armorList.length ? armorList.map(n => ({ name: n })) : [{ name: 'Keine', RS: 0, BE: 0 }],
+        sonderfertigkeiten: readList('edit-sf'),
+        vorteile: readList('edit-vorteile'),
+        nachteile: readList('edit-nachteile'),
+        sprachen: readList('edit-sprachen'),
+        schriften: readList('edit-schriften'),
+      },
     }
+  }
 
-    const listsChanged =
-      readList('edit-weapons').map(n => n).join(',') !== (this._data.stats?.weapons ?? []).filter(w => w.name.toLowerCase() !== 'waffenlos').map(w => w.name).join(',') ||
-      readList('edit-armor').join(',')    !== (this._data.stats?.armor ?? []).filter(a => a.name !== 'Keine').map(a => a.name).join(',') ||
-      readList('edit-sf').join(',')       !== (this._data.stats?.sonderfertigkeiten ?? []).join(',') ||
-      readList('edit-vorteile').join(',') !== (this._data.stats?.vorteile ?? []).join(',') ||
-      readList('edit-nachteile').join(',') !== (this._data.stats?.nachteile ?? []).filter(n => n.toLowerCase() !== 'keine').join(',') ||
-      readList('edit-sprachen').join(',') !== (this._data.stats?.sprachen ?? []).join(',') ||
-      readList('edit-schriften').join(',') !== (this._data.stats?.schriften ?? []).join(',')
-
-    const editedResolution = listsChanged
-      ? await resolveAll(editedStats)
-      : this._data.resolution
-
-    const reviewState = {
+  // Re-resolve items from current form values and re-render the dialog so the
+  // user can see updated resolved/approximate/missing results before creating.
+  async _onReanalyse(html) {
+    const { name, editedStats } = this._readFormState(html)
+    const resolution = await resolveAll(editedStats)
+    this._data = {
       ...this._data,
       fluff: { ...this._data.fluff, name },
       stats: editedStats,
-      resolution: editedResolution,
+      resolution,
+    }
+    this.render(true)
+  }
+
+  async _onCreate(html) {
+    const { name, editedStats } = this._readFormState(html)
+    if (!name) {
+      ui.notifications.warn('Name ist ein Pflichtfeld.')
+      html.find('[name="actor-name"]').addClass('error')
+      return
     }
 
-    const actor = await buildActor(reviewState)
+    const resolution = await resolveAll(editedStats)
+    const actor = await buildActor({
+      ...this._data,
+      fluff: { ...this._data.fluff, name },
+      stats: editedStats,
+      resolution,
+    })
     this.close()
     actor.sheet.render(true)
   }
