@@ -27,9 +27,11 @@ function extractTier(name) {
 
 // Clone item (or plain obj) and set step.value to tier
 function applyTier(item, tier) {
-  if (!item || tier <= 1) return item
-  const obj = typeof item.toObject === 'function' ? item.toObject() : { ...item, system: { ...item.system } }
-  if (obj.system && 'step' in obj.system) {
+  if (!item) return item
+  const obj = typeof item.toObject === 'function'
+    ? item.toObject()
+    : foundry.utils.deepClone(item)
+  if (tier > 1 && obj.system && 'step' in obj.system) {
     obj.system = { ...obj.system, step: { ...obj.system.step, value: tier } }
   }
   return obj
@@ -54,7 +56,7 @@ function levenshtein(a, b) {
 // Strips trailing Roman numeral suffixes (e.g. "Langschwert II" → "langschwert")
 // to improve fuzzy matching across tiered item names.
 function normalize(name) {
-  return name.trim().toLowerCase().replace(/\s+[IVX]+$/, '')
+  return name.trim().toLowerCase().replace(TIER_RE, '')
 }
 
 // Index is built once lazily. If buildEquipmentIndex() throws, _indexBuilt stays

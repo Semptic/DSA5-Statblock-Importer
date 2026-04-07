@@ -1,4 +1,5 @@
 import { buildActor } from './actor-builder.js'
+import { resolveAll } from './compendium-resolver.js'
 
 export class ReviewDialog extends Application {
   constructor(data, options = {}) {
@@ -78,7 +79,7 @@ export class ReviewDialog extends Application {
       editedAttributes[attr] = isNaN(val) ? (this._data.stats?.attributes?.[attr] ?? 0) : val
     }
 
-    const readList = name => html.find(`[name="${name}"]`).val().trim()
+    const readList = fieldName => html.find(`[name="${fieldName}"]`).val().trim()
       .split(',').map(s => s.trim()).filter(Boolean)
 
     const editedWeapons = readList('edit-weapons').map(name => ({ name }))
@@ -95,8 +96,18 @@ export class ReviewDialog extends Application {
       schriften: readList('edit-schriften'),
     }
 
-    const { resolveAll } = await import('./compendium-resolver.js')
-    const editedResolution = await resolveAll(editedStats)
+    const listsChanged =
+      readList('edit-weapons').map(n => n).join(',') !== (this._data.stats?.weapons ?? []).filter(w => w.name.toLowerCase() !== 'waffenlos').map(w => w.name).join(',') ||
+      readList('edit-armor').join(',')    !== (this._data.stats?.armor ?? []).filter(a => a.name !== 'Keine').map(a => a.name).join(',') ||
+      readList('edit-sf').join(',')       !== (this._data.stats?.sonderfertigkeiten ?? []).join(',') ||
+      readList('edit-vorteile').join(',') !== (this._data.stats?.vorteile ?? []).join(',') ||
+      readList('edit-nachteile').join(',') !== (this._data.stats?.nachteile ?? []).filter(n => n.toLowerCase() !== 'keine').join(',') ||
+      readList('edit-sprachen').join(',') !== (this._data.stats?.sprachen ?? []).join(',') ||
+      readList('edit-schriften').join(',') !== (this._data.stats?.schriften ?? []).join(',')
+
+    const editedResolution = listsChanged
+      ? await resolveAll(editedStats)
+      : this._data.resolution
 
     const reviewState = {
       ...this._data,
