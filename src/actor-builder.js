@@ -85,6 +85,11 @@ export async function buildActor(reviewState) {
 
   const actor = await Actor.create(actorData)
 
+  // Initialize current wounds to parsed LeP so actor starts at full health (prevents Schmerz)
+  if (stats?.derived?.LeP != null) {
+    await actor.update({ 'system.status.wounds.value': stats.derived.LeP })
+  }
+
   // Create resolved items (weapons, armor, abilities, etc.)
   if (resolution?.items?.length) {
     await actor.createEmbeddedDocuments('Item', resolution.items.map(i => i.toObject?.() ?? i))

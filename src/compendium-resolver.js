@@ -3,6 +3,38 @@
  * Requires: game.dsa5.itemLibrary (Foundry runtime)
  */
 
+// Roman numeral suffix: "I", "II", "III", "I+II", "II+III", etc.
+const TIER_RE = /\s+([IVX]+(?:\+[IVX]+)*)$/
+
+function romanToInt(s) {
+  const vals = { I: 1, V: 5, X: 10, L: 50, C: 100 }
+  let result = 0, prev = 0
+  for (const ch of [...s].reverse()) {
+    const v = vals[ch] ?? 0
+    result += v < prev ? -v : v
+    prev = v
+  }
+  return result
+}
+
+// Returns { base: nameWithoutTier, tier: number }
+function extractTier(name) {
+  const m = name.match(TIER_RE)
+  if (!m) return { base: name, tier: 1 }
+  const tier = Math.max(...m[1].split('+').map(romanToInt))
+  return { base: name.slice(0, -m[0].length).trim(), tier }
+}
+
+// Clone item (or plain obj) and set step.value to tier
+function applyTier(item, tier) {
+  if (!item || tier <= 1) return item
+  const obj = typeof item.toObject === 'function' ? item.toObject() : { ...item, system: { ...item.system } }
+  if (obj.system && 'step' in obj.system) {
+    obj.system = { ...obj.system, step: { ...obj.system.step, value: tier } }
+  }
+  return obj
+}
+
 // Levenshtein distance for fuzzy matching
 function levenshtein(a, b) {
   const m = a.length, n = b.length
@@ -40,7 +72,7 @@ export async function resolveItem(name, preferredType, fallbackTypes = []) {
 
   // Strip trailing Roman numeral tier suffix before searching (e.g. "Gutaussehend I" → "Gutaussehend").
   // Some items are stored without the tier in the compendium.
-  const stripped = name.replace(/\s+[IVX]+$/, '').trim()
+  const stripped = name.replace(TIER_RE, '').trim()
 
   for (const type of [preferredType, ...fallbackTypes]) {
     // Fetch once per type, then check for exact match and approximate match
@@ -76,11 +108,11 @@ export function isEquipmentPack(item) {
 export async function resolveAll(parsed) {
   const results = { resolved: [], approximate: [], packs: [], missing: [] }
 
-  const resolve = async (name, type, fallbacks = []) => {
+  const resolve = async (name, type, fallbacks = [], displayName = name) => {
     const r = await resolveItem(name, type, fallbacks)
-    if (!r) { results.missing.push({ name, type }); return null }
+    if (!r) { results.missing.push({ name: displayName, type }); return null }
     if (isEquipmentPack(r.item)) { results.packs.push(r); return null }
-    if (r.matchType === 'approximate') results.approximate.push(r)
+    if (r.matchType === 'approximate') results.approximate.push({ ...r, originalName: r.originalName ?? name, displayName })
     else results.resolved.push(r)
     return r.item
   }
@@ -97,31 +129,41 @@ export async function resolveAll(parsed) {
   // SF names often include a specialization in parentheses: "Ortskenntnis (Festum)"
   // The compendium stores the base item; strip the specialization before looking up.
   const sfItems = await Promise.all(
-    parsed.sonderfertigkeiten.map(s => {
-      const base = s.replace(/\s*\(.*\)$/, '').trim()
-      return resolve(base || s, 'specialability')
+    parsed.sonderfertigkeiten.map(async s => {
+      const { base: baseNoSpec, tier } = extractTier(s)
+      const base = baseNoSpec.replace(/\s*\(.*\)$/, '').trim() || baseNoSpec
+      const item = await resolve(base, 'specialability', [], s)
+      return applyTier(item, tier)
     })
   )
   const vorteilItems = await Promise.all(
-    parsed.vorteile.map(v => resolve(v, 'advantage'))
+    parsed.vorteile.map(async v => {
+      const { base, tier } = extractTier(v)
+      const item = await resolve(base || v, 'advantage', [], v)
+      return applyTier(item, tier)
+    })
   )
   // "keine" means no disadvantages — skip
   const nachteilItems = await Promise.all(
     parsed.nachteile.filter(n => n.toLowerCase() !== 'keine')
-      .map(n => resolve(n, 'disadvantage'))
+      .map(async n => {
+        const { base, tier } = extractTier(n)
+        const item = await resolve(base || n, 'disadvantage', [], n)
+        return applyTier(item, tier)
+      })
   )
   // Languages are stored as "Sprache (X)" in the DSA5 compendium.
   // Statblock format: "Muttersprache Goblinisch III" → search "Sprache (Goblinisch)"
   const sprachenItems = await Promise.all(
     parsed.sprachen.map(s => {
       const base = s.replace(/^(Muttersprache|Zweitsprache|Taubstummensprache)\s+/i, '')
-                    .replace(/\s+[IVX]+$/, '').trim()
-      return resolve(`Sprache (${base})`, 'specialability')
+                    .replace(TIER_RE, '').trim()
+      return resolve(`Sprache (${base})`, 'specialability', [], s)
     })
   )
   // Scripts are stored as "Schrift (X)" in the DSA5 compendium.
   const schriftenItems = await Promise.all(
-    parsed.schriften.map(s => resolve(`Schrift (${s})`, 'specialability'))
+    parsed.schriften.map(s => resolve(`Schrift (${s})`, 'specialability', [], s))
   )
 
   return {

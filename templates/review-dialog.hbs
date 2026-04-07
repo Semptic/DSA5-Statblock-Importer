@@ -24,6 +24,38 @@
     {{/each}}
   </fieldset>
 
+  <!-- Editable import summary -->
+  <fieldset class="edit-summary"><legend>Zusammenfassung bearbeiten</legend>
+    <div class="form-group">
+      <label>Waffen</label>
+      <textarea name="edit-weapons" rows="2">{{editWeapons}}</textarea>
+    </div>
+    <div class="form-group">
+      <label>Rüstung</label>
+      <textarea name="edit-armor" rows="1">{{editArmor}}</textarea>
+    </div>
+    <div class="form-group">
+      <label>Sonderfertigkeiten</label>
+      <textarea name="edit-sf" rows="2">{{editSf}}</textarea>
+    </div>
+    <div class="form-group">
+      <label>Vorteile</label>
+      <textarea name="edit-vorteile" rows="2">{{editVorteile}}</textarea>
+    </div>
+    <div class="form-group">
+      <label>Nachteile</label>
+      <textarea name="edit-nachteile" rows="2">{{editNachteile}}</textarea>
+    </div>
+    <div class="form-group">
+      <label>Sprachen</label>
+      <textarea name="edit-sprachen" rows="1">{{editSprachen}}</textarea>
+    </div>
+    <div class="form-group">
+      <label>Schriften</label>
+      <textarea name="edit-schriften" rows="1">{{editSchriften}}</textarea>
+    </div>
+  </fieldset>
+
   <!-- Approximate matches -->
   {{#if approximate.length}}
   <fieldset class="approximate"><legend>Ungefähre Treffer</legend>

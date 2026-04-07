@@ -128,6 +128,17 @@ describe('parseStats - armor edge cases', () => {
   })
 })
 
+describe('parseStats - armor with spaces around slash', () => {
+  it('parses RS/BE with spaces around the slash', () => {
+    const result = parseStats(clean(
+      'MU 10 KL 10 IN 10 CH 10 FF 10 GE 10 KO 10 KK 10\n' +
+      'LeP 30 AsP - KaP - INI 10+1W6 AW 5 SK 0 ZK 0 GS 8 Schip 1\n' +
+      'RS/BE 5 / 1 (Schuppenrüstung)'
+    ))
+    expect(result.armor).toEqual([{ name: 'Schuppenrüstung', RS: 5, BE: 1 }])
+  })
+})
+
 describe('parseStats - armor malformed RS/BE line', () => {
   it('returns empty array when RS/BE line has no numeric values', () => {
     const result = parseStats(clean(
@@ -170,6 +181,17 @@ describe('parseStats - kampftechniken', () => {
     const result = parseStats('MU 10 KL 10 IN 10 CH 10 FF 10 GE 10 KO 10 KK 10\nKampftechniken: Schwerter 10, MalformedEntry\n')
     expect(result.kampftechniken).toHaveLength(1)
     expect(result.kampftechniken[0].name).toBe('Schwerter')
+  })
+  it('inserts missing commas between entries that lack them', () => {
+    const result = parseStats(
+      'MU 10 KL 10 IN 10 CH 10 FF 10 GE 10 KO 10 KK 10\n' +
+      'LeP 25 AsP - KaP - INI 10+1W6 AW 5 SK 0 ZK 0 GS 8 Schip 1\n' +
+      'Kampftechniken: Bogen 12 (13) Lanzen 14 (15/9), Raufen 11 (12/8)\n'
+    )
+    expect(result.kampftechniken).toHaveLength(3)
+    expect(result.kampftechniken).toContainEqual({ name: 'Bogen', value: 12, atBonus: 13, paBonus: null })
+    expect(result.kampftechniken).toContainEqual({ name: 'Lanzen', value: 14, atBonus: 15, paBonus: 9 })
+    expect(result.kampftechniken).toContainEqual({ name: 'Raufen', value: 11, atBonus: 12, paBonus: 8 })
   })
 })
 

@@ -42,6 +42,18 @@ export class ReviewDialog extends Application {
       approximate: resolution.approximate,
       missing: resolution.missing,
       packs: resolution.packs,
+      editWeapons: (stats?.weapons ?? [])
+        .filter(w => w.name.toLowerCase() !== 'waffenlos')
+        .map(w => w.name).join(', '),
+      editArmor: (stats?.armor ?? [])
+        .filter(a => a.name !== 'Keine')
+        .map(a => a.name).join(', '),
+      editSf: (stats?.sonderfertigkeiten ?? []).join(', '),
+      editVorteile: (stats?.vorteile ?? []).join(', '),
+      editNachteile: (stats?.nachteile ?? [])
+        .filter(n => n.toLowerCase() !== 'keine').join(', '),
+      editSprachen: (stats?.sprachen ?? []).join(', '),
+      editSchriften: (stats?.schriften ?? []).join(', '),
     }
   }
 
@@ -66,10 +78,31 @@ export class ReviewDialog extends Application {
       editedAttributes[attr] = isNaN(val) ? (this._data.stats?.attributes?.[attr] ?? 0) : val
     }
 
+    const readList = name => html.find(`[name="${name}"]`).val().trim()
+      .split(',').map(s => s.trim()).filter(Boolean)
+
+    const editedWeapons = readList('edit-weapons').map(name => ({ name }))
+    const editedArmor  = readList('edit-armor').map(name => ({ name }))
+    const editedStats  = {
+      ...this._data.stats,
+      attributes: editedAttributes,
+      weapons: editedWeapons,
+      armor: editedArmor.length ? editedArmor : [{ name: 'Keine', RS: 0, BE: 0 }],
+      sonderfertigkeiten: readList('edit-sf'),
+      vorteile: readList('edit-vorteile'),
+      nachteile: readList('edit-nachteile'),
+      sprachen: readList('edit-sprachen'),
+      schriften: readList('edit-schriften'),
+    }
+
+    const { resolveAll } = await import('./compendium-resolver.js')
+    const editedResolution = await resolveAll(editedStats)
+
     const reviewState = {
       ...this._data,
       fluff: { ...this._data.fluff, name },
-      stats: { ...this._data.stats, attributes: editedAttributes },
+      stats: editedStats,
+      resolution: editedResolution,
     }
 
     const actor = await buildActor(reviewState)

@@ -29,13 +29,13 @@ function parseWeapons(lines) {
 function parseArmor(lines) {
   const rsLine = lines.find(l => /^RS\/BE:?\s/.test(l))
   if (!rsLine) return []
-  // Named armor: "RS/BE 5/1 (Schuppenrüstung)" or "RS/BE: 0/0 (Normale Kleidung)"
-  const withName = rsLine.match(/RS\/BE:?\s+(\d+)\/(\d+)\s+\(([^)]+)\)/)
+  // Named armor: "RS/BE 5/1 (Schuppenrüstung)" or "RS/BE: 0/0 (Normale Kleidung)" or "RS/BE 5 / 1 (Schuppenrüstung)"
+  const withName = rsLine.match(/RS\/BE:?\s+(\d+)\s*\/\s*(\d+)\s+\(([^)]+)\)/)
   if (withName) {
     return [{ name: withName[3].trim(), RS: parseInt(withName[1]), BE: parseInt(withName[2]) }]
   }
   // No name: "RS/BE 0/0"
-  const noName = rsLine.match(/RS\/BE:?\s+(\d+)\/(\d+)/)
+  const noName = rsLine.match(/RS\/BE:?\s+(\d+)\s*\/\s*(\d+)/)
   return noName ? [{ name: 'Keine', RS: parseInt(noName[1]), BE: parseInt(noName[2]) }] : []
 }
 
@@ -86,7 +86,10 @@ function extractBlocks(text) {
 
 function parseKampftechniken(block) {
   if (!block) return []
-  return block.split(',').map(s => s.trim()).filter(Boolean).map(entry => {
+  // Some statbook formats omit the comma between the first two entries:
+  // "Bogen 12 (13) Lanzen 14 (15/9), Raufen 11..." → insert missing commas
+  const normalized = block.replace(/([)\d])\s+(?=[A-ZÄÖÜ])/g, '$1, ')
+  return normalized.split(',').map(s => s.trim()).filter(Boolean).map(entry => {
     const m = entry.match(/^(.+?)\s+(\d+)(?:\s*\((\d+)(?:\/(\d+))?\))?$/)
     if (!m) return null
     return { name: m[1].trim(), value: parseInt(m[2]), atBonus: m[3] ? parseInt(m[3]) : null, paBonus: m[4] ? parseInt(m[4]) : null }
