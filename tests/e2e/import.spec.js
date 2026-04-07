@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { test, expect } from './foundry-fixture.js'
-import { splitFixtureSections, assertActor } from './helpers.js'
+import { splitFixtureSections, assertActor, openImportDialog } from './helpers.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const fixturesDir = path.resolve(__dirname, '../fixtures')
@@ -30,16 +30,7 @@ for (const fixtureName of FIXTURES) {
       return existing?.delete()
     }, expected.name)
 
-    // Import button has no CSS selector or name attribute — find by German button text.
-    // Note: must use JS click (not Playwright locator) because the sidebar
-    // may be partially outside the Playwright viewport.
-    await page.evaluate(() => {
-      const btn = Array.from(document.querySelectorAll('#actors .action-buttons button'))
-        .find(b => b.textContent.includes('importieren'))
-      if (!btn) throw new Error('Import button ("Statblock importieren") not found in actors directory')
-      btn.click()
-    })
-    await page.locator('#dsa5-statblock-importer').waitFor()
+    await openImportDialog(page)
 
     // Fill textareas from fixture file
     const fixtureText = fs.readFileSync(path.join(fixturesDir, `${fixtureName}.txt`), 'utf8')

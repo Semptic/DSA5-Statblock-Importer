@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { test, expect } from './foundry-fixture.js'
-import { splitFixtureSections, assertActor } from './helpers.js'
+import { splitFixtureSections, assertActor, openImportDialog } from './helpers.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const fixturesDir = path.resolve(__dirname, '../fixtures')
@@ -10,14 +10,7 @@ const fixturesDir = path.resolve(__dirname, '../fixtures')
 test('empty input shows error notification, no actor created', async ({ page }) => {
   const actorCountBefore = await page.evaluate(() => game.actors.size)
 
-  // Open import dialog via JS click (sidebar may be outside viewport)
-  await page.evaluate(() => {
-    const btn = [...document.querySelectorAll('#actors .action-buttons button')]
-      .find(b => b.textContent.includes('importieren'))
-    if (!btn) throw new Error('Import button not found')
-    btn.click()
-  })
-  await page.locator('#dsa5-statblock-importer').waitFor()
+  await openImportDialog(page)
 
   // Click Analyse with all textareas empty
   await page.locator('button[name="analyse"]').click()
@@ -42,19 +35,13 @@ test('stats-only import creates actor with correct attributes', async ({ page })
   // Delete pre-existing actor
   await page.evaluate(name => game.actors.getName(name)?.delete(), expected.name)
 
-  // Open dialog
-  await page.evaluate(() => {
-    const btn = [...document.querySelectorAll('#actors .action-buttons button')]
-      .find(b => b.textContent.includes('importieren'))
-    if (!btn) throw new Error('Import button not found')
-    btn.click()
-  })
-  await page.locator('#dsa5-statblock-importer').waitFor()
+  await openImportDialog(page)
 
   // Fill only stats textarea
   const fixtureText = fs.readFileSync(path.join(fixturesDir, 'synthetic-stats-only.txt'), 'utf8')
   const [stats] = splitFixtureSections(fixtureText)
-  await page.locator('textarea[name="stats"]').fill(stats ?? '')
+  if (!stats) throw new Error('synthetic-stats-only.txt has no stats section')
+  await page.locator('textarea[name="stats"]').fill(stats)
   // fluff and gossip intentionally left empty
 
   await page.locator('button[name="analyse"]').click()
@@ -78,13 +65,7 @@ test('nfk1-jaani shows approximate matches in review dialog before creation', as
   await page.evaluate(name => game.actors.getName(name)?.delete(), expected.name)
 
   // Open dialog and fill all sections
-  await page.evaluate(() => {
-    const btn = [...document.querySelectorAll('#actors .action-buttons button')]
-      .find(b => b.textContent.includes('importieren'))
-    if (!btn) throw new Error('Import button not found')
-    btn.click()
-  })
-  await page.locator('#dsa5-statblock-importer').waitFor()
+  await openImportDialog(page)
 
   const fixtureText = fs.readFileSync(path.join(fixturesDir, 'nfk1-jaani.txt'), 'utf8')
   const [stats, fluff, gossip] = splitFixtureSections(fixtureText)

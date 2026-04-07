@@ -1,4 +1,21 @@
 /**
+ * Opens the DSA5 Statblock Importer dialog by clicking the German import button
+ * in the Actors sidebar. Uses JS click because the sidebar may be partially
+ * outside the Playwright viewport.
+ *
+ * @param {import('@playwright/test').Page} page
+ */
+export async function openImportDialog(page) {
+  await page.evaluate(() => {
+    const btn = Array.from(document.querySelectorAll('#actors .action-buttons button'))
+      .find(b => b.textContent.includes('importieren'))
+    if (!btn) throw new Error('Import button ("Statblock importieren") not found')
+    btn.click()
+  })
+  await page.locator('#dsa5-statblock-importer').waitFor()
+}
+
+/**
  * Splits a fixture file into its stats/fluff/gossip sections.
  * Section headers are lines containing exactly "stats:", "fluff:", or "gossip:".
  * Returns [stats, fluff, gossip] — sections absent from the file are undefined.
