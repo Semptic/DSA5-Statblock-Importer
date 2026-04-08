@@ -155,7 +155,7 @@ export async function resolveAll(parsed) {
     const r = await resolveItem(name, type, fallbacks)
     if (!r) { results.missing.push({ name: displayName, type }); return null }
     if (isEquipmentPack(r.item)) { results.packs.push(r); return null }
-    if (r.matchType === 'approximate') results.approximate.push({ ...r, originalName: r.originalName ?? name, displayName })
+    if (r.matchType === 'approximate') results.approximate.push({ ...r, originalName: displayName, matchedName: r.item.name, displayName })
     else results.resolved.push(r)
     return r.item
   }
