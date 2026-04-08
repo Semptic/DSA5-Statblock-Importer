@@ -38,6 +38,10 @@
   text-align: center;
 }
 
+.dsa5-review-form .reanalyse-row {
+  margin-top: 8px;
+}
+
 .dsa5-review-form .form-footer {
   display: flex;
   justify-content: flex-end;
