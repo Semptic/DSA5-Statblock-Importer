@@ -128,7 +128,7 @@ function parseTalente(block) {
   return result
 }
 
-function parseCommaList(block) {
+export function parseCommaList(block) {
   if (!block) return []
   // Split on commas that are NOT inside parentheses
   const result = []

@@ -1,5 +1,6 @@
 import { buildActor } from './actor-builder.js'
 import { resolveAll } from './compendium-resolver.js'
+import { parseCommaList } from './parser/stats-parser.js'
 
 export class ReviewDialog extends Application {
   constructor(data, options = {}) {
@@ -22,7 +23,6 @@ export class ReviewDialog extends Application {
     const { stats, fluff, gossip, resolution } = this._data
     return {
       name: [fluff?.titel, fluff?.name ?? stats?.name].filter(Boolean).join(' ') || '',
-      nameRequired: !(fluff?.name ?? stats?.name),
       npcCategory: fluff?.npcCategory,
       titel: fluff?.titel,
       attributes: stats?.attributes ?? {},
@@ -67,8 +67,7 @@ export class ReviewDialog extends Application {
 
   // Read current form values into { name, editedStats }.
   _readFormState(html) {
-    const readList = fieldName => html.find(`[name="${fieldName}"]`).val().trim()
-      .split(',').map(s => s.trim()).filter(Boolean)
+    const readList = fieldName => parseCommaList(html.find(`[name="${fieldName}"]`).val().trim())
 
     const attrs = ['MU', 'KL', 'IN', 'CH', 'FF', 'GE', 'KO', 'KK']
     const editedAttributes = {}
@@ -110,6 +109,7 @@ export class ReviewDialog extends Application {
 
   async _onCreate(html) {
     const { name, editedStats } = this._readFormState(html)
+    html.find('[name="actor-name"]').removeClass('error')
     if (!name) {
       ui.notifications.warn('Name ist ein Pflichtfeld.')
       html.find('[name="actor-name"]').addClass('error')

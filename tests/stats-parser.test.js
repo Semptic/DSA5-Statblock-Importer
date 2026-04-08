@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs'
 import { describe, it, expect } from 'vitest'
-import { parseStats } from '../src/parser/stats-parser.js'
+import { parseStats, parseCommaList } from '../src/parser/stats-parser.js'
 import { clean } from '../src/parser/cleaner.js'
 
 function loadSection(fixture, section) {
@@ -264,5 +264,24 @@ describe('parseStats - prose', () => {
   })
   it('extracts Flucht as string', () => {
     expect(stats.flucht).toBe('Unter 10 LeP')
+  })
+})
+
+describe('parseCommaList', () => {
+  it('splits on top-level commas only, preserving parenthesized commas', () => {
+    expect(parseCommaList('Wuchtschlag I+II (Haken, Säbel), Klingensturm')).toEqual([
+      'Wuchtschlag I+II (Haken, Säbel)',
+      'Klingensturm',
+    ])
+  })
+  it('returns empty array for empty/null input', () => {
+    expect(parseCommaList('')).toEqual([])
+    expect(parseCommaList(null)).toEqual([])
+  })
+  it('handles a single entry without commas', () => {
+    expect(parseCommaList('Gutaussehend')).toEqual(['Gutaussehend'])
+  })
+  it('trims whitespace from entries', () => {
+    expect(parseCommaList('  Foo , Bar  ')).toEqual(['Foo', 'Bar'])
   })
 })
