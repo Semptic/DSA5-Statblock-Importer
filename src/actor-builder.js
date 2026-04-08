@@ -7,7 +7,7 @@ import { resolveItem } from './compendium-resolver.js'
 
 function buildGmNotes(fluff, gossip, stats) {
   const lines = []
-  if (fluff.npcCategory) lines.push(`<h2>[${fluff.npcCategory}] ${fluff.titel ?? ''} ${fluff.name ?? ''}</h2>`)
+  if (fluff.npcCategory) lines.push(`<h2>[${fluff.npcCategory}] ${fluff.name ?? ''}</h2>`)
   if (fluff.kurzcharakteristik) lines.push(`<p><strong>Kurzcharakteristik:</strong> ${fluff.kurzcharakteristik}</p>`)
   if (fluff.motivation) lines.push(`<p><strong>Motivation:</strong> ${fluff.motivation}</p>`)
   if (fluff.agenda) lines.push(`<p><strong>Agenda:</strong> ${fluff.agenda}</p>`)
