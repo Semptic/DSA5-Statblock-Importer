@@ -125,4 +125,4 @@ Unit tests live in `tests/` and cover `src/parser/**` at 100% branch coverage. A
 
 ## License
 
-[MIT](LICENSE)
+[Apache 2.0](LICENSE)
