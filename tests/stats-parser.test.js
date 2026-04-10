@@ -284,4 +284,16 @@ describe('parseCommaList', () => {
   it('trims whitespace from entries', () => {
     expect(parseCommaList('  Foo , Bar  ')).toEqual(['Foo', 'Bar'])
   })
+  it('collapses line-wrapped entries (PDF line break within a list)', () => {
+    expect(parseCommaList('Fertigkeitsspezialisierung\nReiten (Kampfmanöver), Wuchtschlag I+II')).toEqual([
+      'Fertigkeitsspezialisierung Reiten (Kampfmanöver)',
+      'Wuchtschlag I+II',
+    ])
+  })
+  it('keeps Fertigkeitsspezialisierung as a single entry alongside other SF', () => {
+    expect(parseCommaList('Fertigkeitsspezialisierung Reiten (Kampfmanöver), Ortskenntnis (Festum)')).toEqual([
+      'Fertigkeitsspezialisierung Reiten (Kampfmanöver)',
+      'Ortskenntnis (Festum)',
+    ])
+  })
 })

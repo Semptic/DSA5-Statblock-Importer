@@ -94,13 +94,112 @@ function normalize(name) {
   return name.trim().toLowerCase().replace(TIER_RE, '')
 }
 
-// Index is built once lazily. If buildEquipmentIndex() throws, _indexBuilt stays
-// false so the next call retries. Does not auto-refresh if packs change at runtime.
-let _indexBuilt = false
+// Splits a parenthesized spec containing commas at the outermost level.
+// "Persönlichkeitsschwäche (Arroganz, Eitelkeit)" → { base: "Persönlichkeitsschwäche", parts: ["Arroganz", "Eitelkeit"] }
+// "Ortskenntnis (Festum)" → null  (no comma)
+// "Schriftstellerei (Sagen & Legenden (Märchen))" → null  (comma only inside nested parens)
+export function splitCommaSpec(name) {
+  // Find the outermost opening paren position using extractSpec logic
+  let depth = 0, outerOpen = -1
+  for (let i = 0; i < name.length; i++) {
+    if (name[i] === '(') {
+      if (depth === 0) outerOpen = i
+      depth++
+    } else if (name[i] === ')') {
+      depth--
+    }
+  }
+  if (depth !== 0 || outerOpen < 0) return null
+  const base = name.slice(0, outerOpen).trim()
+  if (!base) return null
+  const inner = name.slice(outerOpen + 1, name.length - 1)
+
+  // Split inner on commas at depth 0 only
+  const parts = []
+  let current = '', d = 0
+  for (const ch of inner) {
+    if (ch === '(') d++
+    else if (ch === ')') d--
+    if (ch === ',' && d === 0) {
+      const p = current.trim()
+      if (p) parts.push(p)
+      current = ''
+    } else {
+      current += ch
+    }
+  }
+  const last = current.trim()
+  if (last) parts.push(last)
+
+  if (parts.length < 2) return null
+  return { base, parts }
+}
+
+// Parses a statblock name against an adoption registry object.
+// Registry keys are like "Fertigkeitsspezialisierung ()" with base name + " ()".
+// For area:true items: "Fertigkeitsspezialisierung Reiten (Kampfmanöver)"
+//   → { baseName: "Fertigkeitsspezialisierung", adoptionName: "Reiten", customEntry: "Kampfmanöver", rule }
+// For text/other items: "Ortskenntnis (Festum)"
+//   → { baseName: "Ortskenntnis", adoptionName: "Festum", customEntry: null, rule }
+export function parseAdoption(name, registry) {
+  if (!name || !registry) return null
+
+  // Sort keys longest-first to prefer "Weg der Gelehrten" over "Weg"
+  const entries = Object.entries(registry).sort((a, b) => b[0].length - a[0].length)
+
+  for (const [key, rule] of entries) {
+    const baseName = key.replace(/\s*\(\)$/, '').trim()
+    if (!baseName) continue
+
+    if (rule.area) {
+      // Pattern: "BaseName Skill (Spec)" or "BaseName Skill"
+      if (!name.startsWith(baseName + ' ')) continue
+      const rest = name.slice(baseName.length).trim()
+      // Check if rest has a trailing (...) for the spec
+      const specIdx = rest.lastIndexOf(' (')
+      if (specIdx >= 0 && rest.endsWith(')')) {
+        const adoptionName = rest.slice(0, specIdx).trim()
+        const customEntry = rest.slice(specIdx + 2, rest.length - 1).trim()
+        if (adoptionName) return { baseName, adoptionName, customEntry: customEntry || null, rule }
+      }
+      // No spec: just "BaseName Skill"
+      if (rest && !rest.startsWith('(')) {
+        return { baseName, adoptionName: rest, customEntry: null, rule }
+      }
+    } else {
+      // Pattern: "BaseName (Text)" or just "BaseName" matching via normal spec-stripping
+      if (name === baseName) return { baseName, adoptionName: '', customEntry: null, rule }
+      if (!name.startsWith(baseName)) continue
+      const rest = name.slice(baseName.length).trim()
+      if (!rest.startsWith('(') || !rest.endsWith(')')) continue
+      const adoptionName = rest.slice(1, rest.length - 1).trim()
+      return { baseName, adoptionName, customEntry: null, rule }
+    }
+  }
+  return null
+}
+
+// Applies adoption data (name + effect.value) to a plain item object in-place.
+export function applyAdoptionToItem(itemObj, adoption) {
+  const { baseName, adoptionName, customEntry, rule } = adoption
+  itemObj.name = customEntry
+    ? `${baseName} (${adoptionName}, ${customEntry})`
+    : `${baseName} (${adoptionName})`
+  if (rule.effect && itemObj.system?.effect !== undefined) {
+    itemObj.system.effect.value = `${adoptionName} ${rule.effect}`
+  }
+}
+
+// Index is built once lazily. Storing the promise (not a boolean) means concurrent
+// callers all await the same build instead of each kicking off their own.
+// If buildEquipmentIndex() rejects, _indexPromise is reset so the next call retries.
+let _indexPromise = null
 async function ensureIndex() {
-  if (_indexBuilt) return
-  await game.dsa5.itemLibrary.buildEquipmentIndex()
-  _indexBuilt = true
+  if (!_indexPromise) {
+    _indexPromise = game.dsa5.itemLibrary.buildEquipmentIndex()
+      .catch(err => { _indexPromise = null; throw err })
+  }
+  await _indexPromise
 }
 
 export async function resolveItem(name, preferredType, fallbackTypes = []) {
@@ -148,6 +247,48 @@ export function isEquipmentPack(item) {
     (item.name.toLowerCase().includes('paket') || item.system?.pack === true)
 }
 
+// Returns the adoption registry for a given item type (requires Foundry runtime).
+function getAdoptionRegistry(type) {
+  if (!game.dsa5?.config) return null
+  if (type === 'specialability') return game.dsa5.config.AbilitiesNeedingAdaption ?? null
+  if (type === 'advantage' || type === 'disadvantage') return game.dsa5.config.vantagesNeedingAdaption ?? null
+  return null
+}
+
+// Searches the compendium for all items matching the base name, then checks if each
+// comma-separated part has an exact variant (e.g. "Base (Part)"). Returns an array of
+// matched Foundry item documents (one per part) if ALL parts match, null otherwise.
+async function resolveVariants(name, type) {
+  const split = splitCommaSpec(name)
+  if (!split) return null
+  await ensureIndex()
+  const candidates = await game.dsa5.itemLibrary.findCompendiumItem(split.base, type)
+  if (!candidates?.length) return null
+  const matched = []
+  for (const part of split.parts) {
+    const expected = `${split.base} (${part})`
+    const item = candidates.find(i => i.type === type && i.name.toLowerCase() === expected.toLowerCase())
+    if (!item) return null
+    matched.push(item)
+  }
+  return matched
+}
+
+// Adoption-aware fallback: checks DSA5 adoption registries for items that need a skill/text
+// selection (e.g. "Fertigkeitsspezialisierung Reiten (Kampfmanöver)"). Resolves the base
+// compendium item and applies the adoption (name + effect.value). Returns a plain object.
+async function tryAdoptionResolve(name, type) {
+  const registry = getAdoptionRegistry(type)
+  if (!registry) return null
+  const adoption = parseAdoption(name, registry)
+  if (!adoption) return null
+  const r = await resolveItem(adoption.baseName, type)
+  if (!r?.item) return null
+  const obj = typeof r.item.toObject === 'function' ? r.item.toObject() : foundry.utils.deepClone(r.item)
+  applyAdoptionToItem(obj, adoption)
+  return obj
+}
+
 export async function resolveAll(parsed) {
   const results = { resolved: [], approximate: [], packs: [], missing: [] }
 
@@ -156,8 +297,46 @@ export async function resolveAll(parsed) {
     if (!r) { results.missing.push({ name: displayName, type }); return null }
     if (isEquipmentPack(r.item)) { results.packs.push(r); return null }
     if (r.matchType === 'approximate') results.approximate.push({ ...r, originalName: displayName, matchedName: r.item.name, displayName })
-    else results.resolved.push(r)
+    else results.resolved.push({ ...r, originalName: displayName, type })
     return r.item
+  }
+
+  // 3-step pipeline for SF / Vorteile / Nachteile:
+  //   1. Variant split – "Base (A, B)" → search compendium once, match exact variants
+  //   2. Normal resolution + applyTierAndSpec
+  //   3. Adoption fallback – "Fertigkeitsspezialisierung Reiten (Spec)" → base + adoption
+  const resolveEntry = async (entry, type) => {
+    const { base: baseNoSpec, tier } = extractTier(entry)
+
+    // Step 1: variant split (e.g. "Persönlichkeitsschwäche (Arroganz, Eitelkeit)")
+    const variantItems = await resolveVariants(entry, type)
+    if (variantItems) {
+      for (const item of variantItems) {
+        if (isEquipmentPack(item)) { results.packs.push({ item }); }
+        else results.resolved.push({ item, matchType: 'exact', originalName: item.name, type })
+      }
+      // Each variant is already its own item; apply tier 1 (variants don't stack)
+      return variantItems.map(item => applyTier(item, 1))
+    }
+
+    // Step 2: normal resolution
+    const r = await resolveItem(baseNoSpec, type)
+    if (r) {
+      if (isEquipmentPack(r.item)) { results.packs.push(r); return [] }
+      if (r.matchType === 'approximate') results.approximate.push({ ...r, originalName: entry, matchedName: r.item.name, displayName: entry })
+      else results.resolved.push({ ...r, originalName: entry, type })
+      return Array.from({ length: tier }, (_, i) => applyTierAndSpec(r.item, i + 1, baseNoSpec))
+    }
+
+    // Step 3: adoption fallback
+    const adoptedObj = await tryAdoptionResolve(entry, type)
+    if (adoptedObj) {
+      results.resolved.push({ item: adoptedObj, matchType: 'adoption', originalName: entry, type })
+      return Array.from({ length: tier }, (_, i) => applyTier(adoptedObj, i + 1))
+    }
+
+    results.missing.push({ name: entry, type })
+    return []
   }
 
   // "Waffenlos" is unarmed combat — not a weapon item, handled by Raufen combat skill
@@ -169,34 +348,20 @@ export async function resolveAll(parsed) {
   const armorItems = await Promise.all(
     parsed.armor.filter(a => a.name !== 'Keine').map(a => resolve(a.name, 'armor'))
   )
-  // SF names may include a parenthesized specialization ("Ortskenntnis (Festum)") or may
-  // exist verbatim in the compendium ("Schnellladen (Bögen)"). Pass the full name to
-  // resolveItem so an exact match is attempted first; the spec-stripped fallback inside
-  // resolveItem handles cases where only the base name is in the compendium. After
-  // resolution, applyTierAndSpec restores the original specialization in the item name.
-  const sfItems = await Promise.all(
-    parsed.sonderfertigkeiten.map(async s => {
-      const { base: baseNoSpec, tier } = extractTier(s)
-      const item = await resolve(baseNoSpec, 'specialability', [], s)
-      return applyTierAndSpec(item, tier, baseNoSpec)
-    })
-  )
-  const vorteilItems = await Promise.all(
-    parsed.vorteile.map(async v => {
-      const { base: baseNoSpec, tier } = extractTier(v)
-      const item = await resolve(baseNoSpec || v, 'advantage', [], v)
-      return applyTierAndSpec(item, tier, baseNoSpec || v)
-    })
-  )
+  // SF / Vorteile / Nachteile use the 3-step resolveEntry pipeline.
+  // For tiered items (e.g. "Hohe Lebenskraft V"), DSA5 actors need one embedded item per
+  // level (I through V), because each level is purchased separately in the system.
+  const sfItems = (await Promise.all(
+    parsed.sonderfertigkeiten.map(s => resolveEntry(s, 'specialability'))
+  )).flat()
+  const vorteilItems = (await Promise.all(
+    parsed.vorteile.map(v => resolveEntry(v, 'advantage'))
+  )).flat()
   // "keine" means no disadvantages — skip
-  const nachteilItems = await Promise.all(
+  const nachteilItems = (await Promise.all(
     parsed.nachteile.filter(n => n.toLowerCase() !== 'keine')
-      .map(async n => {
-        const { base: baseNoSpec, tier } = extractTier(n)
-        const item = await resolve(baseNoSpec || n, 'disadvantage', [], n)
-        return applyTierAndSpec(item, tier, baseNoSpec || n)
-      })
-  )
+      .map(n => resolveEntry(n, 'disadvantage'))
+  )).flat()
   // Languages are stored as "Sprache (X)" in the DSA5 compendium.
   // Statblock format: "Muttersprache Goblinisch III" → search "Sprache (Goblinisch)"
   const sprachenItems = await Promise.all(
