@@ -99,38 +99,13 @@ nix develop --command pnpm build
 # Unit tests (pure parser logic, no Foundry needed)
 nix develop --command pnpm test
 
-# Unit tests with coverage (100% threshold on src/parser/**)
+# Unit tests with coverage
 nix develop --command pnpm test:coverage
 
 # E2e tests (requires Foundry running via docker-compose)
 docker-compose up -d
 nix develop --command pnpm test:e2e
 ```
-
-### Project Structure
-
-```
-src/
-  main.js               # Entry point, injects sidebar button
-  import-dialog.js      # Initial paste dialog
-  review-dialog.js      # Review/edit before actor creation
-  actor-builder.js      # Builds Foundry NPC actor from parsed data
-  compendium-resolver.js # Fuzzy-matches names to DSA5 compendiums
-  parser/
-    cleaner.js          # PDF text normalization
-    stats-parser.js     # Attribute, weapon, talent, SF parsing
-    fluff-parser.js     # Background/motivation text parsing
-    gossip-parser.js    # Gerüchte section parsing
-templates/              # Handlebars templates
-languages/              # i18n (de.json, en.json)
-tests/                  # Vitest unit tests + Playwright e2e tests
-  fixtures/             # Raw statblock text fixtures
-  fixtures/expected/    # Expected JSON outputs
-```
-
-### Adding Tests
-
-Unit tests live in `tests/` and cover `src/parser/**` at 100% branch coverage. Add a test case whenever parser logic changes. E2e tests use Playwright against a local Foundry Docker instance and cover the full import dialog → review dialog → actor creation flow.
 
 ---
 
