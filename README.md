@@ -17,7 +17,6 @@ A [Foundry VTT](https://foundryvtt.com/) module that imports DSA5 NPC statblocks
 - Override any compendium match by dragging the correct item into the review dialog
 - Drag Spezies, Kultur, and Profession items from the compendium (or type a free-text profession name)
 - Builds rich GM notes from the fluff and gossip sections of the statblock
-- Equipment packs are flagged in chat for manual assignment
 
 ---
 
@@ -56,17 +55,27 @@ Or download the repository and place it in your `Data/modules/dsa5-statblock-imp
 The importer expects the standard DSA5 statblock layout as found in official Pegasus Press adventures (copy-pasted from PDF). Example:
 
 ```
-Jaruslaw von Kirschhausen
-MU 13 KL 10 IN 11 CH 12 FF 11 GE 13 KO 15 KK 15
-LeP 42 AsP – KaP – INI 14+1W6 AW 6 SK 1 ZK 2 GS 8
-Schips: 3
-RS/BE: 4/1 (Schuppenrüstung)
-Langschwert: AT 14 PA 9 TP 1W6+4 RW kurz
-Kampftechniken: Schwerter 14 (15/9), Lanzen 12 (13/-)
-Vorteile: Adel, Hohe Lebenskraft I
-Nachteile: Persönlichkeitsschwäche (Eitelkeit)
-SF: Wuchtschlag, Finte, Berittener Kampf
-Talente: Reiten 12, Etikette 10
+Swafrieda Eldridsdottir
+MU 12 KL 11 IN 12 CH 11
+FF 11 GE 12 KO 11 KK 10
+LeP 27 AsP– KaP– INI 12+1W6
+SK1 ZK 0 AW6 GS8
+Waffenlos: AT 10 PA6 TP 1W6 RW kurz
+Messer: AT 10 PA4 TP 1W6+1 RWkurz
+Kurzbogen: FK 10 LZ1 TP 1W6+4 RW10/50/80
+RS/BE 0/0
+Sonderfertigkeiten: keine
+Vorteile/Nachteile: Schlechte Eigenschaft (Rachsucht)
+Talente: Einschüchtern 0, Körperbeherrschung
+4, Kraftakt 2, Menschenkenntnis
+2, Selbstbeherrschung 2, Sinnesschärfe
+4, Überreden 4, Verbergen 3,
+Willenskraft 4
+Kampfverhalten: Im Kampf zeigt Swafrieda
+ein tollkühnes Verhalten.
+Flucht: Swafrieda flieht bei drei Stufen
+Schmerz.
+Schmerz +1 bei: 20 LeP, 14 LeP, 7 LeP, 5 oder weniger LeP
 ```
 
 ---
@@ -90,38 +99,13 @@ nix develop --command pnpm build
 # Unit tests (pure parser logic, no Foundry needed)
 nix develop --command pnpm test
 
-# Unit tests with coverage (100% threshold on src/parser/**)
+# Unit tests with coverage
 nix develop --command pnpm test:coverage
 
 # E2e tests (requires Foundry running via docker-compose)
 docker-compose up -d
 nix develop --command pnpm test:e2e
 ```
-
-### Project Structure
-
-```
-src/
-  main.js               # Entry point, injects sidebar button
-  import-dialog.js      # Initial paste dialog
-  review-dialog.js      # Review/edit before actor creation
-  actor-builder.js      # Builds Foundry NPC actor from parsed data
-  compendium-resolver.js # Fuzzy-matches names to DSA5 compendiums
-  parser/
-    cleaner.js          # PDF text normalization
-    stats-parser.js     # Attribute, weapon, talent, SF parsing
-    fluff-parser.js     # Background/motivation text parsing
-    gossip-parser.js    # Gerüchte section parsing
-templates/              # Handlebars templates
-languages/              # i18n (de.json, en.json)
-tests/                  # Vitest unit tests + Playwright e2e tests
-  fixtures/             # Raw statblock text fixtures
-  fixtures/expected/    # Expected JSON outputs
-```
-
-### Adding Tests
-
-Unit tests live in `tests/` and cover `src/parser/**` at 100% branch coverage. Add a test case whenever parser logic changes. E2e tests use Playwright against a local Foundry Docker instance and cover the full import dialog → review dialog → actor creation flow.
 
 ---
 
