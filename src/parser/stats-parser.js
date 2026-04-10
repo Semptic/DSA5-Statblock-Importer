@@ -194,7 +194,7 @@ export function parseStats(text) {
     sozialstatus: blocks['Sozialstatus'] || null,
     sprachen: parseCommaList(blocks['Sprachen']),
     schriften: parseCommaList(blocks['Schriften']),
-    vorteile: vnCombined.length ? vnCombined : parseCommaList(blocks['Vorteile']),
+    vorteile: vnCombined.length ? [] : parseCommaList(blocks['Vorteile']),
     nachteile: vnCombined.length ? vnCombined : parseCommaList(blocks['Nachteile']),
     kampfverhalten: blocks['Kampfverhalten'] || null,
     flucht: blocks['Flucht'] || null,

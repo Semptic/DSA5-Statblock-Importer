@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker exec foundry-dsa5-dev:*)",
+      "Skill(commit)"
+    ]
+  }
+}

@@ -306,10 +306,10 @@ describe('parseStats - talente multi-line wrapping', () => {
 
 describe('parseStats - Vorteile/Nachteile combined header', () => {
   const ATTRS = 'MU 10 KL 10 IN 10 CH 10 FF 10 GE 10 KO 10 KK 10'
-  it('puts items from combined Vorteile/Nachteile header into both vorteile and nachteile', () => {
+  it('puts items from combined Vorteile/Nachteile header into nachteile only', () => {
     const result = parseStats(`${ATTRS}\nVorteile/Nachteile: Schlechte Eigenschaft (Rachsucht)\n`)
-    expect(result.vorteile).toContain('Schlechte Eigenschaft (Rachsucht)')
     expect(result.nachteile).toContain('Schlechte Eigenschaft (Rachsucht)')
+    expect(result.vorteile).toEqual([])
   })
   it('separate Vorteile: and Nachteile: headers still work independently', () => {
     const result = parseStats(`${ATTRS}\nVorteile: Gut Aussehend I\nNachteile: Vorurteil (Elfen)\n`)
@@ -321,7 +321,7 @@ describe('parseStats - Vorteile/Nachteile combined header', () => {
   it('combined header does not bleed into Sonderfertigkeiten block', () => {
     const result = parseStats(`${ATTRS}\nSonderfertigkeiten: keine\nVorteile/Nachteile: Schlechte Eigenschaft (Rachsucht)\n`)
     expect(result.sonderfertigkeiten).toEqual(['keine'])
-    expect(result.vorteile).toContain('Schlechte Eigenschaft (Rachsucht)')
+    expect(result.nachteile).toContain('Schlechte Eigenschaft (Rachsucht)')
   })
 })
 

@@ -408,7 +408,7 @@ export async function resolveAll(parsed) {
     for (let i = 0; i < nonWaffenlosWeapons.length; i++) {
       const item = weaponItems[i]
       if (!item) continue
-      const ct = item.system?.combatTechnique
+      const ct = item.system?.combatskill?.value
       if (!ct) continue
       const val = nonWaffenlosWeapons[i].FK ?? nonWaffenlosWeapons[i].AT
       if (val == null) continue
