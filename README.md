@@ -17,7 +17,6 @@ A [Foundry VTT](https://foundryvtt.com/) module that imports DSA5 NPC statblocks
 - Override any compendium match by dragging the correct item into the review dialog
 - Drag Spezies, Kultur, and Profession items from the compendium (or type a free-text profession name)
 - Builds rich GM notes from the fluff and gossip sections of the statblock
-- Equipment packs are flagged in chat for manual assignment
 
 ---
 
