@@ -84,6 +84,16 @@ describe('parseAdoption', () => {
     })
   })
 
+  it('parses text item with colon inside spec', () => {
+    const result = parseAdoption('Schlechte Angewohnheit (Belästigung: Frauen)', ADOPTION_REGISTRY)
+    expect(result).toEqual({
+      baseName: 'Schlechte Angewohnheit',
+      adoptionName: 'Belästigung: Frauen',
+      customEntry: null,
+      rule: ADOPTION_REGISTRY['Schlechte Angewohnheit ()'],
+    })
+  })
+
   it('returns null for item not in registry', () => {
     expect(parseAdoption('Gutaussehend I', ADOPTION_REGISTRY)).toBeNull()
   })

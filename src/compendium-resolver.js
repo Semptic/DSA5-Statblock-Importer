@@ -303,8 +303,9 @@ export async function resolveAll(parsed) {
 
   // 3-step pipeline for SF / Vorteile / Nachteile:
   //   1. Variant split – "Base (A, B)" → search compendium once, match exact variants
-  //   2. Normal resolution + applyTierAndSpec
-  //   3. Adoption fallback – "Fertigkeitsspezialisierung Reiten (Spec)" → base + adoption
+  //   2. Adoption fallback – checked before normal resolution so "Ortskenntnis (Kirschhausen)"
+  //      resolves cleanly via the adoption registry instead of approximating to "Ortskenntnis ()"
+  //   3. Normal resolution + applyTierAndSpec
   const resolveEntry = async (entry, type) => {
     const { base: baseNoSpec, tier } = extractTier(entry)
 
@@ -319,20 +320,22 @@ export async function resolveAll(parsed) {
       return variantItems.map(item => applyTier(item, 1))
     }
 
-    // Step 2: normal resolution
+    // Step 2: adoption fallback (before normal resolution)
+    // Adoption items like "Ortskenntnis (Kirschhausen)" or "Schlechte Angewohnheit (Belästigung: Frauen)"
+    // would otherwise hit the approximate path (stripSpec match to the "()" placeholder).
+    const adoptedObj = await tryAdoptionResolve(entry, type)
+    if (adoptedObj) {
+      results.resolved.push({ item: adoptedObj, matchType: 'adoption', originalName: entry, type })
+      return Array.from({ length: tier }, (_, i) => applyTier(adoptedObj, i + 1))
+    }
+
+    // Step 3: normal resolution
     const r = await resolveItem(baseNoSpec, type)
     if (r) {
       if (isEquipmentPack(r.item)) { results.packs.push(r); return [] }
       if (r.matchType === 'approximate') results.approximate.push({ ...r, originalName: entry, matchedName: r.item.name, displayName: entry })
       else results.resolved.push({ ...r, originalName: entry, type })
       return Array.from({ length: tier }, (_, i) => applyTierAndSpec(r.item, i + 1, baseNoSpec))
-    }
-
-    // Step 3: adoption fallback
-    const adoptedObj = await tryAdoptionResolve(entry, type)
-    if (adoptedObj) {
-      results.resolved.push({ item: adoptedObj, matchType: 'adoption', originalName: entry, type })
-      return Array.from({ length: tier }, (_, i) => applyTier(adoptedObj, i + 1))
     }
 
     results.missing.push({ name: entry, type })
