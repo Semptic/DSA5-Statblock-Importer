@@ -29,36 +29,35 @@ function buildGmNotes(fluff, gossip, stats) {
 }
 
 export async function buildActor(reviewState) {
-  const { stats, fluff, gossip, resolution } = reviewState
+  const { stats, fluff, gossip, resolution, herkunft, professionText } = reviewState
 
   // The review dialog stores the user-confirmed full name in fluff.name
   const name = fluff?.name ?? stats?.name ?? ''
 
-  // attributes: statblock value - 8 = advances (base initial is 8)
+  // For NPCs, store attribute values directly in 'initial'.
+  // The DSA5 system computes ch.value = ch.initial + ch.advances + modifiers.
+  // NPCs have no species-derived initial, so we own the full value here.
   const attr = stats?.attributes ?? {}
-  const adv = (v) => (v ?? 8) - 8
 
-  // The DSA5 system computes LeP_base = KO_value + KK_value (empirically verified).
+  // The DSA5 system computes wounds.current = wounds.initial + ko.value * 2 for NPCs.
   // wounds.initial is additive on top of that base, so we store only the difference.
   const koVal = attr.KO ?? 8
-  const kkVal = attr.KK ?? 8
-  const systemLePBase = koVal + kkVal
   const parsedLeP = stats?.derived?.LeP ?? null
-  const woundsInitial = parsedLeP !== null ? Math.max(0, parsedLeP - systemLePBase) : 0
+  const woundsInitial = parsedLeP !== null ? Math.max(0, parsedLeP - koVal * 2) : 0
 
   const actorData = {
     name,
     type: 'npc',
     system: {
       characteristics: {
-        mu: { advances: adv(attr.MU) },
-        kl: { advances: adv(attr.KL) },
-        in: { advances: adv(attr.IN) },
-        ch: { advances: adv(attr.CH) },
-        ff: { advances: adv(attr.FF) },
-        ge: { advances: adv(attr.GE) },
-        ko: { advances: adv(attr.KO) },
-        kk: { advances: adv(attr.KK) },
+        mu: { initial: attr.MU ?? 8 },
+        kl: { initial: attr.KL ?? 8 },
+        in: { initial: attr.IN ?? 8 },
+        ch: { initial: attr.CH ?? 8 },
+        ff: { initial: attr.FF ?? 8 },
+        ge: { initial: attr.GE ?? 8 },
+        ko: { initial: attr.KO ?? 8 },
+        kk: { initial: attr.KK ?? 8 },
       },
       status: {
         wounds: { initial: woundsInitial },
@@ -121,6 +120,19 @@ export async function buildActor(reviewState) {
 
   if (skillItems.length || combatSkillItems.length) {
     await actor.createEmbeddedDocuments('Item', [...skillItems, ...combatSkillItems])
+  }
+
+  // Add Herkunft items (Spezies, Kultur, Profession) if dragged in by user.
+  // Also update system.details so DSA5 sheet header shows the names.
+  const herkunftItems = Object.values(herkunft ?? {}).filter(Boolean)
+  if (herkunftItems.length) {
+    await actor.createEmbeddedDocuments('Item', herkunftItems.map(i => i.toObject?.() ?? i))
+    const detailsUpdate = {}
+    if (herkunft?.spezies) detailsUpdate['system.details.species.value'] = herkunft.spezies.name
+    if (herkunft?.kultur) detailsUpdate['system.details.culture.value'] = herkunft.kultur.name
+    if (herkunft?.profession) detailsUpdate['system.details.career.value'] = herkunft.profession.name
+    else if (professionText) detailsUpdate['system.details.career.value'] = professionText
+    if (Object.keys(detailsUpdate).length) await actor.update(detailsUpdate)
   }
 
   return actor

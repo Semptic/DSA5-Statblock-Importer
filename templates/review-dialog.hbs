@@ -63,25 +63,26 @@
     </button>
   </div>
 
-  <!-- Approximate matches -->
-  {{#if approximate.length}}
-  <fieldset class="approximate"><legend>Ungefähre Treffer</legend>
-    {{#each approximate}}
-    <p>«{{originalName}}» → <strong>{{matchedName}}</strong> (ungefähr)</p>
+  <!-- All compendium items: exact matches, approximate matches, and missing — all drag-droppable -->
+  {{#if allItems.length}}
+  <fieldset class="compendium-items"><legend>Kompendium-Items</legend>
+    {{#each allItems}}
+    <div class="compendium-row compendium-row--{{status}}">
+      <span class="compendium-row__orig" title="{{type}}">{{originalName}}</span>
+      <span class="compendium-row__sep">→</span>
+      <div class="item-drop-zone" data-idx="{{idx}}">
+        {{#if matchedName}}
+        <span class="drop-zone__found">{{matchedName}}</span>
+        {{else}}
+        <span class="drop-zone__empty">nicht gefunden — hierher ziehen</span>
+        {{/if}}
+      </div>
+    </div>
     {{/each}}
   </fieldset>
   {{/if}}
 
-  <!-- Missing items -->
-  {{#if missing.length}}
-  <fieldset class="missing"><legend>Nicht gefunden</legend>
-    {{#each missing}}
-    <p class="error">{{name}} ({{type}})</p>
-    {{/each}}
-  </fieldset>
-  {{/if}}
-
-  <!-- Equipment packs -->
+  <!-- Equipment packs (found, but must be dragged from chat after creation) -->
   {{#if packs.length}}
   <fieldset class="packs"><legend>Ausrüstungspakete</legend>
     {{#each packs}}
@@ -90,19 +91,32 @@
   </fieldset>
   {{/if}}
 
-  <!-- Spezies / Kultur / Profession -->
+  <!-- Spezies / Kultur / Profession — drag from compendium -->
   <fieldset><legend>Herkunft (optional)</legend>
-    <div class="form-group">
-      <label>Spezies</label>
-      <input type="text" name="spezies" placeholder="Aus Kompendium ziehen...">
+    <div class="compendium-row compendium-row--empty">
+      <label class="compendium-row__orig">Spezies</label>
+      <span class="compendium-row__sep">→</span>
+      <div class="item-drop-zone" data-field="spezies">
+        <span class="drop-zone__empty">Aus Kompendium ziehen…</span>
+      </div>
     </div>
-    <div class="form-group">
-      <label>Kultur</label>
-      <input type="text" name="kultur" placeholder="Aus Kompendium ziehen...">
+    <div class="compendium-row compendium-row--empty">
+      <label class="compendium-row__orig">Kultur</label>
+      <span class="compendium-row__sep">→</span>
+      <div class="item-drop-zone" data-field="kultur">
+        <span class="drop-zone__empty">Aus Kompendium ziehen…</span>
+      </div>
     </div>
-    <div class="form-group">
-      <label>Profession</label>
-      <input type="text" name="profession" placeholder="Aus Kompendium ziehen...">
+    <div class="compendium-row compendium-row--empty">
+      <label class="compendium-row__orig">Profession</label>
+      <span class="compendium-row__sep">→</span>
+      <div class="item-drop-zone" data-field="profession">
+        <span class="drop-zone__empty">Aus Kompendium ziehen…</span>
+      </div>
+    </div>
+    <div class="form-group profession-text-row">
+      <label>Profession (Freitext)</label>
+      <input type="text" name="profession-text" placeholder="z.B. Ritter, Händler…">
     </div>
   </fieldset>
 

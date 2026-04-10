@@ -42,6 +42,70 @@
   margin-top: 8px;
 }
 
+.dsa5-review-form .profession-text-row {
+  margin-top: 4px;
+  padding-left: 4px;
+}
+
+/* Compendium item rows */
+.dsa5-review-form .compendium-items {
+  padding: 0.25rem 0.5rem;
+}
+
+.dsa5-review-form .compendium-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+  min-height: 26px;
+}
+
+.dsa5-review-form .compendium-row__orig {
+  flex: 0 0 220px;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dsa5-review-form .compendium-row__sep {
+  flex: 0 0 auto;
+  color: var(--color-text-light-5);
+}
+
+.dsa5-review-form .item-drop-zone {
+  flex: 1;
+  border: 1px dashed var(--color-border-light-tertiary);
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 12px;
+  cursor: default;
+  min-height: 22px;
+  display: flex;
+  align-items: center;
+}
+
+.dsa5-review-form .item-drop-zone.drag-over {
+  border-color: var(--color-border-highlight);
+  background: color-mix(in srgb, var(--color-border-highlight) 10%, transparent);
+}
+
+/* Status colours on the drop zone border */
+.dsa5-review-form .compendium-row--exact    .item-drop-zone { border-color: #4caf50; border-style: solid; }
+.dsa5-review-form .compendium-row--approximate .item-drop-zone { border-color: #ff9800; border-style: solid; }
+.dsa5-review-form .compendium-row--missing  .item-drop-zone { border-color: var(--color-level-error); }
+.dsa5-review-form .compendium-row--override .item-drop-zone { border-color: #2196f3; border-style: solid; }
+.dsa5-review-form .compendium-row--empty    .item-drop-zone { border-style: dashed; }
+
+.dsa5-review-form .drop-zone__found {
+  color: var(--color-text-dark-primary);
+}
+
+.dsa5-review-form .drop-zone__empty {
+  color: var(--color-text-light-5);
+  font-style: italic;
+}
+
 .dsa5-review-form .form-footer {
   display: flex;
   justify-content: flex-end;
