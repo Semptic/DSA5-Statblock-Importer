@@ -69,7 +69,7 @@ export class ReviewDialog extends Application {
         .filter(a => a.name !== 'Keine')
         .map(a => a.name).join(', '),
       editSf: (stats?.sonderfertigkeiten ?? []).join(', '),
-      editVorteile: (stats?.vorteile ?? []).join(', '),
+      editVorteile: (stats?.vorteile ?? []).filter(v => v.toLowerCase() !== 'keine').join(', '),
       editNachteile: (stats?.nachteile ?? [])
         .filter(n => n.toLowerCase() !== 'keine').join(', '),
       editSprachen: (stats?.sprachen ?? []).join(', '),

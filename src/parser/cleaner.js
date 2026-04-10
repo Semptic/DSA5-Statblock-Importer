@@ -9,7 +9,7 @@ const LIGATURES = {
 }
 
 export function clean(text) {
-  let result = text
+  let result = text.normalize('NFC')
 
   // Ligatures
   for (const [lig, rep] of Object.entries(LIGATURES)) {
@@ -18,6 +18,9 @@ export function clean(text) {
 
   // Soft hyphens
   result = result.replaceAll('\u00AD', '')
+
+  // Hyphenated line breaks (PDF word-wrap): "Wort-\nfortsetzung" → "Wortfortsetzung"
+  result = result.replace(/(\w)-\n(\w)/g, '$1$2')
 
   // Dashes → hyphen (but not inside »...« quotes — preserved as-is)
   result = result.replace(/[\u2013\u2014\u2010]/g, '-')

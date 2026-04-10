@@ -46,14 +46,13 @@ Review and edit parsed data before actor creation. Shows all 8 attributes as edi
 ### `src/actor-builder.js`
 Builds Foundry NPC actor from reviewed state.
 
-**LeP formula** (non-obvious): DSA5 system computes `LeP_base = KO + KK`. The `wounds.initial` field is **additive** on top of that base (total = base + initial). So we store only the delta:
+**LeP formula** (non-obvious): DSA5 system computes `wounds.current = wounds.initial + ko.value * 2` for NPCs. The `wounds.initial` field is **additive** on top of that base. So we store only the delta:
 ```js
-const systemLePBase = koVal + kkVal
-const woundsInitial = parsedLeP !== null ? Math.max(0, parsedLeP - systemLePBase) : 0
+const woundsInitial = parsedLeP !== null ? Math.max(0, parsedLeP - koVal * 2) : 0
 ```
-Storing absolute LeP in `wounds.initial` would double-count KO+KK and produce absurdly high max HP.
+Storing absolute LeP in `wounds.initial` would double-count KO*2 and produce absurdly high max HP.
 
-Attributes are stored as "advances" (DSA5 base is 8): `adv = value - 8`.
+Attributes are stored in `initial` (not `advances`): `initial = value`. DSA5 computes `ch.value = ch.initial + ch.advances + modifiers`. NPCs have no species-derived base, so the full value goes into `initial` with `advances = 0`.
 
 Creates embedded Item documents for weapons/armor/abilities/skills. Builds rich HTML biography from fluff + gossip.
 
@@ -119,8 +118,8 @@ Vitest is configured with **100% coverage thresholds** on `src/parser/**`. Any b
 ## Non-obvious gotchas
 
 1. **Foundry v13 hook argument**: v13 passes `HTMLElement`, not jQuery. Use native DOM in hook handlers.
-2. **`wounds.initial` is additive**: Stores `parsedLeP - (KO + KK)`, not absolute LeP.
-3. **Attributes to advances**: DSA5 system stores `value - 8` in `advances` field; raw stat values go nowhere.
+2. **`wounds.initial` is additive**: Stores `parsedLeP - ko.value * 2`, not absolute LeP (NPC formula: `wounds.current = wounds.initial + ko.value * 2`).
+3. **Attributes use `initial`, not `advances`**: Store raw value in `system.characteristics.X.initial`; `advances` stays 0 for NPCs.
 4. **German world required**: Compendium lookups silently fail if world language is English.
 5. **Sprache(X) / Schrift(X) naming**: Compendium wraps language/script names in these prefixes.
 6. **Roman numeral tier stripping**: "Gutaussehend I" must be retried as "Gutaussehend" on empty result.

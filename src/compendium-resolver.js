@@ -202,6 +202,10 @@ async function ensureIndex() {
   await _indexPromise
 }
 
+export function warmIndex() {
+  ensureIndex().catch(() => {}) // fire-and-forget; errors surface later in resolveItem
+}
+
 export async function resolveItem(name, preferredType, fallbackTypes = []) {
   if (!name) return null
   await ensureIndex()
@@ -306,36 +310,43 @@ export async function resolveAll(parsed) {
   //   2. Adoption fallback – checked before normal resolution so "Ortskenntnis (Kirschhausen)"
   //      resolves cleanly via the adoption registry instead of approximating to "Ortskenntnis ()"
   //   3. Normal resolution + applyTierAndSpec
-  const resolveEntry = async (entry, type) => {
+  const resolveEntry = async (entry, type, fallbackTypes = []) => {
     const { base: baseNoSpec, tier } = extractTier(entry)
+    const types = [type, ...fallbackTypes]
 
     // Step 1: variant split (e.g. "Persönlichkeitsschwäche (Arroganz, Eitelkeit)")
-    const variantItems = await resolveVariants(entry, type)
-    if (variantItems) {
-      for (const item of variantItems) {
-        if (isEquipmentPack(item)) { results.packs.push({ item }); }
-        else results.resolved.push({ item, matchType: 'exact', originalName: item.name, type })
+    for (const t of types) {
+      const variantItems = await resolveVariants(entry, t)
+      if (variantItems) {
+        for (const item of variantItems) {
+          if (isEquipmentPack(item)) { results.packs.push({ item }); }
+          else results.resolved.push({ item, matchType: 'exact', originalName: item.name, type: t })
+        }
+        // Each variant is already its own item; apply tier 1 (variants don't stack)
+        return variantItems.map(item => applyTier(item, 1))
       }
-      // Each variant is already its own item; apply tier 1 (variants don't stack)
-      return variantItems.map(item => applyTier(item, 1))
     }
 
     // Step 2: adoption fallback (before normal resolution)
     // Adoption items like "Ortskenntnis (Kirschhausen)" or "Schlechte Angewohnheit (Belästigung: Frauen)"
     // would otherwise hit the approximate path (stripSpec match to the "()" placeholder).
-    const adoptedObj = await tryAdoptionResolve(entry, type)
-    if (adoptedObj) {
-      results.resolved.push({ item: adoptedObj, matchType: 'adoption', originalName: entry, type })
-      return Array.from({ length: tier }, (_, i) => applyTier(adoptedObj, i + 1))
+    for (const t of types) {
+      const adoptedObj = await tryAdoptionResolve(entry, t)
+      if (adoptedObj) {
+        results.resolved.push({ item: adoptedObj, matchType: 'adoption', originalName: entry, type: t })
+        return Array.from({ length: tier }, (_, i) => applyTier(adoptedObj, i + 1))
+      }
     }
 
     // Step 3: normal resolution
-    const r = await resolveItem(baseNoSpec, type)
-    if (r) {
-      if (isEquipmentPack(r.item)) { results.packs.push(r); return [] }
-      if (r.matchType === 'approximate') results.approximate.push({ ...r, originalName: entry, matchedName: r.item.name, displayName: entry })
-      else results.resolved.push({ ...r, originalName: entry, type })
-      return Array.from({ length: tier }, (_, i) => applyTierAndSpec(r.item, i + 1, baseNoSpec))
+    for (const t of types) {
+      const r = await resolveItem(baseNoSpec, t)
+      if (r) {
+        if (isEquipmentPack(r.item)) { results.packs.push(r); return [] }
+        if (r.matchType === 'approximate') results.approximate.push({ ...r, originalName: entry, matchedName: r.item.name, displayName: entry })
+        else results.resolved.push({ ...r, originalName: entry, type: t })
+        return Array.from({ length: tier }, (_, i) => applyTierAndSpec(r.item, i + 1, baseNoSpec))
+      }
     }
 
     results.missing.push({ name: entry, type })
@@ -349,21 +360,25 @@ export async function resolveAll(parsed) {
   )
   // "Keine" means no armor — skip rather than reporting as missing
   const armorItems = await Promise.all(
-    parsed.armor.filter(a => a.name !== 'Keine').map(a => resolve(a.name, 'armor'))
+    parsed.armor.filter(a => a.name !== 'Keine').map(a => resolve(a.name, 'armor', ['equipment']))
   )
   // SF / Vorteile / Nachteile use the 3-step resolveEntry pipeline.
   // For tiered items (e.g. "Hohe Lebenskraft V"), DSA5 actors need one embedded item per
   // level (I through V), because each level is purchased separately in the system.
+  // SF / Vorteile / Nachteile all try specialability, advantage, and disadvantage —
+  // preferred type first, then the others as fallback. Parser sometimes puts items in the
+  // wrong field due to PDF extraction; this lets manual edits resolve correctly on re-analyse.
   const sfItems = (await Promise.all(
-    parsed.sonderfertigkeiten.map(s => resolveEntry(s, 'specialability'))
+    parsed.sonderfertigkeiten.map(s => resolveEntry(s, 'specialability', ['advantage', 'disadvantage']))
   )).flat()
+  // "keine" means no advantages — skip
   const vorteilItems = (await Promise.all(
-    parsed.vorteile.map(v => resolveEntry(v, 'advantage'))
+    parsed.vorteile.filter(v => v.toLowerCase() !== 'keine').map(v => resolveEntry(v, 'advantage', ['specialability', 'disadvantage']))
   )).flat()
   // "keine" means no disadvantages — skip
   const nachteilItems = (await Promise.all(
     parsed.nachteile.filter(n => n.toLowerCase() !== 'keine')
-      .map(n => resolveEntry(n, 'disadvantage'))
+      .map(n => resolveEntry(n, 'disadvantage', ['specialability', 'advantage']))
   )).flat()
   // Languages are stored as "Sprache (X)" in the DSA5 compendium.
   // Statblock format: "Muttersprache Goblinisch III" → search "Sprache (Goblinisch)"

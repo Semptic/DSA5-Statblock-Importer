@@ -4,6 +4,8 @@ A [Foundry VTT](https://foundryvtt.com/) module that imports DSA5 NPC statblocks
 
 **Requires:** Foundry VTT v13+ · DSA5 system · German-language DSA5 compendiums
 
+![Demo](docs/assets/example.gif)
+
 ---
 
 ## Features

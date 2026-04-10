@@ -31,4 +31,16 @@ describe('clean', () => {
   it('preserves paragraph breaks', () => {
     expect(clean('para one\n\npara two')).toBe('para one\n\npara two')
   })
+
+  it('normalizes decomposed Unicode (NFD) to NFC', () => {
+    // PDFs often emit u + combining diaeresis instead of precomposed ü
+    const nfd = 'Schuppenu\u0308stu\u0308ng'
+    expect(clean(nfd)).toBe('Schuppenüstüng')
+  })
+
+  it('joins hyphenated line breaks', () => {
+    expect(clean('Be-\nrittener Kampf')).toBe('Berittener Kampf')
+    expect(clean('Persönlichkeits-\nschwäche')).toBe('Persönlichkeitsschwäche')
+    expect(clean('Ortskennt-\nnis (Kirschhausen)')).toBe('Ortskenntnis (Kirschhausen)')
+  })
 })

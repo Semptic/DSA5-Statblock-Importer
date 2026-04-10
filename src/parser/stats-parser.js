@@ -130,6 +130,8 @@ function parseTalente(block) {
 
 export function parseCommaList(block) {
   if (!block) return []
+  // Collapse line wraps (PDF formatting artifact) within the block
+  block = block.replace(/\n/g, ' ')
   // Split on commas that are NOT inside parentheses
   const result = []
   let depth = 0, current = ''
