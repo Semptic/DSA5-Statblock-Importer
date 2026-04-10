@@ -72,7 +72,7 @@ function extractBlocks(text) {
   const lines = text.split('\n')
   let current = null
   for (const line of lines) {
-    const m = line.match(/^(RS\/BE|Sozialstatus|Sonderfertigkeiten|Sprachen|Schriften|Vorteile|Nachteile|Kampftechniken|Talente|Kampfverhalten|Flucht):\s*(.*)$/)
+    const m = line.match(/^(RS\/BE|Sozialstatus|Sonderfertigkeiten|Sprachen|Schriften|Vorteile\/Nachteile|Vorteile|Nachteile|Kampftechniken|Talente|Kampfverhalten|Flucht):\s*(.*)$/)
     if (m) {
       current = m[1]
       blocks[current] = m[2]
@@ -112,7 +112,17 @@ function parseTalentEntries(text) {
 function parseTalente(block) {
   const result = { Körper: [], Gesellschaft: [], Natur: [], Wissen: [], Handwerk: [], Sonstige: [] }
   if (!block) return result
-  const lines = block.split('\n').map(l => l.trim()).filter(Boolean)
+  const rawLines = block.split('\n').map(l => l.trim()).filter(Boolean)
+  // Merge PDF line-wrap continuations: talent name and value may be split across lines.
+  // A line starting with a digit is a wrapped value belonging to the previous line.
+  const lines = []
+  for (const line of rawLines) {
+    if (lines.length > 0 && /^\d/.test(line)) {
+      lines[lines.length - 1] += ' ' + line
+    } else {
+      lines.push(line)
+    }
+  }
   let currentCat = 'Sonstige'
   for (const line of lines) {
     const catMatch = line.match(/^([\w\u00C0-\u024F][\w\s\u00C0-\u024F]+?):\s*(.*)$/)
@@ -170,6 +180,7 @@ export function parseStats(text) {
   const name = nameRaw.replace(/^\d+\s*/, '').trim() || null
 
   const blocks = extractBlocks(text)
+  const vnCombined = parseCommaList(blocks['Vorteile/Nachteile'])
 
   return {
     name,
@@ -183,8 +194,8 @@ export function parseStats(text) {
     sozialstatus: blocks['Sozialstatus'] || null,
     sprachen: parseCommaList(blocks['Sprachen']),
     schriften: parseCommaList(blocks['Schriften']),
-    vorteile: parseCommaList(blocks['Vorteile']),
-    nachteile: parseCommaList(blocks['Nachteile']),
+    vorteile: vnCombined.length ? vnCombined : parseCommaList(blocks['Vorteile']),
+    nachteile: vnCombined.length ? vnCombined : parseCommaList(blocks['Nachteile']),
     kampfverhalten: blocks['Kampfverhalten'] || null,
     flucht: blocks['Flucht'] || null,
   }

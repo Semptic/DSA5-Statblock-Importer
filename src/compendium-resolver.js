@@ -354,9 +354,9 @@ export async function resolveAll(parsed) {
   }
 
   // "Waffenlos" is unarmed combat — not a weapon item, handled by Raufen combat skill
+  const nonWaffenlosWeapons = parsed.weapons.filter(w => w.name.toLowerCase() !== 'waffenlos')
   const weaponItems = await Promise.all(
-    parsed.weapons.filter(w => w.name.toLowerCase() !== 'waffenlos')
-      .map(w => resolve(w.name, 'meleeweapon', ['rangeweapon']))
+    nonWaffenlosWeapons.map(w => resolve(w.name, 'meleeweapon', ['rangeweapon']))
   )
   // "Keine" means no armor — skip rather than reporting as missing
   const armorItems = await Promise.all(
@@ -393,6 +393,31 @@ export async function resolveAll(parsed) {
   const schriftenItems = await Promise.all(
     parsed.schriften.map(s => resolve(`Schrift (${s})`, 'specialability', [], s))
   )
+
+  // Derive kampftechniken from weapons when no explicit Kampftechniken block was provided.
+  // Reuses already-resolved weapon items (no extra compendium calls).
+  if (!parsed.kampftechniken?.length) {
+    const ktMap = new Map() // technique name → max value
+    // Special case: Waffenlos → Raufen (not a real compendium weapon item)
+    for (const w of parsed.weapons) {
+      if (w.name.toLowerCase() === 'waffenlos' && w.AT != null) {
+        if ((ktMap.get('Raufen') ?? -1) < w.AT) ktMap.set('Raufen', w.AT)
+      }
+    }
+    // All other weapons: read combatTechnique from the already-resolved compendium item
+    for (let i = 0; i < nonWaffenlosWeapons.length; i++) {
+      const item = weaponItems[i]
+      if (!item) continue
+      const ct = item.system?.combatTechnique
+      if (!ct) continue
+      const val = nonWaffenlosWeapons[i].FK ?? nonWaffenlosWeapons[i].AT
+      if (val == null) continue
+      if ((ktMap.get(ct) ?? -1) < val) ktMap.set(ct, val)
+    }
+    if (ktMap.size > 0) {
+      parsed.kampftechniken = [...ktMap.entries()].map(([name, value]) => ({ name, value, atBonus: null, paBonus: null }))
+    }
+  }
 
   return {
     ...results,

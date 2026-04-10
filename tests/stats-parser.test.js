@@ -267,6 +267,64 @@ describe('parseStats - prose', () => {
   })
 })
 
+describe('parseStats - talente multi-line wrapping', () => {
+  const ATTRS = 'MU 12 KL 11 IN 12 CH 11\nFF 11 GE 12 KO 11 KK 10\nLeP 27 AsP– KaP– INI 12+1W6\nSK1 ZK 0 AW6 GS8'
+  it('merges a name-only line with a digit-only continuation line', () => {
+    const result = parseStats(`${ATTRS}\nTalente: Körperbeherrschung\n4, Kraftakt 2\n`)
+    const sonstige = result.talente.Sonstige
+    expect(sonstige).toContainEqual({ name: 'Körperbeherrschung', value: 4, spezialisierung: null })
+    expect(sonstige).toContainEqual({ name: 'Kraftakt', value: 2, spezialisierung: null })
+  })
+  it('parses the full Swafrieda Talente block (all 9 talents with correct values)', () => {
+    const swafrieda = [
+      'Swafrieda Eldridsdottir',
+      ATTRS,
+      'Waffenlos: AT 10 PA6 TP 1W6 RW kurz',
+      'RS/BE 0/0',
+      'Sonderfertigkeiten: keine',
+      'Vorteile/Nachteile: Schlechte Eigenschaft (Rachsucht)',
+      'Talente: Einschüchtern 0, Körperbeherrschung',
+      '4, Kraftakt 2, Menschenkenntnis',
+      '2, Selbstbeherrschung 2, Sinnesschärfe',
+      '4, Überreden 4, Verbergen 3,',
+      'Willenskraft 4',
+    ].join('\n')
+    const result = parseStats(swafrieda)
+    const sonstige = result.talente.Sonstige
+    expect(sonstige).toContainEqual({ name: 'Einschüchtern', value: 0, spezialisierung: null })
+    expect(sonstige).toContainEqual({ name: 'Körperbeherrschung', value: 4, spezialisierung: null })
+    expect(sonstige).toContainEqual({ name: 'Kraftakt', value: 2, spezialisierung: null })
+    expect(sonstige).toContainEqual({ name: 'Menschenkenntnis', value: 2, spezialisierung: null })
+    expect(sonstige).toContainEqual({ name: 'Selbstbeherrschung', value: 2, spezialisierung: null })
+    expect(sonstige).toContainEqual({ name: 'Sinnesschärfe', value: 4, spezialisierung: null })
+    expect(sonstige).toContainEqual({ name: 'Überreden', value: 4, spezialisierung: null })
+    expect(sonstige).toContainEqual({ name: 'Verbergen', value: 3, spezialisierung: null })
+    expect(sonstige).toContainEqual({ name: 'Willenskraft', value: 4, spezialisierung: null })
+    expect(sonstige).toHaveLength(9)
+  })
+})
+
+describe('parseStats - Vorteile/Nachteile combined header', () => {
+  const ATTRS = 'MU 10 KL 10 IN 10 CH 10 FF 10 GE 10 KO 10 KK 10'
+  it('puts items from combined Vorteile/Nachteile header into both vorteile and nachteile', () => {
+    const result = parseStats(`${ATTRS}\nVorteile/Nachteile: Schlechte Eigenschaft (Rachsucht)\n`)
+    expect(result.vorteile).toContain('Schlechte Eigenschaft (Rachsucht)')
+    expect(result.nachteile).toContain('Schlechte Eigenschaft (Rachsucht)')
+  })
+  it('separate Vorteile: and Nachteile: headers still work independently', () => {
+    const result = parseStats(`${ATTRS}\nVorteile: Gut Aussehend I\nNachteile: Vorurteil (Elfen)\n`)
+    expect(result.vorteile).toContain('Gut Aussehend I')
+    expect(result.nachteile).toContain('Vorurteil (Elfen)')
+    expect(result.vorteile).not.toContain('Vorurteil (Elfen)')
+    expect(result.nachteile).not.toContain('Gut Aussehend I')
+  })
+  it('combined header does not bleed into Sonderfertigkeiten block', () => {
+    const result = parseStats(`${ATTRS}\nSonderfertigkeiten: keine\nVorteile/Nachteile: Schlechte Eigenschaft (Rachsucht)\n`)
+    expect(result.sonderfertigkeiten).toEqual(['keine'])
+    expect(result.vorteile).toContain('Schlechte Eigenschaft (Rachsucht)')
+  })
+})
+
 describe('parseCommaList', () => {
   it('splits on top-level commas only, preserving parenthesized commas', () => {
     expect(parseCommaList('Wuchtschlag I+II (Haken, Säbel), Klingensturm')).toEqual([
