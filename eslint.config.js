@@ -16,7 +16,11 @@ export default [
         Dialog: 'readonly',
         FormApplication: 'readonly',
         foundry: 'readonly',
+        fromUuid: 'readonly',
         $: 'readonly',
+        // Browser globals
+        HTMLElement: 'readonly',
+        document: 'readonly',
       },
     },
     rules: {

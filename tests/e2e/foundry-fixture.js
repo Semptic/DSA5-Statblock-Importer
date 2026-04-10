@@ -10,7 +10,7 @@ import { chromium, test as base } from '@playwright/test'
  * Before each test: closes stale dialogs, navigates to the Actors sidebar tab.
  */
 export const test = base.extend({
-  connectedBrowser: [async ({}, use) => {
+  connectedBrowser: [async (_fixtures, use) => {
     const browser = await chromium.connectOverCDP('http://localhost:9222')
     await use(browser)
     await browser.close()
@@ -28,7 +28,7 @@ export const test = base.extend({
     await page.evaluate(async () => {
       for (const app of foundry.applications.instances.values()) {
         if (app.id === 'sidebar') continue
-        try { await app.close() } catch (_) {}
+        try { await app.close() } catch { /* ignore close errors */ }
       }
     })
     // Navigate to the Actors sidebar tab using Foundry v13 API.

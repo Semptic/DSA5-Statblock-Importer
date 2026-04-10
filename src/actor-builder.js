@@ -60,7 +60,7 @@ export async function buildActor(reviewState) {
         kk: { initial: attr.KK ?? 8 },
       },
       status: {
-        wounds: { initial: woundsInitial },
+        wounds: { initial: woundsInitial, value: parsedLeP ?? (woundsInitial + koVal * 2) },
         astralenergy: { initial: stats?.derived?.Asp ?? 0 },
         karmaenergy: { initial: stats?.derived?.KaP ?? 0 },
         initiative: { current: stats?.derived?.INI?.base ?? 0 },
@@ -83,11 +83,6 @@ export async function buildActor(reviewState) {
   }
 
   const actor = await Actor.create(actorData)
-
-  // Initialize current wounds to parsed LeP so actor starts at full health (prevents Schmerz)
-  if (stats?.derived?.LeP != null) {
-    await actor.update({ 'system.status.wounds.value': stats.derived.LeP })
-  }
 
   // Create resolved items (weapons, armor, abilities, etc.)
   if (resolution?.items?.length) {
