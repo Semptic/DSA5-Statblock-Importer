@@ -325,6 +325,59 @@ describe('parseStats - Vorteile/Nachteile combined header', () => {
   })
 })
 
+describe('parseWeapons - null guard for lines without name prefix', () => {
+  it('skips weapon lines that have no parseable name prefix', () => {
+    // A line that matches the weaponLineRe (has AT/FK + digit) but has no leading name token
+    const result = parseStats(
+      'Name\nMU 10 KL 10 IN 10 CH 10 FF 10 GE 10 KO 10 KK 10\n' +
+      'LeP 20 AsP – KaP – INI 10+1W6 SK 0 ZK 0 AW 6 GS 8\n' +
+      'AT 12 PA 7 TP 1W6 RW kurz'
+    )
+    // Line starts with AT — no name before AT, nameMatch is null, should be skipped
+    expect(result.weapons).toHaveLength(0)
+  })
+})
+
+describe('parseTalentEntries - uses parseCommaList (comma inside specialization parens)', () => {
+  it('treats comma inside parens as part of the specialization name, not a split point', () => {
+    const result = parseStats(
+      'Name\nMU 10 KL 10 IN 10 CH 10 FF 10 GE 10 KO 10 KK 10\n' +
+      'LeP 20 AsP – KaP – INI 10+1W6 SK 0 ZK 0 AW 6 GS 8\n' +
+      'Talente:\nKörper: Heilkunde (Wunden, Vergiftung) 5'
+    )
+    // parseCommaList keeps the entry intact; parseTalentEntry then splits name/spezialisierung
+    expect(result.talente.Körper).toContainEqual({ name: 'Heilkunde', value: 5, spezialisierung: 'Wunden, Vergiftung' })
+  })
+})
+
+describe('parseDash / weapon regex - en-dash support', () => {
+  it('parses FK-only weapon line (baseline)', () => {
+    const result = parseStats(
+      'Name\nMU 10 KL 10 IN 10 CH 10 FF 10 GE 10 KO 10 KK 10\n' +
+      'LeP 20 AsP – KaP – INI 10+1W6 SK 0 ZK 0 AW 6 GS 8\n' +
+      'Kurzbogen FK 10 TP 1W6 RW 5'
+    )
+    const weapon = result.weapons.find(w => w.name === 'Kurzbogen')
+    expect(weapon).toBeDefined()
+    expect(weapon.FK).toBe(10)
+  })
+})
+
+describe('parseStats - ausrüstung block', () => {
+  it('parses Ausrüstung as a list of item names', () => {
+    const result = parseStats(
+      'Name\nMU 10 KL 10 IN 10 CH 10 FF 10 GE 10 KO 10 KK 10\n' +
+      'LeP 20 AsP – KaP – INI 10+1W6 SK 0 ZK 0 AW 6 GS 8\n' +
+      'Ausrüstung: Schwerer Dolch, Rucksack'
+    )
+    expect(result.ausrüstung).toEqual(['Schwerer Dolch', 'Rucksack'])
+  })
+  it('returns empty array when no Ausrüstung block present', () => {
+    const result = parseStats('MU 10 KL 10 IN 10 CH 10 FF 10 GE 10 KO 10 KK 10')
+    expect(result.ausrüstung).toEqual([])
+  })
+})
+
 describe('parseCommaList', () => {
   it('splits on top-level commas only, preserving parenthesized commas', () => {
     expect(parseCommaList('Wuchtschlag I+II (Haken, Säbel), Klingensturm')).toEqual([

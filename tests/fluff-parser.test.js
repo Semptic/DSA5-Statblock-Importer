@@ -1,13 +1,7 @@
-import { readFileSync } from 'fs'
 import { describe, it, expect } from 'vitest'
 import { parseFluff } from '../src/parser/fluff-parser.js'
 import { clean } from '../src/parser/cleaner.js'
-
-function loadSection(fixture, section) {
-  const text = readFileSync(`tests/fixtures/${fixture}`, 'utf8')
-  const match = text.match(new RegExp(`${section}:\\n([\\s\\S]+?)(?=\\n(?:stats|fluff|gossip):|$)`))
-  return match ? match[1].trim() : ''
-}
+import { loadSection } from './helpers.js'
 
 const fluff = parseFluff(clean(loadSection('jaruslaw.txt', 'fluff')))
 
@@ -92,5 +86,14 @@ describe('parseFluff - feindbilder and zitate', () => {
     expect(result.npcCategory).toBeNull()
     expect(result.titel).toBeNull()
     expect(result.name).toBe('1')
+  })
+  it('feindbilder with comma inside parens', () => {
+    const result = parseFluff('1 Name\nFeindbilder: Orks (Goblinstamm, Grünhäuter), Elfen')
+    expect(result.feindbilder).toEqual(['Orks (Goblinstamm, Grünhäuter)', 'Elfen'])
+  })
+  it('zitate between anchor blocks are not appended to block text', () => {
+    const result = parseFluff('1 Name\nKurzcharakteristik: Beschreibung\n»Ein Zitat.«\nMotivation: Ziel')
+    expect(result.kurzcharakteristik).toBe('Beschreibung')
+    expect(result.zitate).toEqual(['»Ein Zitat.«'])
   })
 })

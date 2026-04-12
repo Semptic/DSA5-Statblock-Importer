@@ -5,5 +5,7 @@
   "DSA5SI.import.gossip": "Gerüchte",
   "DSA5SI.import.analyse": "Analysieren",
   "DSA5SI.review.create": "Charakter erstellen",
-  "DSA5SI.review.cancel": "Abbrechen"
+  "DSA5SI.review.cancel": "Abbrechen",
+  "DSA5SI.error.noInput": "Bitte mindestens einen Abschnitt einfügen.",
+  "DSA5SI.error.importFailed": "Import fehlgeschlagen."
 }

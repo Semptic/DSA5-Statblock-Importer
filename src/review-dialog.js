@@ -179,7 +179,7 @@ export class ReviewDialog extends Application {
     const resolution = this._data.resolution
     const allItems = this._buildAllItems(resolution)
     const effectiveItems = allItems
-      .map((row, i) => this._overrides[i] ?? row.item)
+      .map((row) => this._overrides[row.idx] ?? row.item)
       .filter(Boolean)
 
     const professionText = html.find('[name="profession-text"]').val().trim()

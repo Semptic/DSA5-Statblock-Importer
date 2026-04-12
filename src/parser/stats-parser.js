@@ -1,7 +1,7 @@
 const TALENT_CATEGORIES = ['Körper', 'Gesellschaft', 'Natur', 'Wissen', 'Handwerk']
 
 function parseDash(val) {
-  return val === '-' ? null : parseInt(val)
+  return (val === '-' || val === '–') ? null : parseInt(val, 10)
 }
 
 function parseWeapons(lines) {
@@ -9,13 +9,15 @@ function parseWeapons(lines) {
   const weaponLineRe = /\b(?:AT|FK)\s+\d/
   for (const line of lines) {
     if (!weaponLineRe.test(line)) continue
-    // Extract name: everything before the first AT/FK/PA keyword (strip trailing colon)
-    const nameMatch = line.match(/^(.+?):?\s+(?:AT|FK|PA)\s+/)
+    // Extract name: everything before the first AT/FK/PA keyword (strip trailing colon).
+    // Negative lookahead prevents lines that start directly with AT/FK/PA from matching.
+    const nameMatch = line.match(/^(?!(?:AT|FK|PA)\s)(.+?):?\s+(?:AT|FK|PA)\s+/)
+    if (!nameMatch) continue
     const name = nameMatch[1].replace(/:$/, '').trim()
     // Extract AT, PA, FK
     const atM = line.match(/\bAT\s+(\d+)/)
-    const paM = line.match(/\bPA\s+([\d-]+)/)
-    const fkM = line.match(/\bFK\s+([\d-]+)/)
+    const paM = line.match(/\bPA\s+([\d\-\u2013]+)/)
+    const fkM = line.match(/\bFK\s+([\d\-\u2013]+)/)
     weapons.push({
       name,
       AT: atM ? parseInt(atM[1]) : null,
@@ -54,7 +56,7 @@ function parseDerived(lines) {
   simple.Schip = schipM ? parseInt(schipM[1]) : null
 
   // Nullable fields (Asp/AsP, KaP) — "–" or "-" means null
-  for (const [outKey, pattern] of [['Asp', /\bAs[Pp]\s+([\d–-]+)/], ['KaP', /\bKaP\s+([\d–-]+)/]]) {
+  for (const [outKey, pattern] of [['Asp', /\bAs[Pp]\s+([\d\u2013-]+)/], ['KaP', /\bKaP\s+([\d\u2013-]+)/]]) {
     const m = joined.match(pattern)
     if (!m) { simple[outKey] = null; continue }
     simple[outKey] = (m[1] === '–' || m[1] === '-') ? null : parseInt(m[1])
@@ -72,7 +74,7 @@ function extractBlocks(text) {
   const lines = text.split('\n')
   let current = null
   for (const line of lines) {
-    const m = line.match(/^(RS\/BE|Sozialstatus|Sonderfertigkeiten|Sprachen|Schriften|Vorteile\/Nachteile|Vorteile|Nachteile|Kampftechniken|Talente|Kampfverhalten|Flucht):\s*(.*)$/)
+    const m = line.match(/^(RS\/BE|Sozialstatus|Sonderfertigkeiten|Sprachen|Schriften|Vorteile\/Nachteile|Vorteile|Nachteile|Kampftechniken|Talente|Kampfverhalten|Flucht|Ausrüstung):\s*(.*)$/)
     if (m) {
       current = m[1]
       blocks[current] = m[2]
@@ -106,7 +108,7 @@ function parseTalentEntry(entry) {
 }
 
 function parseTalentEntries(text) {
-  return text.split(',').map(e => parseTalentEntry(e.trim())).filter(Boolean)
+  return parseCommaList(text).map(e => parseTalentEntry(e.trim())).filter(Boolean)
 }
 
 function parseTalente(block) {
@@ -115,6 +117,7 @@ function parseTalente(block) {
   const rawLines = block.split('\n').map(l => l.trim()).filter(Boolean)
   // Merge PDF line-wrap continuations: talent name and value may be split across lines.
   // A line starting with a digit is a wrapped value belonging to the previous line.
+  // Relies on cleaner.js having stripped lone page numbers; digit-only lines after cleaner are continuation values
   const lines = []
   for (const line of rawLines) {
     if (lines.length > 0 && /^\d/.test(line)) {
@@ -198,5 +201,6 @@ export function parseStats(text) {
     nachteile: vnCombined.length ? vnCombined : parseCommaList(blocks['Nachteile']),
     kampfverhalten: blocks['Kampfverhalten'] || null,
     flucht: blocks['Flucht'] || null,
+    ausrüstung: parseCommaList(blocks['Ausrüstung']),
   }
 }

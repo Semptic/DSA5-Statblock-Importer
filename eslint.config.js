@@ -21,6 +21,7 @@ export default [
         // Browser globals
         HTMLElement: 'readonly',
         document: 'readonly',
+        console: 'readonly',
       },
     },
     rules: {

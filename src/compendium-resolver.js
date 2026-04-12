@@ -18,11 +18,13 @@ function romanToInt(s) {
 }
 
 // Returns { base: nameWithoutTier, tier: number }
-function extractTier(name) {
+export function extractTier(name) {
   const m = name.match(TIER_RE)
-  if (!m) return { base: name, tier: 1 }
-  const tier = Math.max(...m[1].split('+').map(romanToInt))
-  return { base: name.slice(0, -m[0].length).trim(), tier }
+  if (m) {
+    const tier = Math.max(...m[1].split('+').map(romanToInt))
+    if (tier > 0) return { base: name.slice(0, -m[0].length).trim(), tier }
+  }
+  return { base: name, tier: 1 }
 }
 
 // Clone item (or plain obj) and set step.value to tier
@@ -67,13 +69,13 @@ function applyTierAndSpec(item, tier, originalName) {
   if (!spec) return obj
   if (obj.name.endsWith(spec)) return obj
   // Strip any existing trailing (...) from the compendium item name (e.g. "Ortskenntnis ()")
-  const baseName = obj.name.replace(/\s*\(.*\)$/, '').trim()
+  const baseName = obj.name.replace(/\s*\([^)]*\)$/, '').trim()
   obj.name = `${baseName} ${spec}`
   return obj
 }
 
 // Levenshtein distance for fuzzy matching
-function levenshtein(a, b) {
+export function levenshtein(a, b) {
   const m = a.length, n = b.length
   const dp = []
   for (let i = 0; i <= m; i++) {
@@ -90,9 +92,12 @@ function levenshtein(a, b) {
 
 // Strips trailing Roman numeral suffixes (e.g. "Langschwert II" → "langschwert")
 // to improve fuzzy matching across tiered item names.
-function normalize(name) {
+export function normalize(name) {
   return name.trim().toLowerCase().replace(TIER_RE, '')
 }
+
+// Strips trailing parenthesized specialization from a normalized name.
+const stripSpec = (s) => normalize(s).replace(/\s*\([^)]*\)$/, '').trim()
 
 // Splits a parenthesized spec containing commas at the outermost level.
 // "Persönlichkeitsschwäche (Arroganz, Eitelkeit)" → { base: "Persönlichkeitsschwäche", parts: ["Arroganz", "Eitelkeit"] }
@@ -172,6 +177,14 @@ export function parseAdoption(name, registry) {
       if (!name.startsWith(baseName)) continue
       const rest = name.slice(baseName.length).trim()
       if (!rest.startsWith('(') || !rest.endsWith(')')) continue
+      // Verify parens are balanced before slicing
+      let depth = 0, valid = true
+      for (const ch of rest) {
+        if (ch === '(') depth++
+        else if (ch === ')') depth--
+        if (depth < 0) { valid = false; break }
+      }
+      if (!valid || depth !== 0) continue
       const adoptionName = rest.slice(1, rest.length - 1).trim()
       return { baseName, adoptionName, customEntry: null, rule }
     }
@@ -203,7 +216,7 @@ async function ensureIndex() {
 }
 
 export function warmIndex() {
-  ensureIndex().catch(() => {}) // fire-and-forget; errors surface later in resolveItem
+  ensureIndex().catch(err => console.warn('DSA5 Statblock Importer: index warm-up failed', err))
 }
 
 export async function resolveItem(name, preferredType, fallbackTypes = []) {
@@ -231,15 +244,19 @@ export async function resolveItem(name, preferredType, fallbackTypes = []) {
     const exact = results.find(i => i.type === type && i.name.toLowerCase() === name.toLowerCase())
     if (exact) return { item: exact, matchType: 'exact' }
 
-    // Approximate: Levenshtein distance <= 2 on normalized names,
-    // OR base-name match after stripping parenthesized specializations from both sides
-    // (e.g. "Ortskenntnis ()" vs "Ortskenntnis", "Tradition (Geoden)" vs "Tradition")
-    const stripSpec = (s) => normalize(s).replace(/\s*\(.*\)$/, '').trim()
-    const approx = results.find(i => {
-      if (i.type !== type) return false
-      if (levenshtein(normalize(i.name), normalize(name)) <= 2) return true
-      return levenshtein(stripSpec(i.name), stripSpec(name)) <= 2
-    })
+    // Approximate: pick the closest Levenshtein match (distance <= 2), comparing both
+    // normalized names and spec-stripped names to handle "Ortskenntnis ()" vs "Ortskenntnis".
+    const scored = results
+      .filter(i => i.type === type)
+      .map(i => ({
+        i,
+        d: Math.min(
+          levenshtein(normalize(i.name), normalize(name)),
+          levenshtein(stripSpec(i.name), stripSpec(name))
+        )
+      }))
+      .filter(({ d }) => d <= 2)
+    const approx = scored.length ? scored.reduce((a, b) => a.d <= b.d ? a : b).i : undefined
     if (approx) return { item: approx, matchType: 'approximate', originalName: name, matchedName: approx.name }
   }
 
@@ -398,24 +415,23 @@ export async function resolveAll(parsed) {
   // Reuses already-resolved weapon items (no extra compendium calls).
   if (!parsed.kampftechniken?.length) {
     const ktMap = new Map() // technique name → max value
-    // Special case: Waffenlos → Raufen (not a real compendium weapon item)
+    // Single pass: Waffenlos → Raufen (special case); all others read combatskill from resolved item.
+    const weaponItemMap = new Map(nonWaffenlosWeapons.map((w, i) => [w, weaponItems[i]]))
     for (const w of parsed.weapons) {
-      if (w.name.toLowerCase() === 'waffenlos' && w.AT != null) {
-        if ((ktMap.get('Raufen') ?? -1) < w.AT) ktMap.set('Raufen', w.AT)
+      if (w.name.toLowerCase() === 'waffenlos') {
+        if (w.AT != null && (ktMap.get('Raufen') ?? -1) < w.AT) ktMap.set('Raufen', w.AT)
+      } else {
+        const item = weaponItemMap.get(w)
+        if (!item) continue
+        const ct = item.system?.combatskill?.value
+        if (!ct) continue
+        const val = w.FK ?? w.AT
+        if (val == null) continue
+        if ((ktMap.get(ct) ?? -1) < val) ktMap.set(ct, val)
       }
     }
-    // All other weapons: read combatTechnique from the already-resolved compendium item
-    for (let i = 0; i < nonWaffenlosWeapons.length; i++) {
-      const item = weaponItems[i]
-      if (!item) continue
-      const ct = item.system?.combatskill?.value
-      if (!ct) continue
-      const val = nonWaffenlosWeapons[i].FK ?? nonWaffenlosWeapons[i].AT
-      if (val == null) continue
-      if ((ktMap.get(ct) ?? -1) < val) ktMap.set(ct, val)
-    }
     if (ktMap.size > 0) {
-      parsed.kampftechniken = [...ktMap.entries()].map(([name, value]) => ({ name, value, atBonus: null, paBonus: null }))
+      parsed.kampftechniken = Array.from(ktMap, ([name, value]) => ({ name, value, atBonus: null, paBonus: null }))
     }
   }
 

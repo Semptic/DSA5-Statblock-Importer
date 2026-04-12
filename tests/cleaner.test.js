@@ -42,5 +42,18 @@ describe('clean', () => {
     expect(clean('Be-\nrittener Kampf')).toBe('Berittener Kampf')
     expect(clean('Persönlichkeits-\nschwäche')).toBe('Persönlichkeitsschwäche')
     expect(clean('Ortskennt-\nnis (Kirschhausen)')).toBe('Ortskenntnis (Kirschhausen)')
+    expect(clean('Schiff-\nüberfahrt')).toBe('Schiffüberfahrt')
+  })
+
+  it('replaces FB05/FB06 ligatures', () => {
+    expect(clean('\uFB05\uFB06')).toBe('stst')
+  })
+
+  it('normalizes non-breaking hyphen (U+2010) to plain hyphen', () => {
+    expect(clean('A\u2010B')).toBe('A-B')
+  })
+
+  it('collapses multiple blank lines to one blank line', () => {
+    expect(clean('a\n\n\nb')).toBe('a\n\nb')
   })
 })

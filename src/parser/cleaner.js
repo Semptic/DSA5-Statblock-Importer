@@ -20,7 +20,7 @@ export function clean(text) {
   result = result.replaceAll('\u00AD', '')
 
   // Hyphenated line breaks (PDF word-wrap): "Wort-\nfortsetzung" → "Wortfortsetzung"
-  result = result.replace(/(\w)-\n(\w)/g, '$1$2')
+  result = result.replace(/(\p{L})-\n(\p{L})/gu, '$1$2')
 
   // Dashes → hyphen (but not inside »...« quotes — preserved as-is)
   result = result.replace(/[\u2013\u2014\u2010]/g, '-')

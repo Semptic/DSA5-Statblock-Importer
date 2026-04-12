@@ -6,5 +6,7 @@
   "DSA5SI.import.analyse": "Analyse",
   "DSA5SI.review.placeholder": "Loading preview...",
   "DSA5SI.review.create": "Create Character",
-  "DSA5SI.review.cancel": "Cancel"
+  "DSA5SI.review.cancel": "Cancel",
+  "DSA5SI.error.noInput": "Please enter at least one section.",
+  "DSA5SI.error.importFailed": "Import failed."
 }

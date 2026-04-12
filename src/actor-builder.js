@@ -7,7 +7,8 @@ import { resolveItem } from './compendium-resolver.js'
 
 function buildGmNotes(fluff, gossip, stats) {
   const lines = []
-  if (fluff.npcCategory) lines.push(`<h2>[${fluff.npcCategory}] ${fluff.name ?? ''}</h2>`)
+  const displayName = [fluff?.titel, fluff?.name].filter(Boolean).join(' ') || ''
+  if (fluff.npcCategory) lines.push(`<h2>[${fluff.npcCategory}] ${displayName}</h2>`)
   if (fluff.kurzcharakteristik) lines.push(`<p><strong>Kurzcharakteristik:</strong> ${fluff.kurzcharakteristik}</p>`)
   if (fluff.motivation) lines.push(`<p><strong>Motivation:</strong> ${fluff.motivation}</p>`)
   if (fluff.agenda) lines.push(`<p><strong>Agenda:</strong> ${fluff.agenda}</p>`)
@@ -61,8 +62,8 @@ export async function buildActor(reviewState) {
       },
       status: {
         wounds: { initial: woundsInitial, value: parsedLeP ?? (woundsInitial + koVal * 2) },
-        astralenergy: { initial: stats?.derived?.Asp ?? 0 },
-        karmaenergy: { initial: stats?.derived?.KaP ?? 0 },
+        astralenergy: { initial: stats?.derived?.Asp ?? 0 }, // null means NPC has no Asp/KaP; default to 0
+        karmaenergy: { initial: stats?.derived?.KaP ?? 0 }, // null means NPC has no Asp/KaP; default to 0
         initiative: { current: stats?.derived?.INI?.base ?? 0 },
         dodge: { modifier: 0 },
         fatePoints: { current: stats?.derived?.Schip ?? 0 },
@@ -83,6 +84,10 @@ export async function buildActor(reviewState) {
   }
 
   const actor = await Actor.create(actorData)
+  if (!actor) {
+    ui.notifications?.error('Schauspieler konnte nicht erstellt werden.')
+    return null
+  }
 
   // Create resolved items (weapons, armor, abilities, etc.)
   if (resolution?.items?.length) {
@@ -126,8 +131,11 @@ export async function buildActor(reviewState) {
     if (herkunft?.spezies) detailsUpdate['system.details.species.value'] = herkunft.spezies.name
     if (herkunft?.kultur) detailsUpdate['system.details.culture.value'] = herkunft.kultur.name
     if (herkunft?.profession) detailsUpdate['system.details.career.value'] = herkunft.profession.name
-    else if (professionText) detailsUpdate['system.details.career.value'] = professionText
     if (Object.keys(detailsUpdate).length) await actor.update(detailsUpdate)
+  }
+
+  if (!herkunft?.profession && professionText) {
+    await actor.update({ 'system.details.career.value': professionText })
   }
 
   return actor

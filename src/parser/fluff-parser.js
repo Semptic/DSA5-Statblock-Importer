@@ -1,3 +1,5 @@
+import { parseCommaList } from './stats-parser.js'
+
 const CATEGORY_MAP = { '1': 'Bauer', '2': 'Springer', '3': 'Turm', '4': 'Läufer' }
 
 const FLUFF_ANCHORS = [
@@ -27,9 +29,9 @@ export function parseFluff(text) {
   // Extract anchor blocks
   const blocks = extractFluffBlocks(lines.slice(1))
 
-  // Feindbilder: comma-separated
+  // Feindbilder: comma-separated (use parseCommaList to handle parenthesized commas)
   const feindbilder = blocks.Feindbilder
-    ? blocks.Feindbilder.split(',').map(s => s.trim()).filter(Boolean)
+    ? parseCommaList(blocks.Feindbilder).map(s => s.trim()).filter(Boolean)
     : []
 
   return {
@@ -57,7 +59,9 @@ function extractFluffBlocks(lines) {
       current = m[1]
       blocks[current] = m[2].trim()
     } else if (current) {
-      blocks[current] += ' ' + line
+      if (!line.startsWith('»')) {
+        blocks[current] += ' ' + line
+      }
     }
   }
   // Trim all blocks

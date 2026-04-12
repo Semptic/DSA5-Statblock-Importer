@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { splitCommaSpec, parseAdoption, applyAdoptionToItem } from '../src/compendium-resolver.js'
+import { splitCommaSpec, parseAdoption, applyAdoptionToItem, extractTier, levenshtein, normalize } from '../src/compendium-resolver.js'
 
 // --- splitCommaSpec ---
 
@@ -40,6 +40,10 @@ describe('splitCommaSpec', () => {
 
   it('returns null for empty string', () => {
     expect(splitCommaSpec('')).toBeNull()
+  })
+
+  it('returns null for unbalanced parens', () => {
+    expect(splitCommaSpec('Foo (Bar, Baz')).toBeNull()
   })
 })
 
@@ -177,5 +181,72 @@ describe('applyAdoptionToItem', () => {
     }
     expect(() => applyAdoptionToItem(item, adoption)).not.toThrow()
     expect(item.name).toBe('Ortskenntnis (Festum)')
+  })
+})
+
+// --- extractTier ---
+
+describe('extractTier', () => {
+  it('extracts Roman numeral tier II', () => {
+    expect(extractTier('Gutaussehend II')).toEqual({ base: 'Gutaussehend', tier: 2 })
+  })
+
+  it('returns tier 1 when no suffix', () => {
+    expect(extractTier('Klettern')).toEqual({ base: 'Klettern', tier: 1 })
+  })
+
+  it('extracts combined tier I+II', () => {
+    expect(extractTier('Wuchtschlag I+II')).toEqual({ base: 'Wuchtschlag', tier: 2 })
+  })
+
+  it('extracts tier I', () => {
+    expect(extractTier('Klettern I')).toEqual({ base: 'Klettern', tier: 1 })
+  })
+})
+
+// --- levenshtein ---
+
+describe('levenshtein', () => {
+  it('returns 0 for identical strings', () => {
+    expect(levenshtein('abc', 'abc')).toBe(0)
+  })
+
+  it('returns 1 for single substitution', () => {
+    expect(levenshtein('abc', 'abd')).toBe(1)
+  })
+
+  it('returns 1 for single insertion', () => {
+    expect(levenshtein('abc', 'abcd')).toBe(1)
+  })
+
+  it('returns 1 for single deletion', () => {
+    expect(levenshtein('abcd', 'abc')).toBe(1)
+  })
+
+  it('handles empty strings', () => {
+    expect(levenshtein('', 'abc')).toBe(3)
+    expect(levenshtein('abc', '')).toBe(3)
+  })
+})
+
+// --- normalize ---
+
+describe('normalize', () => {
+  it('lowercases ASCII', () => {
+    expect(normalize('Klettern')).toBe('klettern')
+  })
+
+  it('lowercases German umlaut characters', () => {
+    expect(normalize('Ärger')).toBe('ärger')
+  })
+
+  it('lowercases Roman numeral suffixes (TIER_RE only matches uppercase, so suffix stays in output)', () => {
+    // normalize lowercases before applying TIER_RE, so " II" → " ii" is not stripped by TIER_RE.
+    // extractTier is used for actual tier stripping; normalize is for Levenshtein comparison normalization.
+    expect(normalize('Gutaussehend II')).toBe('gutaussehend ii')
+  })
+
+  it('trims whitespace', () => {
+    expect(normalize('  Foo  ')).toBe('foo')
   })
 })

@@ -1,13 +1,7 @@
-import { readFileSync } from 'fs'
 import { describe, it, expect } from 'vitest'
 import { parseGossip } from '../src/parser/gossip-parser.js'
 import { clean } from '../src/parser/cleaner.js'
-
-function loadSection(fixture, section) {
-  const text = readFileSync(`tests/fixtures/${fixture}`, 'utf8')
-  const match = text.match(new RegExp(`${section}:\\n([\\s\\S]+?)(?=\\n(?:stats|fluff|gossip):|$)`))
-  return match ? match[1].trim() : ''
-}
+import { loadSection } from './helpers.js'
 
 const gossip = parseGossip(clean(loadSection('jaruslaw.txt', 'gossip')))
 
@@ -18,6 +12,7 @@ describe('parseGossip - subject', () => {
   it('returns empty subject when no header', () => {
     const result = parseGossip('» Nur ein Gerücht.')
     expect(result.subject).toBe('')
+    expect(result.entries).toHaveLength(1)
   })
 })
 
