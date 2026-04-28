@@ -3,6 +3,9 @@
   "title": "DSA5 Statblock Importer",
   "description": "Import DSA5 NPC statblocks from PDF into Foundry VTT actors.",
   "version": "0.1.0",
+  "url": "https://github.com/Semptic/DSA5-Statblock-Importer",
+  "manifest": "https://raw.githubusercontent.com/Semptic/DSA5-Statblock-Importer/main/module.json",
+  "download": "",
   "compatibility": {
     "minimum": "13",
     "verified": "13"
