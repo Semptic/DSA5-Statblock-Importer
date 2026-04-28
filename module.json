@@ -5,15 +5,27 @@
   "version": "0.1.0",
   "url": "https://github.com/Semptic/DSA5-Statblock-Importer",
   "manifest": "https://raw.githubusercontent.com/Semptic/DSA5-Statblock-Importer/main/module.json",
-  "download": "",
+  "download": "https://github.com/Semptic/DSA5-Statblock-Importer/releases/download/v0.1.0/module.zip",
   "compatibility": {
     "minimum": "13",
     "verified": "13"
   },
-  "esmodules": ["dist/main.js"],
-  "styles": ["styles/module.css"],
+  "esmodules": [
+    "dist/main.js"
+  ],
+  "styles": [
+    "styles/module.css"
+  ],
   "languages": [
-    { "lang": "de", "name": "Deutsch", "path": "languages/de.json" },
-    { "lang": "en", "name": "English", "path": "languages/en.json" }
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "languages/de.json"
+    },
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "languages/en.json"
+    }
   ]
 }
