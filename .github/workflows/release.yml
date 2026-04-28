@@ -1,9 +1,8 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v*'
+  release:
+    types: [published]
 
 permissions:
   contents: write
@@ -49,14 +48,11 @@ jobs:
       - name: Create release zip
         run: zip -r module.zip module.json dist/ templates/ styles/ languages/
 
-      - name: Create GitHub Release
+      - name: Upload zip to GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.ref_name }}
-        run: |
-          gh release create "$TAG" module.zip \
-            --title "DSA5 Statblock Importer $TAG" \
-            --generate-notes
+        run: gh release upload "$TAG" module.zip
 
       - name: Commit updated module.json to main
         env:
